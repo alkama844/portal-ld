@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: luckydental-api
+    env: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm run build:api
+    startCommand: npm run start:api
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ADMIN_DEFAULT_EMAIL
+        value: admin@clinic.com
+      - key: ADMIN_DEFAULT_PASSWORD
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: MAX_PROFILE_IMAGE_SIZE_MB
+        value: 1
+      - key: UPLOAD_TEMP_MAX_AGE_MINUTES
+        value: 60
