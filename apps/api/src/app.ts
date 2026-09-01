@@ -17,7 +17,8 @@ const app = express();
 
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
   .split(',')
-  .map((o) => o.trim());
+  .map((o) => o.trim().replace(/\/$/, ''))
+  .filter(Boolean);
 
 app.use(
   helmet({
@@ -28,15 +29,23 @@ app.use(
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      // Allow requests with no origin (e.g. mobile apps, curl, or server-to-server)
       if (!origin) return callback(null, true);
 
-      const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-      if (isLocalhost || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+      const cleanOrigin = origin.replace(/\/$/, '');
+      const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin);
+
+      if (
+        isLocalhost ||
+        allowedOrigins.includes(cleanOrigin) ||
+        allowedOrigins.includes('*') ||
+        process.env.NODE_ENV !== 'production'
+      ) {
         return callback(null, true);
       }
 
-      return callback(null, true);
+      // Disallow unauthorized cross-origin access in production
+      return callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

@@ -138,3 +138,36 @@ html.light .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(220, 38, 38, 0.6);
 }
+
+/* Print Styles */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  button:not(.allow-print) {
+    display: none !important;
+  }
+
+  #canonical-receipt-document {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  @page {
+    margin: 1.2cm;
+    size: auto;
+  }
+}
