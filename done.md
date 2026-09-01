@@ -5,7 +5,30 @@
 
 ---
 
-## 1. Newly Completed (Phase 9 Master Final Check & Verification)
+## 1. Newly Completed (Phase 10 Final Audit, Appointment Pickers, Light Theme & Save Flow)
+- [x] **Interactive Appointment DatePicker**:
+  - Re-architected `DatePicker` (`apps/web/components/ui/date-picker.tsx`) with fully clickable container, calendar icon, input, and backdrop.
+  - Added month/year navigation, today indicator, `Today` / `Tomorrow` / `+1 Week` quick buttons, outside click listener, Escape key handler, and `z-[100]` positioning.
+  - Canonical `YYYY-MM-DD` persistence with friendly `31 Aug 2026` Bangladesh-compatible display.
+- [x] **Interactive Appointment TimePicker**:
+  - Re-architected `TimePicker` (`apps/web/components/ui/time-picker.tsx`) with 12-hour AM/PM dials, 15-minute presets, and live manual text editing with validation.
+- [x] **Unclipped Card Containers**:
+  - Removed default `overflow-hidden` from `GlassCard` (`apps/web/components/ui/glass-card.tsx`) to allow date/time popovers to display cleanly without clipping.
+- [x] **Save Flow Hardening & Double-Submit Protection**:
+  - Added field-level validation with auto-scroll/focus, visual error highlighting, validation error summary, and submission locks (`isSubmitting` + `submittingRef`).
+  - Added vector loading spinner ("Saving receipt... Please wait") and immediate redirection to the patient profile.
+- [x] **Duplicate Appointment Prevention**:
+  - `receipt.service.ts` updates existing appointment documents upon receipt edits instead of creating duplicates.
+- [x] **Light & Dark Theme Overhaul**:
+  - Transformed the light theme in `globals.css` into a crisp, high-contrast dental clinic aesthetic (`#f8fafc` background, `#ffffff` cards, `#e2e8f0` borders, `#0f172a` text, and Luckydental red accents).
+  - Eliminated washed-out reddish-brown dark blocks in light mode.
+- [x] **Full Monorepo Build & Typecheck**:
+  - `npm run typecheck`: **0 errors (Pass)** across all 3 workspaces.
+  - `npm run build`: **0 errors (Pass)** across all 12 Next.js App Router routes.
+
+---
+
+## 2. Completed (Phase 9 Master Final Check & Verification)
 - [x] **Print Stylesheet & Clean Monochrome Print Output**:
   - Added dedicated `@media print` rules in `apps/web/app/globals.css` ensuring `.no-print`, navbar, sidebar, buttons, and headers are hidden during `window.print()`.
   - Canonical `#canonical-receipt-document` formats cleanly across A4 and Letter paper.

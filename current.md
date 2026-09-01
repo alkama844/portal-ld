@@ -325,8 +325,12 @@ When an admin deletes a patient:
 - Automatic Version History on Receipt Edits
 - Package Price Snapshotting
 - Integrated Appointment Scheduling from Receipt
-- Interactive DatePicker & TimePicker Controls
+- Interactive DatePicker & TimePicker Controls (Unclipped & High Z-Index)
+- Comprehensive Receipt Validation, Double-Submit Locks & Auto-Scrolling
+- Duplicate Appointment Prevention on Receipt Edits
 - Canonical `ReceiptDocument` across preview, profile, print & public
+- Light Theme Overhaul (Crisp White Cards, High Contrast Dental Aesthetics)
+- Obsidian Dark Theme Polish
 - Schedule Management with multi-tab filters (`Today`, `Tomorrow`, `Upcoming`, `Past`, `All`)
 - Public Share Token Generation & Isolated Access
 - Cloudinary Asset Lifecycle Management

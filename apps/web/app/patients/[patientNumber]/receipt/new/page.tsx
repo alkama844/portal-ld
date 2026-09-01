@@ -25,7 +25,9 @@ import {
   Check,
   RotateCcw,
   Eye,
-  Edit3
+  Edit3,
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 import DashboardLayout from '@/app/dashboard/layout';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -77,6 +79,17 @@ export default function NewReceiptPage() {
   const [paidAmount, setPaidAmount] = useState<string>('0');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
   const [notes, setNotes] = useState('');
+
+  // Validation State
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [highlightItems, setHighlightItems] = useState(false);
+  const [highlightPaidAmount, setHighlightPaidAmount] = useState(false);
+  const [highlightAppointmentDate, setHighlightAppointmentDate] = useState(false);
+
+  // Refs for smooth auto-scrolling to errors
+  const proceduresRef = useRef<HTMLDivElement>(null);
+  const paidAmountRef = useRef<HTMLDivElement>(null);
+  const appointmentRef = useRef<HTMLDivElement>(null);
 
   // Submission & Print State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -149,10 +162,12 @@ export default function NewReceiptPage() {
   // Save Draft to LocalStorage on changes
   useEffect(() => {
     if (!existingReceipt && (items.length > 0 || Number(paidAmount) > 0 || notes || appointmentDate)) {
-      localStorage.setItem(
-        `luckydental_receipt_draft_${patientNumber}`,
-        JSON.stringify({ items, discount, discountType, paidAmount, paymentMethod, appointmentDate, appointmentTime, notes })
-      );
+      try {
+        localStorage.setItem(
+          `luckydental_receipt_draft_${patientNumber}`,
+          JSON.stringify({ items, discount, discountType, paidAmount, paymentMethod, appointmentDate, appointmentTime, notes })
+        );
+      } catch {}
     }
   }, [items, discount, discountType, paidAmount, paymentMethod, appointmentDate, appointmentTime, notes, patientNumber, existingReceipt]);
 
@@ -184,6 +199,7 @@ export default function NewReceiptPage() {
       showToast(`Added ${pkg.name} to bill`, 'success');
     }
 
+    setHighlightItems(false);
     setSelectedPackageId('');
   };
 
@@ -206,6 +222,7 @@ export default function NewReceiptPage() {
     };
 
     setItems([...items, newItem]);
+    setHighlightItems(false);
     setCustomItemName('');
     setCustomItemPrice('');
     setCustomItemQty('1');
@@ -237,6 +254,7 @@ export default function NewReceiptPage() {
       setNotes(existingReceipt.notes || '');
       setAppointmentDate(existingReceipt.appointmentDate || '');
       setAppointmentTime(existingReceipt.appointmentTime || '07:30 PM');
+      setValidationErrors([]);
       showToast('Reset back to saved receipt state', 'info');
     } else {
       setItems([]);
@@ -244,6 +262,8 @@ export default function NewReceiptPage() {
       setPaidAmount('0');
       setNotes('');
       setAppointmentDate('');
+      setAppointmentTime('07:30 PM');
+      setValidationErrors([]);
       try {
         localStorage.removeItem(`luckydental_receipt_draft_${patientNumber}`);
       } catch {}
@@ -279,6 +299,7 @@ export default function NewReceiptPage() {
   // Pre-fill paidAmount with grandTotal
   const handleSetFullPayment = () => {
     setPaidAmount(grandTotal.toString());
+    setHighlightPaidAmount(false);
   };
 
   // Construct Transient Receipt for Live Preview
@@ -311,12 +332,35 @@ export default function NewReceiptPage() {
     };
   }, [existingReceipt, patient, patientNumber, appointmentDate, appointmentTime, items, subtotal, discountAmount, discountType, grandTotal, paidNum, dueAmount, paymentMethod, notes]);
 
-  // Submit & Save Receipt
+  // Submit & Save Receipt with full validation
   const handleSaveReceipt = async (triggerPrint = false) => {
     if (submittingRef.current || isSubmitting) return;
 
+    // Reset error highlights
+    setValidationErrors([]);
+    setHighlightItems(false);
+    setHighlightPaidAmount(false);
+    setHighlightAppointmentDate(false);
+
+    const errors: string[] = [];
+
+    // Validation Check 1: Items
     if (items.length === 0) {
-      showToast('Please select at least one treatment or package.', 'error');
+      errors.push('Please add at least one treatment procedure or dental package.');
+      setHighlightItems(true);
+      proceduresRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Validation Check 2: Paid Amount exceeds Grand Total
+    if (paidNum > grandTotal) {
+      errors.push(`Cash deposit (৳${paidNum.toLocaleString('en-BD')}) cannot be greater than Grand Total (৳${grandTotal.toLocaleString('en-BD')}).`);
+      setHighlightPaidAmount(true);
+      paidAmountRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      showToast(errors[0], 'error');
       return;
     }
 
@@ -376,7 +420,7 @@ export default function NewReceiptPage() {
       }
     } catch {
       submittingRef.current = false;
-      showToast('Network error saving receipt.', 'error');
+      showToast('Network error saving receipt. Your draft is preserved.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -387,8 +431,10 @@ export default function NewReceiptPage() {
       <DashboardLayout>
         <div className="min-h-[400px] flex items-center justify-center">
           <div className="text-center space-y-3">
-            <div className="w-10 h-10 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs text-gray-400">Loading Luckydental billing engine...</p>
+            <Loader2 className="w-9 h-9 text-red-600 animate-spin mx-auto" />
+            <p className="text-xs text-slate-500 dark:text-gray-400 font-medium">
+              Loading Luckydental billing engine...
+            </p>
           </div>
         </div>
       </DashboardLayout>
@@ -399,28 +445,28 @@ export default function NewReceiptPage() {
     <DashboardLayout>
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header Navigation */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-4">
           <div className="flex items-center gap-3">
             <Link href={`/patients/${patientNumber}`}>
-              <Button variant="ghost" size="sm" className="p-2 text-gray-400 hover:text-white" aria-label="Back">
+              <Button variant="ghost" size="sm" className="p-2 text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white" aria-label="Back">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   {existingReceipt && !isExplicitNewReceipt ? 'Edit Patient Receipt' : 'Create Patient Receipt'}
                 </h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-red-950/80 border border-red-700/60 text-red-400 text-xs font-mono font-bold">
+                <span className="px-2.5 py-0.5 rounded-full bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-700/60 text-red-600 dark:text-red-400 text-xs font-mono font-bold">
                   #{patientNumber}
                 </span>
                 {existingReceipt && !isExplicitNewReceipt && (
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-400 text-[11px] font-mono font-bold">
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-700/60 text-emerald-700 dark:text-emerald-400 text-[11px] font-mono font-bold">
                     INVOICE #{existingReceipt.receiptNumber}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                 {existingReceipt && !isExplicitNewReceipt
                   ? 'Editing existing active receipt (Singleton). Preserves invoice number & records version history.'
                   : 'Treatment billing, appointment booking, advance deposit, and official PDF invoice'}
@@ -430,14 +476,14 @@ export default function NewReceiptPage() {
 
           <div className="flex items-center gap-2">
             {/* View Switcher */}
-            <div className="flex items-center p-1 rounded-xl bg-black/40 border border-white/10 text-xs">
+            <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 text-xs">
               <button
                 type="button"
                 onClick={() => setActiveTab('builder')}
-                className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
                   activeTab === 'builder'
                     ? 'bg-red-600 text-white shadow-glow-red-sm'
-                    : 'text-gray-400 hover:text-white'
+                    : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Invoice Builder
@@ -445,10 +491,10 @@ export default function NewReceiptPage() {
               <button
                 type="button"
                 onClick={() => setActiveTab('preview')}
-                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all ${
                   activeTab === 'preview'
                     ? 'bg-red-600 text-white shadow-glow-red-sm'
-                    : 'text-gray-400 hover:text-white'
+                    : 'text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Eye className="w-3.5 h-3.5" />
@@ -456,7 +502,7 @@ export default function NewReceiptPage() {
               </button>
             </div>
 
-            <Button variant="ghost" size="sm" onClick={handleResetDraft} className="text-xs text-gray-400 hover:text-red-400 gap-1">
+            <Button variant="ghost" size="sm" onClick={handleResetDraft} className="text-xs text-slate-500 dark:text-gray-400 hover:text-red-600 gap-1">
               <RotateCcw className="w-3.5 h-3.5" />
               Reset
             </Button>
@@ -465,13 +511,13 @@ export default function NewReceiptPage() {
 
         {/* Existing Receipt Banner with Explicit New Receipt Option */}
         {existingReceipt && (
-          <GlassCard className="p-4 border-l-4 border-l-amber-500 bg-amber-950/20">
+          <GlassCard className="p-4 border-l-4 border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20 border-slate-200 dark:border-white/10">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
               <div>
-                <p className="font-bold text-amber-200">
+                <p className="font-bold text-amber-900 dark:text-amber-200">
                   {isExplicitNewReceipt ? 'Mode: Creating New Additional Receipt' : `Active Receipt Found (#${existingReceipt.receiptNumber})`}
                 </p>
-                <p className="text-amber-300/80 text-[11px] mt-0.5">
+                <p className="text-amber-700 dark:text-amber-300/80 text-[11px] mt-0.5">
                   {isExplicitNewReceipt
                     ? 'A new separate receipt number will be generated upon saving.'
                     : 'Changes will update this current receipt without generating a duplicate receipt number.'}
@@ -495,35 +541,35 @@ export default function NewReceiptPage() {
         {patient && (
           <GlassCard className="p-4 sm:p-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-red-950/60 text-red-400 border border-red-800/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/40 shrink-0">
                   <User className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-[10px] uppercase font-semibold">Patient Name</p>
-                  <p className="text-sm font-bold text-gray-100">{patient.fullName}</p>
-                  <p className="text-gray-400">{patient.age} Years Old</p>
+                  <p className="text-slate-400 dark:text-gray-400 text-[10px] uppercase font-bold tracking-wider">Patient Name</p>
+                  <p className="text-sm font-extrabold text-slate-900 dark:text-gray-100">{patient.fullName}</p>
+                  <p className="text-slate-500 dark:text-gray-400">{patient.age} Years Old</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-red-950/60 text-red-400 border border-red-800/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/40 shrink-0">
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-gray-400 text-[10px] uppercase font-semibold">Contact Phone</p>
-                  <p className="text-sm font-bold text-gray-100 font-mono">{patient.phone}</p>
-                  <p className="text-gray-400 truncate max-w-[150px]">{patient.address || patient.village || 'N/A'}</p>
+                  <p className="text-slate-400 dark:text-gray-400 text-[10px] uppercase font-bold tracking-wider">Contact Phone</p>
+                  <p className="text-sm font-extrabold text-slate-900 dark:text-gray-100 font-mono">{patient.phone}</p>
+                  <p className="text-slate-500 dark:text-gray-400 truncate max-w-[150px]">{patient.address || patient.village || 'Dhaka'}</p>
                 </div>
               </div>
 
-              <div className="sm:col-span-2 flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-red-950/60 text-red-400 border border-red-800/40 shrink-0">
+              <div className="sm:col-span-2 flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/40 shrink-0">
                   <FileText className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-gray-400 text-[10px] uppercase font-semibold">Clinical Problem / Reason</p>
-                  <p className="text-xs text-gray-200 font-medium line-clamp-2 italic">
+                  <p className="text-slate-400 dark:text-gray-400 text-[10px] uppercase font-bold tracking-wider">Clinical Problem / Reason</p>
+                  <p className="text-xs text-slate-800 dark:text-gray-200 font-medium line-clamp-2 italic mt-0.5">
                     &ldquo;{patient.patientProblem}&rdquo;
                   </p>
                 </div>
@@ -545,18 +591,18 @@ export default function NewReceiptPage() {
         ) : (
           /* Tab 2: Builder Tab */
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left 2 Columns: Treatments, Appointment Selector, Line Items Table */}
+            {/* Left 2 Columns: Appointments, Treatments, Line Items Table */}
             <div className="lg:col-span-2 space-y-6">
               {/* Dedicated Appointment Section */}
-              <GlassCard className="p-5 space-y-4 border border-red-900/30">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <GlassCard className="p-5 space-y-4" ref={appointmentRef}>
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                   <div className="flex items-center gap-2">
-                    <CalendarIcon className="w-4 h-4 text-red-400" />
-                    <h2 className="text-sm font-bold text-gray-100 uppercase tracking-wider">
+                    <CalendarIcon className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    <h2 className="text-sm font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-wider">
                       Appointment Booking
                     </h2>
                   </div>
-                  <span className="text-[11px] text-gray-400">
+                  <span className="text-[11px] text-slate-500 dark:text-gray-400">
                     Saves against patient & prints on receipt
                   </span>
                 </div>
@@ -565,8 +611,12 @@ export default function NewReceiptPage() {
                   <DatePicker
                     label="Appointment Date"
                     value={appointmentDate}
-                    onChange={(val) => setAppointmentDate(val)}
+                    onChange={(val) => {
+                      setAppointmentDate(val);
+                      setHighlightAppointmentDate(false);
+                    }}
                     placeholder="Select appointment date"
+                    hasError={highlightAppointmentDate}
                   />
 
                   <TimePicker
@@ -578,9 +628,9 @@ export default function NewReceiptPage() {
                 </div>
 
                 {appointmentDate && (
-                  <div className="p-3 rounded-xl bg-red-950/40 border border-red-800/40 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 text-red-300">
-                      <Clock className="w-4 h-4 text-red-400" />
+                  <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/40 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 text-red-700 dark:text-red-300 font-medium">
+                      <Clock className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
                       <span>
                         Scheduled: <strong>{new Date(appointmentDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong> at <strong>{appointmentTime}</strong>
                       </span>
@@ -588,7 +638,7 @@ export default function NewReceiptPage() {
                     <button
                       type="button"
                       onClick={() => setAppointmentDate('')}
-                      className="text-[11px] text-gray-400 hover:text-red-300 underline"
+                      className="text-[11px] text-slate-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-300 underline font-semibold"
                     >
                       Clear
                     </button>
@@ -597,11 +647,16 @@ export default function NewReceiptPage() {
               </GlassCard>
 
               {/* Treatment Packages & Custom Procedure Selector */}
-              <GlassCard className="p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <GlassCard
+                className={`p-5 space-y-4 transition-all ${
+                  highlightItems ? 'ring-2 ring-red-500 border-red-500' : ''
+                }`}
+                ref={proceduresRef}
+              >
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                   <div className="flex items-center gap-2">
-                    <PackageIcon className="w-4 h-4 text-red-400" />
-                    <h2 className="text-sm font-bold text-gray-100 uppercase tracking-wider">
+                    <PackageIcon className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    <h2 className="text-sm font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-wider">
                       Treatment Procedures & Services
                     </h2>
                   </div>
@@ -609,7 +664,7 @@ export default function NewReceiptPage() {
                     variant="outline"
                     size="sm"
                     onClick={() => setShowCustomItemModal(true)}
-                    className="text-xs gap-1.5 border-red-700/40 text-red-300 hover:bg-red-950/50"
+                    className="text-xs gap-1.5 border-red-600/30 text-red-600 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/50"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Custom Item
@@ -623,13 +678,13 @@ export default function NewReceiptPage() {
                       <select
                         value={selectedPackageId}
                         onChange={(e) => setSelectedPackageId(e.target.value)}
-                        className="w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-gray-100 appearance-none bg-[#0e0e0e] border border-red-900/40 focus:border-red-500 pr-8"
+                        className="w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-gray-100 appearance-none bg-white dark:bg-[#0e0e0e] border border-slate-200 dark:border-red-900/40 focus:border-red-500 pr-8"
                       >
-                        <option value="" className="bg-[#121212] text-gray-400">
+                        <option value="" className="bg-white dark:bg-[#121212] text-slate-400 dark:text-gray-400">
                           -- Select Treatment Package from Catalog --
                         </option>
                         {availablePackages.map((pkg) => (
-                          <option key={pkg.id || (pkg as any)._id} value={pkg.id || (pkg as any)._id} className="bg-[#121212] text-gray-200">
+                          <option key={pkg.id || (pkg as any)._id} value={pkg.id || (pkg as any)._id} className="bg-white dark:bg-[#121212] text-slate-800 dark:text-gray-200">
                             {pkg.name} — ৳{pkg.price.toLocaleString('en-BD')} ({pkg.category || 'Dental'})
                           </option>
                         ))}
@@ -653,23 +708,23 @@ export default function NewReceiptPage() {
 
               {/* Line Items Table */}
               <GlassCard className="p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h2 className="text-sm font-bold text-gray-100 uppercase tracking-wider">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
+                  <h2 className="text-sm font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-wider">
                     Selected Items ({items.length})
                   </h2>
-                  <span className="text-xs font-mono text-gray-400">
+                  <span className="text-xs font-mono font-bold text-slate-600 dark:text-gray-400">
                     Subtotal: ৳{subtotal.toLocaleString('en-BD')}
                   </span>
                 </div>
 
                 {items.length === 0 ? (
                   <div className="py-12 text-center space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-center text-gray-500 mx-auto">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400 dark:text-gray-500 mx-auto">
                       <ReceiptIcon className="w-6 h-6" />
                     </div>
-                    <p className="text-xs text-gray-400 font-medium">No treatments added yet.</p>
-                    <p className="text-[11px] text-gray-500">
-                      Select a package above or add a custom fee/service.
+                    <p className="text-xs text-slate-600 dark:text-gray-400 font-semibold">No treatments added yet.</p>
+                    <p className="text-[11px] text-slate-400 dark:text-gray-500">
+                      Select a package above or click &ldquo;Custom Item&rdquo; to add fees.
                     </p>
                   </div>
                 ) : (
@@ -677,7 +732,7 @@ export default function NewReceiptPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
-                          <tr className="border-b border-white/10 text-gray-400 uppercase text-[10px]">
+                          <tr className="border-b border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 uppercase text-[10px] font-bold">
                             <th className="py-2">Procedure / Item</th>
                             <th className="py-2 text-right">Price</th>
                             <th className="py-2 text-center">Qty</th>
@@ -685,47 +740,47 @@ export default function NewReceiptPage() {
                             <th className="py-2 text-center w-10"></th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                           {items.map((item, idx) => (
-                            <tr key={item.id || idx} className="hover:bg-white/[0.02]">
+                            <tr key={item.id || idx} className="hover:bg-slate-50 dark:hover:bg-white/[0.02]">
                               <td className="py-3 pr-2">
-                                <p className="font-semibold text-gray-100">{item.name}</p>
+                                <p className="font-bold text-slate-900 dark:text-gray-100">{item.name}</p>
                                 {item.description && (
-                                  <p className="text-[10px] text-gray-400 truncate max-w-xs">{item.description}</p>
+                                  <p className="text-[10px] text-slate-500 dark:text-gray-400 truncate max-w-xs">{item.description}</p>
                                 )}
                               </td>
-                              <td className="py-3 text-right font-mono text-gray-300">
+                              <td className="py-3 text-right font-mono font-medium text-slate-700 dark:text-gray-300">
                                 ৳{item.price.toLocaleString('en-BD')}
                               </td>
                               <td className="py-3 text-center">
-                                <div className="inline-flex items-center gap-1.5 bg-black/40 border border-white/10 rounded-lg p-1">
+                                <div className="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-lg p-1">
                                   <button
                                     type="button"
                                     onClick={() => handleUpdateQty(idx, -1)}
-                                    className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white rounded hover:bg-white/10 text-xs font-bold"
+                                    className="w-5 h-5 flex items-center justify-center text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white rounded hover:bg-white/40 dark:hover:bg-white/10 text-xs font-bold"
                                   >
                                     -
                                   </button>
-                                  <span className="w-6 text-center font-mono font-bold text-xs text-gray-100">
+                                  <span className="w-6 text-center font-mono font-bold text-xs text-slate-900 dark:text-gray-100">
                                     {item.quantity}
                                   </span>
                                   <button
                                     type="button"
                                     onClick={() => handleUpdateQty(idx, 1)}
-                                    className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-white rounded hover:bg-white/10 text-xs font-bold"
+                                    className="w-5 h-5 flex items-center justify-center text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white rounded hover:bg-white/40 dark:hover:bg-white/10 text-xs font-bold"
                                   >
                                     +
                                   </button>
                                 </div>
                               </td>
-                              <td className="py-3 text-right font-mono font-bold text-gray-100">
+                              <td className="py-3 text-right font-mono font-bold text-slate-900 dark:text-gray-100">
                                 ৳{item.total.toLocaleString('en-BD')}
                               </td>
                               <td className="py-3 text-center">
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveItem(idx)}
-                                  className="p-1.5 text-gray-500 hover:text-red-400 rounded-lg hover:bg-red-950/40 transition-colors"
+                                  className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                                   aria-label="Remove item"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
@@ -744,31 +799,31 @@ export default function NewReceiptPage() {
             {/* Right 1 Column: Discount, Deposit, Payment Summary & Actions */}
             <div className="space-y-6">
               <GlassCard className="p-5 space-y-4 sticky top-6">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h2 className="text-sm font-bold text-gray-100 uppercase tracking-wider">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
+                  <h2 className="text-sm font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-wider">
                     Billing Summary
                   </h2>
-                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-white/5 text-gray-300">
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 font-bold">
                     BDT (৳)
                   </span>
                 </div>
 
                 {/* Subtotal Display */}
-                <div className="flex justify-between items-center text-xs text-gray-300">
+                <div className="flex justify-between items-center text-xs text-slate-600 dark:text-gray-300">
                   <span>Subtotal:</span>
-                  <span className="font-mono font-bold text-gray-100">৳{subtotal.toLocaleString('en-BD')}</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-gray-100">৳{subtotal.toLocaleString('en-BD')}</span>
                 </div>
 
                 {/* Discount Control */}
-                <div className="space-y-1.5 pt-2 border-t border-white/5">
+                <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-white/5">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-gray-300">Discount</label>
-                    <div className="flex items-center rounded-lg bg-black/40 border border-white/10 p-0.5 text-[10px]">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-gray-300">Discount</label>
+                    <div className="flex items-center rounded-lg bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-white/10 p-0.5 text-[10px]">
                       <button
                         type="button"
                         onClick={() => setDiscountType('flat')}
                         className={`px-2 py-0.5 rounded font-bold transition-all ${
-                          discountType === 'flat' ? 'bg-red-600 text-white' : 'text-gray-400'
+                          discountType === 'flat' ? 'bg-red-600 text-white' : 'text-slate-600 dark:text-gray-400'
                         }`}
                       >
                         ৳ Flat
@@ -777,7 +832,7 @@ export default function NewReceiptPage() {
                         type="button"
                         onClick={() => setDiscountType('percentage')}
                         className={`px-2 py-0.5 rounded font-bold transition-all ${
-                          discountType === 'percentage' ? 'bg-red-600 text-white' : 'text-gray-400'
+                          discountType === 'percentage' ? 'bg-red-600 text-white' : 'text-slate-600 dark:text-gray-400'
                         }`}
                       >
                         % Off
@@ -793,34 +848,34 @@ export default function NewReceiptPage() {
                     className="font-mono text-right"
                   />
                   {discountAmount > 0 && (
-                    <p className="text-[10px] text-emerald-400 text-right">
+                    <p className="text-[10px] text-emerald-600 dark:text-emerald-400 text-right font-semibold">
                       -৳{discountAmount.toLocaleString('en-BD')} applied
                     </p>
                   )}
                 </div>
 
                 {/* Grand Total Highlight */}
-                <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-700/50 space-y-1">
+                <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-700/50 space-y-1">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-gray-200">Grand Total:</span>
-                    <span className="text-lg font-black font-mono text-red-400">
+                    <span className="text-xs font-bold text-slate-900 dark:text-gray-200">Grand Total:</span>
+                    <span className="text-xl font-black font-mono text-red-600 dark:text-red-400">
                       ৳{grandTotal.toLocaleString('en-BD')}
                     </span>
                   </div>
                 </div>
 
                 {/* Paid Amount / Advance Deposit */}
-                <div className="space-y-1.5 pt-2 border-t border-white/5">
+                <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-white/5" ref={paidAmountRef}>
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-gray-300">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-gray-300">
                       Cash Deposit / Paid Now
                     </label>
                     <button
                       type="button"
                       onClick={handleSetFullPayment}
-                      className="text-[10px] text-red-400 hover:text-red-300 font-semibold"
+                      className="text-[10px] text-red-600 dark:text-red-400 hover:underline font-bold"
                     >
-                      Pay Full (৳{grandTotal})
+                      Pay Full (৳{grandTotal.toLocaleString('en-BD')})
                     </button>
                   </div>
                   <Input
@@ -829,22 +884,27 @@ export default function NewReceiptPage() {
                     max={grandTotal}
                     placeholder="0"
                     value={paidAmount}
-                    onChange={(e) => setPaidAmount(e.target.value)}
-                    className="font-mono text-right"
+                    onChange={(e) => {
+                      setPaidAmount(e.target.value);
+                      setHighlightPaidAmount(false);
+                    }}
+                    className={`font-mono text-right ${
+                      highlightPaidAmount ? 'border-red-500 ring-2 ring-red-500/30' : ''
+                    }`}
                   />
                 </div>
 
                 {/* Due Balance Calculation */}
-                <div className="flex justify-between items-center p-3 rounded-xl bg-black/40 border border-white/10 text-xs">
-                  <span className="text-gray-300 font-medium">Due Balance:</span>
-                  <span className={`font-mono font-bold text-sm ${dueAmount > 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                <div className="flex justify-between items-center p-3 rounded-xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 text-xs">
+                  <span className="text-slate-700 dark:text-gray-300 font-semibold">Due Balance:</span>
+                  <span className={`font-mono font-extrabold text-sm ${dueAmount > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                     ৳{dueAmount.toLocaleString('en-BD')}
                   </span>
                 </div>
 
                 {/* Payment Method */}
-                <div className="space-y-2 pt-2 border-t border-white/5">
-                  <label className="block text-xs font-medium text-gray-300 uppercase tracking-wide">
+                <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-white/5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider">
                     Payment Method
                   </label>
                   <div className="grid grid-cols-3 gap-1.5 text-xs">
@@ -853,10 +913,10 @@ export default function NewReceiptPage() {
                         key={method}
                         type="button"
                         onClick={() => setPaymentMethod(method)}
-                        className={`p-2 rounded-xl border text-[11px] font-semibold capitalize transition-all ${
+                        className={`p-2 rounded-xl border text-[11px] font-bold capitalize transition-all ${
                           paymentMethod === method
                             ? 'bg-red-600 border-red-500 text-white shadow-glow-red-sm'
-                            : 'bg-black/30 border-white/10 text-gray-400 hover:text-white'
+                            : 'bg-slate-100 dark:bg-black/30 border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                       >
                         {method.replace('_', ' ')}
@@ -866,43 +926,76 @@ export default function NewReceiptPage() {
                 </div>
 
                 {/* Notes */}
-                <div className="space-y-1.5 pt-2 border-t border-white/5">
-                  <label className="block text-xs font-medium text-gray-300">Doctor / Invoice Notes</label>
+                <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-white/5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300">Doctor / Invoice Notes</label>
                   <textarea
                     rows={2}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Optional patient instructions or diagnosis notes..."
-                    className="w-full glass-input rounded-xl p-2.5 text-xs text-gray-100 placeholder:text-gray-500 resize-none"
+                    className="w-full glass-input rounded-xl p-2.5 text-xs text-slate-900 dark:text-gray-100 placeholder:text-gray-400 resize-none"
                   />
                 </div>
 
+                {/* Validation Summary Box */}
+                {validationErrors.length > 0 && (
+                  <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-700/50 space-y-1.5 text-xs">
+                    <div className="flex items-center gap-2 text-red-700 dark:text-red-300 font-bold">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-red-600 dark:text-red-400" />
+                      <span>Please complete the following:</span>
+                    </div>
+                    <ul className="list-disc list-inside text-red-600 dark:text-red-300/90 text-[11px] space-y-0.5">
+                      {validationErrors.map((err, i) => (
+                        <li key={i}>{err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {/* Action Buttons with Rapid-Click Guard */}
-                <div className="space-y-2.5 pt-4 border-t border-white/10">
+                <div className="space-y-2.5 pt-4 border-t border-slate-200 dark:border-white/10">
                   <Button
                     type="button"
                     variant="primary"
                     size="lg"
-                    disabled={items.length === 0 || isSubmitting}
+                    disabled={isSubmitting}
                     isLoading={isSubmitting}
                     onClick={() => handleSaveReceipt(true)}
                     className="w-full justify-center gap-2 text-sm shadow-glow-red"
                   >
-                    <Printer className="w-4 h-4" />
-                    {isSubmitting ? 'Saving receipt...' : 'Save & Print Invoice'}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Saving receipt...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Printer className="w-4 h-4" />
+                        <span>Save & Print Invoice</span>
+                      </>
+                    )}
                   </Button>
 
                   <Button
                     type="button"
                     variant="secondary"
                     size="md"
-                    disabled={items.length === 0 || isSubmitting}
+                    disabled={isSubmitting}
                     isLoading={isSubmitting}
                     onClick={() => handleSaveReceipt(false)}
                     className="w-full justify-center gap-2 text-xs"
                   >
-                    <Save className="w-3.5 h-3.5" />
-                    {isSubmitting ? 'Saving receipt...' : 'Save Receipt & Finish'}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Saving receipt...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-3.5 h-3.5" />
+                        <span>Save Receipt & Finish</span>
+                      </>
+                    )}
                   </Button>
                 </div>
               </GlassCard>
@@ -982,7 +1075,7 @@ export default function NewReceiptPage() {
               receipt={savedReceipt}
               showActions={false}
             />
-            <div className="flex justify-end gap-2.5 pt-2 border-t border-white/10 no-print">
+            <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-200 dark:border-white/10 no-print">
               <Button
                 variant="outline"
                 size="sm"

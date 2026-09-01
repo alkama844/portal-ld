@@ -22,11 +22,11 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   return (
     <motion.div
       whileHover={hoverEffect ? { y: -2, transition: { duration: 0.2 } } : undefined}
-      className={`${baseStyle} rounded-xl p-6 shadow-glass relative overflow-hidden backdrop-blur-md ${className}`}
+      className={`${baseStyle} rounded-xl p-6 shadow-glass relative backdrop-blur-md ${className}`}
       {...props}
     >
       {/* Subtle top inner highlight */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[1px] rounded-t-xl bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
       {children}
     </motion.div>
   );

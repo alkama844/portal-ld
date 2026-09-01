@@ -115,18 +115,30 @@ export class ReceiptService {
     const paymentMethod: PaymentMethod = data.paymentMethod || 'cash';
     let appointmentId = existingReceipt?.appointmentId;
 
-    // Handle Appointment integration: if date & time are provided, save/update appointment
+    // Handle Appointment integration: if date & time are provided, save or update appointment
     if (data.appointmentDate && data.appointmentTime) {
       try {
-        const apt = await appointmentService.createAppointment({
-          patientNumber: patient.patientNumber,
-          appointmentDate: data.appointmentDate.trim(),
-          appointmentTime: data.appointmentTime.trim(),
-          category: calculatedItems[0]?.name || patient.patientProblem || 'General Consultation',
-          notes: data.notes?.trim()
-        });
-        if (apt) {
-          appointmentId = apt.id || apt._id;
+        if (existingReceipt?.appointmentId) {
+          const updatedApt = await appointmentService.updateAppointment(existingReceipt.appointmentId, {
+            appointmentDate: data.appointmentDate.trim(),
+            appointmentTime: data.appointmentTime.trim(),
+            category: calculatedItems[0]?.name || patient.patientProblem || 'General Consultation',
+            notes: data.notes?.trim()
+          });
+          if (updatedApt) {
+            appointmentId = updatedApt.id || updatedApt._id;
+          }
+        } else {
+          const apt = await appointmentService.createAppointment({
+            patientNumber: patient.patientNumber,
+            appointmentDate: data.appointmentDate.trim(),
+            appointmentTime: data.appointmentTime.trim(),
+            category: calculatedItems[0]?.name || patient.patientProblem || 'General Consultation',
+            notes: data.notes?.trim()
+          });
+          if (apt) {
+            appointmentId = apt.id || apt._id;
+          }
         }
       } catch (aptErr) {
         logger.warn('Could not auto-link appointment to receipt', { aptErr });
