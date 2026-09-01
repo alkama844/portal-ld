@@ -594,7 +594,7 @@ export default function NewReceiptPage() {
             {/* Left 2 Columns: Appointments, Treatments, Line Items Table */}
             <div className="lg:col-span-2 space-y-6">
               {/* Dedicated Appointment Section */}
-              <GlassCard className="p-5 space-y-4" ref={appointmentRef}>
+              <GlassCard className="p-5 space-y-4 relative z-30" ref={appointmentRef}>
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                   <div className="flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -648,7 +648,7 @@ export default function NewReceiptPage() {
 
               {/* Treatment Packages & Custom Procedure Selector */}
               <GlassCard
-                className={`p-5 space-y-4 transition-all ${
+                className={`p-5 space-y-4 relative z-20 transition-all ${
                   highlightItems ? 'ring-2 ring-red-500 border-red-500' : ''
                 }`}
                 ref={proceduresRef}
@@ -707,7 +707,7 @@ export default function NewReceiptPage() {
               </GlassCard>
 
               {/* Line Items Table */}
-              <GlassCard className="p-5 space-y-4">
+              <GlassCard className="p-5 space-y-4 relative z-10">
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                   <h2 className="text-sm font-extrabold text-slate-900 dark:text-gray-100 uppercase tracking-wider">
                     Selected Items ({items.length})

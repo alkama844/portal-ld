@@ -379,7 +379,7 @@ export default function AppointmentsPage() {
 
         {/* Expandable Filter Panel */}
         {isFilterOpen && (
-          <GlassCard className="p-4 space-y-3 border border-red-900/30">
+          <GlassCard className="p-4 space-y-3 relative z-30 border border-slate-200 dark:border-red-900/30">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <DatePicker
                 label="Pick Specific Date"

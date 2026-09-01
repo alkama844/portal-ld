@@ -12,8 +12,10 @@
   - Canonical `YYYY-MM-DD` persistence with friendly `31 Aug 2026` Bangladesh-compatible display.
 - [x] **Interactive Appointment TimePicker**:
   - Re-architected `TimePicker` (`apps/web/components/ui/time-picker.tsx`) with 12-hour AM/PM dials, 15-minute presets, and live manual text editing with validation.
-- [x] **Unclipped Card Containers**:
-  - Removed default `overflow-hidden` from `GlassCard` (`apps/web/components/ui/glass-card.tsx`) to allow date/time popovers to display cleanly without clipping.
+- [x] **Unclipped Card Containers & Hierarchical Stacking Contexts**:
+  - Removed default `overflow-hidden` from `GlassCard` (`apps/web/components/ui/glass-card.tsx`).
+  - Added explicit card stacking levels in `page.tsx`: Appointment Booking (`relative z-30`), Treatment Selector (`relative z-20`), Line Items (`relative z-10`).
+  - Set dynamic elevation on `DatePicker` and `TimePicker` (`relative ${isOpen ? 'z-[60]' : 'z-auto'}`) with `absolute z-[9999] top-full` popovers, guaranteeing the calendar floats above all subsequent cards.
 - [x] **Save Flow Hardening & Double-Submit Protection**:
   - Added field-level validation with auto-scroll/focus, visual error highlighting, validation error summary, and submission locks (`isSubmitting` + `submittingRef`).
   - Added vector loading spinner ("Saving receipt... Please wait") and immediate redirection to the patient profile.

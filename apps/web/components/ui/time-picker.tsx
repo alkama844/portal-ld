@@ -141,7 +141,7 @@ export function TimePicker({
   };
 
   return (
-    <div className={`space-y-1.5 relative ${className}`} ref={containerRef} id={id}>
+    <div className={`space-y-1.5 relative ${isOpen ? 'z-[60]' : 'z-auto'} ${className}`} ref={containerRef} id={id}>
       {label && (
         <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
           {label} {required && <span className="text-red-500">*</span>}
@@ -192,7 +192,7 @@ export function TimePicker({
             role="dialog"
             aria-modal="true"
             aria-label="Time selector"
-            className="absolute z-[100] mt-2 left-0 w-80 sm:w-88 p-4 rounded-2xl bg-white dark:bg-[#141414] border border-slate-200 dark:border-white/15 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-150 space-y-3.5"
+            className="absolute z-[9999] top-full mt-2 left-0 w-80 sm:w-88 p-4 rounded-2xl bg-white dark:bg-[#141414] border border-slate-200 dark:border-white/15 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-150 space-y-3.5"
           >
             {/* Presets Header */}
             <div>
