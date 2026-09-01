@@ -2,11 +2,9 @@
 node_modules
 .pnpm-store
 
-# Next.js
+# Next.js & Build outputs
 apps/web/.next/
 apps/web/out/
-
-# Build outputs
 dist
 build
 *.tsbuildinfo
@@ -15,11 +13,36 @@ build
 uploaded/
 apps/api/uploaded/
 
-# Environment variables
+# Environment & Example Files
 .env
+.env.*
+*.env
+*.env.*
+*.env.example
+.env.example
 .env.local
-.env.*.local
-!.env.example
+.env.development.local
+.env.test.local
+.env.production.local
+apps/api/.env
+apps/api/.env.example
+apps/web/.env
+apps/web/.env.example
+apps/web/.env.local
+
+# Documentation & Markdown Files (Keep ONLY root README.md)
+*.md
+**/*.md
+!/README.md
+docs/
+
+# Tests & Test Scripts
+*.test.*
+*.spec.*
+__tests__/
+tests/
+test/
+apps/api/src/scripts/test-*.*
 
 # Logs
 npm-debug.log*
