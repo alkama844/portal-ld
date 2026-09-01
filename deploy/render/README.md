@@ -23,7 +23,7 @@ If creating a manual **Web Service** on Render instead of using Blueprints:
 | **Region** | `Oregon (US West)` or closest region |
 | **Branch** | `main` |
 | **Root Directory** | *(Leave blank - uses repository root)* |
-| **Build Command** | `npm run build:api` |
+| **Build Command** | `npm install && npm run build:api` |
 | **Start Command** | `npm run start:api` |
 | **Health Check Path** | `/api/health` |
 

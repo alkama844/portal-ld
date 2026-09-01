@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nafijrahaman/db": "^1.0.0",
+    "@types/node": "^20.14.2",
     "typescript": "^5.4.5"
   }
 }

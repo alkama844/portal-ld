@@ -33,7 +33,7 @@ You can deploy the backend using Render's Web UI or via the automated Blueprint 
    - **Branch**: `main`
    - **Root Directory**: *(Leave blank — uses repository root)*
    - **Runtime**: `Node`
-   - **Build Command**: `npm run build:api`
+   - **Build Command**: `npm install && npm run build:api`
    - **Start Command**: `npm run start:api`
    - **Plan Type**: `Free` or `Starter`
 5. Expand **Advanced** -> **Health Check Path**:

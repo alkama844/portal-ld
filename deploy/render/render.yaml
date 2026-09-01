@@ -5,7 +5,7 @@ services:
     plan: free
     region: oregon
     rootDir: .
-    buildCommand: npm run build:api
+    buildCommand: npm install && npm run build:api
     startCommand: npm run start:api
     healthCheckPath: /api/health
     autoDeploy: true
