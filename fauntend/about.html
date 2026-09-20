@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>আমাদের সম্পর্কে | Lucky Dental Care — চার দশকের আস্থা</title>
+  <meta name="description" content="Lucky Dental Care-এর ৪৪ বছরের সমৃদ্ধ ইতিহাস, ঐতিহ্য ও আধুনিক ডিজিটাল ডেন্টিস্ট্রির মেলবন্ধন। ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর হাসির আস্থার প্রতীক।">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="আমাদের সম্পর্কে | Lucky Dental Care">
+  <meta property="og:description" content="১৯৮২ সাল থেকে কুষ্টিয়াবাসীর আস্থার সঙ্গী — ৪৪ বছরের পথচলা, আধুনিক প্রযুক্তি ও পরম যত্ন।">
+  <meta property="og:image" content="lucky_image/logo_main.jpg">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="lucky_image/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="lucky_image/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="lucky_image/favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="lucky_image/favicon_io/site.webmanifest">
+  <link rel="shortcut icon" href="lucky_image/favicon_io/favicon.ico">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Top Bar -->
+  <div class="top-info-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-bar-badge">ESTD 1982</span>
+        <span class="top-bar-item"><i class="fas fa-certificate"></i> ৪৪ বছরের ঐতিহ্যবাহী সেবা</span>
+        <span class="top-bar-item"><i class="fas fa-map-marker-alt"></i> কুষ্টিয়া, বাংলাদেশ</span>
+      </div>
+      <div class="top-bar-right">
+        <span class="top-bar-item"><i class="fas fa-phone-alt"></i> <a href="tel:01715917834">০১৭১৫-৯১৭৮৩৪</a></span>
+        <span class="top-bar-item"><a href="https://www.facebook.com/luckydentalcare1982/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> ফেসবুক পেজ</a></span>
+        <span class="top-bar-item" style="font-family: var(--font-latin); font-weight: 700; letter-spacing: 0.05em;">SMILE FOR LIFE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar-wrapper">
+    <div class="container navbar-container">
+      <a href="index.html" class="brand-logo-link">
+        <div class="brand-logo-frame">
+          <img src="lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo" width="52" height="52">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE • ESTD 1982</span>
+        </div>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">হোম</a></li>
+          <li><a href="about.html" class="nav-link active">আমাদের সম্পর্কে</a></li>
+          <li><a href="heritage.html" class="nav-link">ঐতিহ্য</a></li>
+          <li><a href="service.html" class="nav-link">সেবাসমূহ</a></li>
+          <li><a href="digital.html" class="nav-link">আধুনিক প্রযুক্তি</a></li>
+          <li><a href="why-us.html" class="nav-link">কেন আমরা</a></li>
+          <li><a href="gallery.html" class="nav-link">গ্যালারি</a></li>
+          <li><a href="contact.html" class="nav-link">যোগাযোগ</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="appointment.html" class="btn-primary-red nav-appointment-btn">
+          <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন
+        </a>
+        <button type="button" class="mobile-toggle-btn" id="mobileMenuToggle" aria-label="মেনু খুলুন">
+          <i class="fas fa-bars fa-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="brand-logo-link">
+        <div class="brand-logo-frame" style="width: 44px; height: 44px;">
+          <img src="lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title" style="font-size: 1.05rem;">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE</span>
+        </div>
+      </div>
+      <button type="button" class="drawer-close-btn" id="drawerCloseBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="drawer-menu">
+      <li><a href="index.html" class="drawer-link"><i class="fas fa-home"></i> হোম</a></li>
+      <li><a href="about.html" class="drawer-link active"><i class="fas fa-clinic-medical"></i> আমাদের সম্পর্কে</a></li>
+      <li><a href="heritage.html" class="drawer-link"><i class="fas fa-history"></i> ঐতিহ্য ও পথচলা</a></li>
+      <li><a href="service.html" class="drawer-link"><i class="fas fa-tooth"></i> ডেন্টাল সেবাসমূহ</a></li>
+      <li><a href="digital.html" class="drawer-link"><i class="fas fa-microscope"></i> আধুনিক প্রযুক্তি</a></li>
+      <li><a href="why-us.html" class="drawer-link"><i class="fas fa-shield-alt"></i> কেন Lucky Dental Care</a></li>
+      <li><a href="gallery.html" class="drawer-link"><i class="fas fa-images"></i> ক্লিনিক গ্যালারি</a></li>
+      <li><a href="contact.html" class="drawer-link"><i class="fas fa-map-marked-alt"></i> যোগাযোগ ও লোকেশন</a></li>
+      <li><a href="appointment.html" class="drawer-link"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <a href="tel:01715917834" class="btn-secondary-white" style="width: 100%;"><i class="fas fa-phone-alt"></i> ০১৭১৫-৯১৭৮৩৪</a>
+      <a href="appointment.html" class="btn-primary-red" style="width: 100%;"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a>
+    </div>
+  </aside>
+
+  <!-- Page Hero with Breadcrumb -->
+  <section class="page-hero">
+    <div class="container page-hero-inner">
+      <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+        <span class="breadcrumb-item"><a href="index.html"><i class="fas fa-home"></i> হোম</a></span>
+        <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-item active">আমাদের সম্পর্কে</span>
+      </nav>
+      <span class="page-hero-badge"><i class="fas fa-heart"></i> চার দশকের আস্থা</span>
+      <h1 class="page-hero-title">আমাদের সম্পর্কে</h1>
+      <p class="page-hero-subtitle">"চার দশকের আস্থা, আধুনিকতার ছোঁয়ায়" — ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর সেবায় Lucky Dental Care</p>
+    </div>
+  </section>
+
+  <!-- Main About Story & Philosophy -->
+  <section class="section-spacing">
+    <div class="container about-grid">
+      <div class="about-visual">
+        <div class="about-image-frame">
+          <img src="lucky_image/image_internal (1).jpg" alt="Lucky Dental Care Consultation Chamber Interior" width="550" height="480">
+        </div>
+        <div class="about-experience-card">
+          <div class="about-exp-number">৪৪+</div>
+          <div class="about-exp-text">বছরের ধারাবাহিক সেবা<br><small>১৯৮২ থেকে আজ</small></div>
+        </div>
+      </div>
+
+      <div class="about-content">
+        <span class="section-badge"><i class="fas fa-clinic-medical"></i> ক্লিনিক পরিচিতি</span>
+        <h2 class="section-title">হাসির পেছনে থাকে একরাশ বিশ্বাস</h2>
+
+        <p class="story-lead">
+          "১৯৮২ সাল থেকে কুষ্টিয়াবাসীর মুখে আত্মবিশ্বাসী হাসি ফোটানোই আমাদের অঙ্গীকার। সময় পরিবর্তনের সাথে তাল মিলিয়ে, আমরা প্রযুক্তির সর্বোচ্চ ব্যবহার আর পরম যত্নে দাঁতের সকল সেবায় আপনাদের পাশে আছি।"
+        </p>
+
+        <p class="story-paragraph">
+          কুষ্টিয়ার বুকে ১৯৮২ সালে Lucky Dental Care-এর যাত্রা শুরু হয় একটি সুনির্দিষ্ট ব্রত নিয়ে — প্রতিটি রোগীর মুখে প্রাকৃতিক, সুস্থ ও আত্মবিশ্বাসী হাসি ফিরিয়ে দেওয়া। এই দীর্ঘ চার দশকেরও বেশি সময় ধরে আমরা শুধু দাঁতের চিকিৎসাই করিনি, বরং প্রতিটি পরিবারের সাথে গড়ে তুলেছি গভীর আস্থার সম্পর্ক।
+        </p>
+
+        <p class="story-paragraph">
+          অভিজ্ঞতার আলোয় আর আধুনিক প্রযুক্তির স্পর্শে আমরা নিশ্চিত করি ব্যথাহীন ও রোগীবান্ধব পরিবেশ। দাঁতের প্রাথমিক যত্ন থেকে শুরু করে জটিল রুট ক্যানাল, ক্যাপ, ক্রাউন ও ডিজিটাল ডায়াগনস্টিক — প্রতিটি পদক্ষেপে আমাদের অঙ্গীকার সর্বোচ্চ পেশাদারিত্ব।
+        </p>
+
+        <div class="about-feature-list">
+          <div class="about-feature-item">
+            <span class="feature-check-icon"><i class="fas fa-check"></i></span>
+            <span>চার দশকের সমৃদ্ধ ক্লিনিক্যাল অভিজ্ঞতা (ESTD 1982)</span>
+          </div>
+          <div class="about-feature-item">
+            <span class="feature-check-icon"><i class="fas fa-check"></i></span>
+            <span>আধুনিক ডিজিটাল এক্স-রে ও অত্যাধুনিক ডেন্টাল চেয়ার</span>
+          </div>
+          <div class="about-feature-item">
+            <span class="feature-check-icon"><i class="fas fa-check"></i></span>
+            <span>শতভাগ অটোক্লেভ জীবাণুমুক্ত নিরাপদ চিকিৎসার পরিবেশ</span>
+          </div>
+          <div class="about-feature-item">
+            <span class="feature-check-icon"><i class="fas fa-check"></i></span>
+            <span>রোগীকেন্দ্রিক আন্তরিক যত্ন ও সঠিক চিকিৎসা পরামর্শ</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
+          <a href="appointment.html" class="btn-primary-red">
+            <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট বুক করুন
+          </a>
+          <a href="heritage.html" class="btn-secondary-white">
+            <i class="fas fa-history"></i> আমাদের দীর্ঘ ইতিহাস দেখুন
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clinic Environment Gallery Grid -->
+  <section class="section-spacing" style="background: var(--brand-surface);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge"><i class="fas fa-images"></i> বাস্তব পরিবেশ</span>
+        <h2 class="section-title">আমাদের ক্লিনিকের আধুনিক পরিবেশ</h2>
+        <p class="section-subtitle">
+          রোগীদের পূর্ণাঙ্গ স্বস্তি ও সর্বোত্তম চিকিৎসাসেবার জন্য সজ্জিত আমাদের ক্লিনিক কক্ষসমূহ।
+        </p>
+      </div>
+
+      <div class="clinic-cards-grid">
+        <div style="background: #fff; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--brand-border); box-shadow: var(--shadow-xs);">
+          <img src="lucky_image/image_front.jpg" alt="Lucky Dental Care Exterior Front Kushtia" style="width: 100%; height: 240px; object-fit: cover;">
+          <div style="padding: 18px 20px;">
+            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">ক্লিনিক ভবন ও প্রবেশদ্বার</h4>
+            <p style="font-size: 0.88rem; color: var(--brand-muted); margin: 0;">কুষ্টিয়া শহরের প্রাণকেন্দ্রে সহজে খুঁজে পাওয়ার মতো সুবিধাজনক অবস্থান।</p>
+          </div>
+        </div>
+
+        <div style="background: #fff; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--brand-border); box-shadow: var(--shadow-xs);">
+          <img src="lucky_image/image_internal (2).jpg" alt="Treatment Suite and Comfortable Patient Environment" style="width: 100%; height: 240px; object-fit: cover;">
+          <div style="padding: 18px 20px;">
+            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">চিকিৎসা কক্ষ ও পরিবেশ</h4>
+            <p style="font-size: 0.88rem; color: var(--brand-muted); margin: 0;">সম্পূর্ণ পরিচ্ছন্ন, শব্দহীন ও শান্ত পরিবেশে রোগীর স্বাচ্ছন্দ্যময় সেবা।</p>
+          </div>
+        </div>
+
+        <div style="background: #fff; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--brand-border); box-shadow: var(--shadow-xs);">
+          <img src="lucky_image/image_internal (3).jpg" alt="Digital Dental Diagnostic Suite" style="width: 100%; height: 240px; object-fit: cover;">
+          <div style="padding: 18px 20px;">
+            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">ডিজিটাল ইকুইপমেন্ট ইউনিট</h4>
+            <p style="font-size: 0.88rem; color: var(--brand-muted); margin: 0;">নির্ভুল রোগ নির্ণয় ও আন্তর্জাতিক মানের চিকিৎসার সুব্যবস্থা।</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Appointment CTA Banner -->
+  <section class="appointment-cta-banner">
+    <div class="container">
+      <div class="cta-banner-card">
+        <div class="cta-banner-content">
+          <span class="cta-banner-badge"><i class="far fa-clock"></i> দ্রুত শিডিউল করুন</span>
+          <h2 class="cta-banner-title">দাঁতের সুস্থতায় আজই পরামর্শ নিন</h2>
+          <p class="cta-banner-desc">
+            Lucky Dental Care-এ আপনার সুবিধাজনক সময়ে বিশেষজ্ঞ পরামর্শের জন্য নিচের বোতামে ক্লিক করে অ্যাপয়েন্টমেন্ট বুক করুন।
+          </p>
+        </div>
+        <div class="cta-banner-actions">
+          <a href="appointment.html" class="btn-primary-red cta-main-btn">
+            <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট বুক করুন
+          </a>
+          <a href="tel:01715917834" class="btn-secondary-white cta-call-btn">
+            <i class="fas fa-phone-alt"></i> কল: ০১৭১৫-৯১৭৮৩৪
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="brand-logo-link" style="margin-bottom: 16px;">
+            <div class="brand-logo-frame">
+              <img src="lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo" width="52" height="52">
+            </div>
+            <div class="brand-name-group">
+              <span class="brand-title" style="color: var(--brand-white);">LUCKY DENTAL CARE</span>
+              <span class="brand-tagline" style="color: rgba(255,255,255,0.7);">SMILE FOR LIFE • ESTD 1982</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর আস্থার সঙ্গী Lucky Dental Care — চার দশকের ঐতিহ্য ও আধুনিক ডিজিটাল ডেন্টিস্ট্রির সমন্বয়ে আপনার হাসির সুন্দর ভবিষ্যৎ গড়ে তোলাই আমাদের ব্রত।
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">প্রয়োজনীয় লিংক</h4>
+          <ul class="footer-nav-list">
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> হোম পেজ</a></li>
+            <li><a href="about.html"><i class="fas fa-chevron-right"></i> আমাদের সম্পর্কে</a></li>
+            <li><a href="heritage.html"><i class="fas fa-chevron-right"></i> ঐতিহ্য ও পথচলা</a></li>
+            <li><a href="service.html"><i class="fas fa-chevron-right"></i> ডেন্টাল সেবাসমূহ</a></li>
+            <li><a href="digital.html"><i class="fas fa-chevron-right"></i> আধুনিক প্রযুক্তি</a></li>
+            <li><a href="why-us.html"><i class="fas fa-chevron-right"></i> কেন Lucky Dental Care</a></li>
+            <li><a href="gallery.html"><i class="fas fa-chevron-right"></i> ক্লিনিক গ্যালারি</a></li>
+            <li><a href="contact.html"><i class="fas fa-chevron-right"></i> যোগাযোগ ও ম্যাপ</a></li>
+            <li><a href="appointment.html"><i class="fas fa-chevron-right"></i> অ্যাপয়েন্টমেন্ট বুকিং</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">আমাদের সেবাসমূহ</h4>
+          <ul class="footer-nav-list">
+            <li><a href="service.html#root-canal"><i class="fas fa-chevron-right"></i> রুট ক্যানাল চিকিৎসা</a></li>
+            <li><a href="service.html#scaling"><i class="fas fa-chevron-right"></i> দাঁত স্কেলিং ও পলিশিং</a></li>
+            <li><a href="service.html#filling"><i class="fas fa-chevron-right"></i> দাঁতের ফিলিং ও রেস্টোরেশন</a></li>
+            <li><a href="service.html#crown"><i class="fas fa-chevron-right"></i> দাঁতের ক্যাপ ও ক্রাউন</a></li>
+            <li><a href="treatment-of-missing-tooth.html"><i class="fas fa-chevron-right"></i> ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন</a></li>
+            <li><a href="digital.html"><i class="fas fa-chevron-right"></i> ডিজিটাল ডেন্টাল এক্স-রে</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">ঠিকানা ও যোগাযোগ</h4>
+          <ul class="footer-contact-list">
+            <li class="footer-contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Lucky Dental Care<br>কুষ্টিয়া, বাংলাদেশ</span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-user-md"></i>
+              <span>ডেন্টিস্ট মোঃ যোসেফ বিশ্বাস (রকি)</span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-phone-alt"></i>
+              <span><a href="tel:01715917834">০১৭১৫-৯১৭৮৩৪</a></span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fab fa-facebook"></i>
+              <span><a href="https://www.facebook.com/luckydentalcare1982/" target="_blank" rel="noopener noreferrer">অফিসিয়াল ফেসবুক পেজ</a></span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-clock"></i>
+              <span>শনিবার - বৃহস্পতিবার: সকাল ১০:০০ - রাত ৯:০০</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>Lucky Dental Care © 2026. সর্বস্বত্ব সংরক্ষিত। | <strong>SMILE FOR LIFE</strong></div>
+        <div>১৯৮২ থেকে ৪৪ বছরের নির্ভরযোগ্য ডেন্টাল সেবা</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Sticky Bar -->
+  <div class="mobile-sticky-bar">
+    <a href="tel:01715917834" class="mobile-bar-btn call-btn"><i class="fas fa-phone-alt"></i> কল করুন</a>
+    <a href="appointment.html" class="mobile-bar-btn apt-btn"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট</a>
+  </div>
+
+  <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="উপরে যান">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

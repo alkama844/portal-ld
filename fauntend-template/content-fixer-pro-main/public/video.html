@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Video Gallery | Prof. Dr. Md. Rokonujjaman (Selim) | MICS Cardiac Surgeon | Dhaka</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Prof Dr Selim, Dr Selim cardiac surgeon, Prof Dr Selim cardiac, Dr Selim Dhaka, Rokonujjaman Selim, MICS Bangladesh video, cardiac surgery video, Dr Selim video gallery, patient education video" name="keywords">
+    <meta content="Watch patient education and MICS cardiac surgery videos from Prof. Dr. Md. Rokonujjaman (Selim), Ibrahim Cardiac Hospital & Research Institute, Dhaka." name="description">
+
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Video Gallery | Prof. Dr. Md. Rokonujjaman (Selim) | MICS Cardiac Surgeon | Dhaka">
+    <meta property="og:description" content="Watch patient education and MICS cardiac surgery videos from Prof. Dr. Md. Rokonujjaman (Selim), Ibrahim Cardiac Hospital & Research Institute, Dhaka.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Video Gallery | Prof. Dr. Md. Rokonujjaman (Selim) | MICS Cardiac Surgeon | Dhaka">
+    <meta name="twitter:description" content="Watch patient education and MICS cardiac surgery videos from Prof. Dr. Md. Rokonujjaman (Selim), Ibrahim Cardiac Hospital & Research Institute, Dhaka.">
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Playfair+Display:wght@500;600&family=Work+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--theme-primary);
+            border-radius: 4px;
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                opacity: 0.15;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.35;
+                transform: scale(1.1);
+            }
+        }
+        .glow-orb {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: var(--theme-primary);
+            border-radius: 50%;
+            filter: blur(140px);
+            animation: pulseGlow 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -10;
+        }
+        .orb-1 {
+            top: 0;
+            left: 25%;
+        }
+        .orb-2 {
+            bottom: 2.5rem;
+            right: 25%;
+            animation-delay: 4s;
+            width: 400px;
+            height: 400px;
+            filter: blur(160px);
+        }
+        main {
+            width: 100%;
+            max-width: 90rem;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 2rem;
+        }
+        @media (min-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 2rem;
+            }
+        }
+        @media (min-width: 992px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 2.5rem;
+            }
+        }
+        @media (min-width: 1400px) {
+            main {
+                max-width: 95rem;
+            }
+            .gallery-grid {
+                gap: 3rem;
+            }
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .gallery-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            cursor: pointer;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(8, 63, 67, 0.45);
+        }
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery-card:hover img {
+            transform: scale(1.1);
+        }
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 63, 67, 0.25);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery-card:hover .card-overlay {
+            opacity: 1;
+        }
+        .overlay-icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.35rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transform: scale(0.75);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery-card:hover .overlay-icon {
+            transform: scale(1);
+        }
+        #lightbox-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+        #lightbox-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.35rem;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .close-btn:hover {
+            background-color: var(--theme-primary);
+            transform: rotate(90deg);
+        }
+        .lightbox-content-box {
+            position: relative;
+            max-width: 90rem;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-inner {
+            overflow: hidden;
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgba(8, 63, 67, 0.3);
+            max-width: 100%;
+            max-height: 90vh;
+        }
+        #lightbox-img {
+            max-width: 100%;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 1rem;
+            display: block;
+            margin: 0 auto;
+        }
+        @media (max-width: 576px) {
+            main {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .gallery-grid {
+                gap: 1.25rem;
+            }
+            .gallery-card {
+                border-radius: 1rem;
+                aspect-ratio: 4 / 3;
+            }
+            .close-btn {
+                top: 1rem;
+                right: 1rem;
+                width: 3rem;
+                height: 3rem;
+            }
+        }
+
+        /* -------- WARNING MODAL (White, Red, var(--theme-primary)) -------- */
+        .warning-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: opacity 0.4s ease;
+        }
+        .warning-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .warning-box {
+            background: white;
+            max-width: 520px;
+            width: 100%;
+            padding: 2.5rem 2rem;
+            border-radius: 2rem;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(8, 63, 67, 0.2);
+        }
+        .warning-box .icon-wrap {
+            font-size: 3.5rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        .warning-box h2 {
+            font-weight: 700;
+            color: #dc3545;
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+        .warning-box p {
+            color: #1e1e1e;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .warning-box .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .warning-box .btn-danger-custom {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.25s;
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .warning-box .btn-danger-custom:hover {
+            background: #b02a37;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(220, 53, 69, 0.4);
+        }
+        .warning-box .btn-primary-custom {
+            background: var(--theme-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.25s;
+            box-shadow: 0 8px 20px rgba(8, 63, 67, 0.3);
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .warning-box .btn-primary-custom:hover {
+            background: #0350c7;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(8, 63, 67, 0.4);
+        }
+        .warning-box .btn-secondary-custom {
+            background: #e9ecef;
+            color: #1e1e1e;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.25s;
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .warning-box .btn-secondary-custom:hover {
+            background: #d4d9df;
+        }
+        @media (max-width: 480px) {
+            .warning-box {
+                padding: 2rem 1.25rem;
+            }
+            .warning-box h2 {
+                font-size: 1.5rem;
+            }
+            .warning-box .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .warning-box .btn-danger-custom,
+            .warning-box .btn-primary-custom,
+            .warning-box .btn-secondary-custom {
+                width: 100%;
+                max-width: 220px;
+            }
+        }
+    </style>
+    <link href="css/site-theme.css" rel="stylesheet" />
+    <script src="js/theme-boot.js"></script>
+    <style>
+        .video-shell {
+            width: 100%;
+            max-width: 90rem;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 2rem;
+        }
+        @media (min-width: 640px) {
+            .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 992px) {
+            .video-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; }
+        }
+        .video-item {
+            background: #fff;
+            border: 1px solid rgba(4, 99, 250, 0.12);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            transition: transform .25s ease, box-shadow .25s ease;
+        }
+        .video-item:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14); }
+        .video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #0b0f19; }
+        .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .video-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 0;
+            padding: 1rem 1.15rem 1.15rem;
+            color: #0f172a;
+            line-height: 1.45;
+        }
+        .video-actions { display: flex; gap: .5rem; padding: 0 1.15rem 1.15rem; }
+        .video-empty {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            border: 1px dashed rgba(4, 99, 250, 0.35);
+            border-radius: 18px;
+            color: #475569;
+            background: rgba(4, 99, 250, 0.04);
+        }
+        .video-add {
+            max-width: 46rem;
+            margin: 0 auto 2.5rem;
+            padding: 1.5rem;
+            border-radius: 18px;
+            background: #fff;
+            border: 1px solid rgba(4, 99, 250, 0.15);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+        }
+        .video-status { margin-top: .85rem; font-size: .92rem; }
+        .video-status.is-error { color: #dc2626; }
+        .video-status.is-ok { color: #047857; }
+    </style>
+
+<style>
+/* Visiting hours animated tag */
+.visiting-hours-tag{display:inline-flex;align-items:center;gap:8px;margin:8px 0 12px;padding:7px 16px;border-radius:999px;font-size:.82rem;font-weight:700;letter-spacing:.4px;color:#fff;background:linear-gradient(135deg,#083F43,#12787F);box-shadow:0 0 0 0 rgba(18,120,127,.55);animation:vhPulse 2s infinite;}
+.visiting-hours-tag i{animation:vhTick 2s linear infinite;}
+@keyframes vhPulse{0%{box-shadow:0 0 0 0 rgba(18,120,127,.55)}70%{box-shadow:0 0 0 14px rgba(18,120,127,0)}100%{box-shadow:0 0 0 0 rgba(18,120,127,0)}}
+@keyframes vhTick{0%{transform:rotate(0)}50%{transform:rotate(14deg)}100%{transform:rotate(0)}}
+/* Achievements */
+.achv-section{padding:70px 0;}
+.achv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px;}
+.achv-card{position:relative;overflow:hidden;background:#fff;border:1px solid rgba(8,63,67,.12);border-radius:18px;padding:34px 26px;text-align:center;box-shadow:0 10px 30px rgba(8,63,67,.07);transition:transform .35s ease,box-shadow .35s ease;}
+.achv-card:hover{transform:translateY(-8px);box-shadow:0 18px 45px rgba(8,63,67,.16);}
+.achv-icon{width:66px;height:66px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#083F43,#12787F);color:#fff;font-size:1.5rem;animation:achvBeat 1.8s ease-in-out infinite;}
+@keyframes achvBeat{0%,100%{transform:scale(1)}25%{transform:scale(1.12)}40%{transform:scale(1)}}
+.achv-number{font-size:2.4rem;font-weight:800;color:#083F43;line-height:1;}
+.achv-label{margin-top:10px;font-size:1rem;font-weight:600;color:#12787F;}
+.achv-sub{margin-top:6px;font-size:.86rem;color:#6b7c7d;}
+/* Country flag chips */
+.country-chip{display:inline-flex;align-items:center;gap:6px;margin:0 6px 8px 0;padding:5px 12px;border-radius:999px;background:rgba(8,63,67,.07);border:1.5px solid rgba(8,63,67,.2);font-weight:600;font-size:.8rem;color:#083F43;}
+.country-chip .flag{font-size:1.15rem;line-height:1;}.country-chip img.flag{width:20px;height:auto;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08);}
+</style>
+
+<!-- SEO-AUTO-START -->
+    <link rel="canonical" href="https://profdrselim.com/video.html">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:url" content="https://profdrselim.com/video.html">
+    <meta property="og:site_name" content="Prof. Dr. Md. Rokonujjaman (Selim)">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://profdrselim.com/img/share-cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="https://profdrselim.com/img/share-cover.jpg">
+<!-- SEO-AUTO-END -->
+
+<!-- SEO-JSONLD-START -->
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Physician", "@id": "https://profdrselim.com/#physician", "name": "Prof. Dr. Md. Rokonujjaman (Selim)", "alternateName": ["Prof Dr Selim", "Dr Selim", "Dr. Md. Rokonujjaman Selim", "Prof Dr Selim Cardiac Surgeon"], "medicalSpecialty": "CardiovascularExam", "description": "Professor Dr. Md. Rokonujjaman (Selim) - MBBS, MS (CVTS), FCPS (CVS), MRCPS (Glasgow), FACS (USA). Minimally Invasive Cardiac Surgeon (MICS) at Ibrahim Cardiac Hospital & Research Institute, Dhaka.", "url": "https://profdrselim.com/", "image": "https://profdrselim.com/img/share-cover.jpg", "telephone": "+8801711311200", "email": "drselim74@gmail.com", "priceRange": "$$", "address": {"@type": "PostalAddress", "streetAddress": "122, Kazi Nazrul Islam Avenue, Shahbag", "addressLocality": "Dhaka", "postalCode": "1000", "addressCountry": "BD"}, "areaServed": "Bangladesh", "worksFor": {"@type": "Hospital", "name": "Ibrahim Cardiac Hospital & Research Institute", "address": {"@type": "PostalAddress", "streetAddress": "122, Kazi Nazrul Islam Avenue, Shahbag", "addressLocality": "Dhaka", "postalCode": "1000", "addressCountry": "BD"}}, "sameAs": ["https://facebook.com/drselim74", "https://www.youtube.com/@prof.drselim"], "knowsAbout": ["Minimally Invasive Cardiac Surgery", "MICS", "CABG", "Mitral valve repair", "ASD closure", "VSD closure", "Congenital cardiac surgery"]}, {"@type": "WebSite", "@id": "https://profdrselim.com/#website", "url": "https://profdrselim.com/", "name": "Prof. Dr. Md. Rokonujjaman (Selim)", "publisher": {"@id": "https://profdrselim.com/#physician"}, "inLanguage": "en"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://profdrselim.com/"}, {"@type": "ListItem", "position": 2, "name": "Video Gallery", "item": "https://profdrselim.com/video.html"}]}</script>
+<!-- SEO-JSONLD-END -->
+</head>
+
+<body>
+
+    <!-- ===== SPINNER ===== -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only" data-cms-id="cs697se">Loading...</span>
+        </div>
+    </div>
+
+   <!-- nav -->
+    <div class="container-fluid bg-light sticky-top p-0">
+        <nav class="navbar navbar-expand-lg navbar-light p-0">
+            <a href="index.html" class="navbar-brand py-2 px-3 me-0 d-flex align-items-center gap-2">
+                <img src="img/logo.png" alt="Prof. Dr. Md. Rokonujjaman (Selim) logo" style="height:62px;width:auto;" data-cms-id="c1t6kzq">
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse p-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto">
+                    <a href="index.html" class="nav-item nav-link" data-cms-id="c1pm91s0">Home</a>
+                    <a href="about.html" class="nav-item nav-link" data-cms-id="c1pm91s1">About</a>
+                    <a href="service.html" class="nav-item nav-link" data-cms-id="c1pm91s2">Services</a>
+                    <a href="gallery.html" class="nav-item nav-link" data-cms-id="c1pm91s3">Gallery</a>
+                    <a href="contact.html" class="nav-item nav-link" data-cms-id="c1pm91s4">Contact</a>
+                    <a href="video.html" class="nav-item nav-link active" data-cms-id="c1pm91s5">Video Gallery</a>
+                    <a href="patient.html" class="nav-item nav-link" data-cms-id="c1pm91s6">Patient Gallery</a>
+                </div>
+                <a class="btn btn-sm btn-primary" href="contact.html" data-cms-id="cs884ny">Book Appointment</a>
+                <div class="language-switcher" role="group" aria-label="Language selector">
+                    <button type="button" class="active" data-language="en" onclick="switchSiteLanguage('en')" data-cms-id="cad1b6e">EN</button>
+                    <button type="button" data-language="bn" onclick="switchSiteLanguage('bn')" data-cms-id="cad1b6f">বাংলা</button>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- nav -->
+
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="container-fluid page-header py-5 mb-5">
+        <div class="container text-center py-5">
+            <h1 class="display-1 animated slideInLeft" data-cms-id="ck6rmyh">Video Gallery</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center animated slideInLeft mb-0">
+                    <li class="breadcrumb-item"><a class="text-primary" href="index.html" data-cms-id="cxwwjnf">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" data-cms-id="cdb0p3y">Video Gallery</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ===== VIDEO GALLERY ===== -->
+    <main class="video-shell">
+        <div class="video-grid" id="videoGrid"></div>
+        <p class="video-empty" id="videoEmpty" hidden data-cms-id="cr8pusc">No videos have been added yet.</p>
+    </main>
+
+<div class="container-fluid bg-light py-4">
+    <div class="container">
+        <p class="text-center mb-0 small" data-cms-id="c4wim35"><i class="fas fa-info-circle text-primary me-2"></i>এই ওয়েবসাইটের তথ্য সাধারণ রোগী-শিক্ষার জন্য। ব্যক্তিগত diagnosis, operation indication বা outcome সম্পর্কে সিদ্ধান্ত treating cardiac team-এর মূল্যায়নের ভিত্তিতে হবে।</p>
+    </div>
+</div>
+<!-- disclaimer -->
+
+<!-- Footer -->
+<div class="container-fluid footer position-relative bg-dark text-white-50 py-5 mt-5 wow fadeIn"
+    data-wow-delay="0.2s">
+
+    <div class="container py-5">
+
+        <div class="row g-5">
+
+            <!-- Doctor Information -->
+            <div class="col-lg-6 pe-lg-5">
+
+                <a href="#" class="navbar-brand d-inline-flex align-items-center">
+                    <img src="img/logo.png" alt="Prof. Dr. Md. Rokonujjaman (Selim) logo" style="height:60px;width:auto;margin-right:10px;" data-cms-id="cnuhthd">
+                    <span class="text-white fw-bold footer-brand-text" style="font-size:clamp(1.05rem,3.2vw,1.35rem);line-height:1.25;min-width:0;" data-cms-id="codso9a">Dr. Selim's MICS Heart Surgery Services</span>
+                </a>
+
+                <p data-cms-id="cucc00m">
+                    Professor Dr. Md. Rokonujjaman (Selim)<br>
+                    MBBS, MS (CVTS), FCPS (CVS), MRCPS (Glasgow), FACS (USA)<br>
+                    Professor & Senior Consultant | Cardiac Surgeon | Minimally Invasive Cardiac Surgeon<br>
+                    Department of Cardiac Surgery, Ibrahim Cardiac Hospital & Research Institute<br>
+                    Dhaka
+                </p>
+
+                <p class="mb-2" data-cms-id="cucc00n">
+                    <i class="fa fa-map-marker-alt me-2"></i>
+                    122, Kazi Nazrul Islam Avenue, Shahbag, Dhaka-1000
+                </p>
+
+                <p class="mb-2" data-cms-id="cucc00k">
+                    <i class="fa fa-phone-alt me-2"></i>
+                    +880 1711-311200
+                </p>
+
+                <p class="mb-2" data-cms-id="cucc00l">
+                    <i class="fa fa-envelope me-2"></i>
+                    drselim74@gmail.com
+                </p>
+
+                <div class="d-flex justify-content-start mt-4">
+
+                    <a class="btn btn-sm-square btn-primary me-3"
+                        href="https://facebook.com/drselim74"
+                        target="_blank">
+
+                        <i class="fab fa-facebook-f"></i>
+
+                    </a>
+
+                    <a class="btn btn-sm-square btn-primary me-3"
+                        href="https://www.youtube.com/@prof.drselim"
+                        target="_blank">
+
+                        <i class="fab fa-youtube"></i>
+
+                    </a>
+
+                    <a class="btn btn-sm-square btn-primary me-3"
+                        href="https://wa.me/8801711311200"
+                        target="_blank">
+
+                        <i class="fab fa-whatsapp"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer Links -->
+            <div class="col-lg-6 ps-lg-5">
+
+                <div class="row g-4">
+
+                    <!-- Surgical Services -->
+                    <div class="col-sm-6">
+
+                        <h5 class="text-primary mb-4" data-cms-id="c8krmi">
+                            Surgical Services
+                        </h5>
+
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg7a">
+                            MICS CABG-MIDCAB
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg7b">
+                            Mitral Valve Repair & Replacement
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg78">
+                            Aortic Valve Replacement (AVR)
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg79">
+                            MICS ASD Closure
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg76">
+                            MICS VSD Closure
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg77">
+                            MICS Heart Tumour Removal
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="carpg74">
+                            Aortic Surgery - Aortic Aneurysm & Dissection
+                        </a>
+
+</div>
+
+
+                    <!-- Quick Links -->
+                    <div class="col-sm-6">
+
+                        <h5 class="text-primary mb-4" data-cms-id="c26fnej">
+                            Quick Links
+                        </h5>
+
+                        <a class="btn btn-link" href="about.html" data-cms-id="cattm2v">
+                            About Us
+                        </a>
+
+                        <a class="btn btn-link" href="contact.html" data-cms-id="cattm2u">
+                            Contact Us
+                        </a>
+
+                        <a class="btn btn-link" href="service.html" data-cms-id="cattm2t">
+                            Our Services
+                        </a>
+
+                        <a class="btn btn-link" href="gallery.html" data-cms-id="cattm2s">
+                            Gallery
+                        </a>
+
+                        <a class="btn btn-link" href="appoinment.html" data-cms-id="cattm2r">
+                            Online Appointment
+                        </a>
+
+                        <a class="btn btn-link" href="index.html" data-cms-id="cattm2q">
+                            Home
+                        </a>
+
+                    </div>
+
+
+                    <!-- Consultation Center Information -->
+                    <div class="col-sm-12">
+
+                        <h5 class="text-primary mb-4" data-cms-id="c1y1wvmg">
+                            Consultation Center Information
+                        </h5>
+<span class="visiting-hours-tag" data-cms-id="cg6qnex"><i class="far fa-clock"></i> Visiting Hours: 8:00 AM – 4:00 PM</span>
+
+
+
+                        <!-- Chamber 1 -->
+                        <p class="text-white-50 mb-3" data-cms-id="caqe0r9">
+
+                            <strong class="text-white" data-cms-id="c1tekmg3">
+                                Ibrahim Cardiac Hospital & Research Institute
+                            </strong>
+                            <br>
+
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            122, Kazi Nazrul Islam Avenue, Shahbag, Dhaka-1000
+                            <br>
+
+                            <i class="fas fa-phone-alt me-2"></i>
+                            Appointment: +880 1711-311200
+
+                        </p>
+
+
+                        <!-- Chamber 2 -->
+                        <p class="text-white-50 mb-3" data-cms-id="caqe0r8">
+
+                            <strong class="text-white" data-cms-id="c11yjmgy">
+                                Appointment & Consultation
+                            </strong>
+                            <br>
+
+                            <i class="fas fa-phone-alt me-2"></i>
+                            +880 1711-311200 (Phone / WhatsApp)
+
+                        </p>
+
+
+                        <!-- Chamber 3 -->
+                        <p class="text-white-50 mb-0" data-cms-id="caqe0rb">
+
+                            <strong class="text-white" data-cms-id="cnskuox">
+                                Email
+                            </strong>
+                            <br>
+
+                            <i class="fas fa-envelope me-2"></i>
+                            drselim74@gmail.com
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Copyright Footer -->
+<div class="container-fluid bg-dark text-white border-top border-secondary py-4 site-copyright wow fadeIn"
+    data-wow-delay="0.1s">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0" data-cms-id="cpm3ule">
+
+                &copy;
+
+                <a class="border-bottom"
+                    href="https://facebook.com/drselim74" data-cms-id="c1g7jcjq">
+
+                    Prof. Dr. Md. Rokonujjaman (Selim) - MICS Cardiac Surgeon
+
+                </a>,
+
+                All Right Reserved.
+
+            </div>
+
+
+            <div class="col-md-6 text-center text-md-end" data-cms-id="cpm3ulf">
+
+                Designed By
+
+                <a class="border-bottom"
+                    href="https://www.facebook.com/aurazoneofficial"
+                    target="_blank" data-cms-id="c1g9nifb">
+
+                    Aurazone
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- footer -->
+
+    <!-- ===== JS LIBRARIES ===== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cms-content.js"></script>
+    <script src="js/site-fonts.js"></script>
+    <script src="js/site-settings.js"></script>
+    <script src="js/videos.js"></script>
+</body>
+
+</html>

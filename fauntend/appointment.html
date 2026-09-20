@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অ্যাপয়েন্টমেন্ট বুকিং | Lucky Dental Care — কুষ্টিয়া</title>
+  <meta name="description" content="Lucky Dental Care-এ অভিজ্ঞ ডেন্টিস্টের পরামর্শের জন্য আপনার অ্যাপয়েন্টমেন্ট বুক করুন। সরাসরি কল: ০১৭১৫-৯১৭৮৩৪।">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="অ্যাপয়েন্টমেন্ট বুকিং | Lucky Dental Care">
+  <meta property="og:description" content="অনলাইনে সহজে অ্যাপয়েন্টমেন্ট শিডিউল করুন অথবা সরাসরি কল করুন।">
+  <meta property="og:image" content="lucky_image/logo_main.jpg">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="lucky_image/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="lucky_image/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="lucky_image/favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="lucky_image/favicon_io/site.webmanifest">
+  <link rel="shortcut icon" href="lucky_image/favicon_io/favicon.ico">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Top Bar -->
+  <div class="top-info-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-bar-badge">ESTD 1982</span>
+        <span class="top-bar-item"><i class="fas fa-certificate"></i> ৪৪ বছরের ঐতিহ্যবাহী সেবা</span>
+        <span class="top-bar-item"><i class="fas fa-map-marker-alt"></i> কুষ্টিয়া, বাংলাদেশ</span>
+      </div>
+      <div class="top-bar-right">
+        <span class="top-bar-item"><i class="fas fa-phone-alt"></i> <a href="tel:01715917834">০১৭১৫-৯১৭৮৩৪</a></span>
+        <span class="top-bar-item"><a href="https://www.facebook.com/luckydentalcare1982/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> ফেসবুক পেজ</a></span>
+        <span class="top-bar-item" style="font-family: var(--font-latin); font-weight: 700; letter-spacing: 0.05em;">SMILE FOR LIFE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar-wrapper">
+    <div class="container navbar-container">
+      <a href="index.html" class="brand-logo-link">
+        <div class="brand-logo-frame">
+          <img src="lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo" width="52" height="52">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE • ESTD 1982</span>
+        </div>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">হোম</a></li>
+          <li><a href="about.html" class="nav-link">আমাদের সম্পর্কে</a></li>
+          <li><a href="heritage.html" class="nav-link">ঐতিহ্য</a></li>
+          <li><a href="service.html" class="nav-link">সেবাসমূহ</a></li>
+          <li><a href="digital.html" class="nav-link">আধুনিক প্রযুক্তি</a></li>
+          <li><a href="why-us.html" class="nav-link">কেন আমরা</a></li>
+          <li><a href="gallery.html" class="nav-link">গ্যালারি</a></li>
+          <li><a href="contact.html" class="nav-link">যোগাযোগ</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="appointment.html" class="btn-primary-red nav-appointment-btn" style="background: var(--brand-red-deep);">
+          <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন
+        </a>
+        <button type="button" class="mobile-toggle-btn" id="mobileMenuToggle" aria-label="মেনু খুলুন">
+          <i class="fas fa-bars fa-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="brand-logo-link">
+        <div class="brand-logo-frame" style="width: 44px; height: 44px;">
+          <img src="lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title" style="font-size: 1.05rem;">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE</span>
+        </div>
+      </div>
+      <button type="button" class="drawer-close-btn" id="drawerCloseBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="drawer-menu">
+      <li><a href="index.html" class="drawer-link"><i class="fas fa-home"></i> হোম</a></li>
+      <li><a href="about.html" class="drawer-link"><i class="fas fa-clinic-medical"></i> আমাদের সম্পর্কে</a></li>
+      <li><a href="heritage.html" class="drawer-link"><i class="fas fa-history"></i> ঐতিহ্য ও পথচলা</a></li>
+      <li><a href="service.html" class="drawer-link"><i class="fas fa-tooth"></i> ডেন্টাল সেবাসমূহ</a></li>
+      <li><a href="digital.html" class="drawer-link"><i class="fas fa-microscope"></i> আধুনিক প্রযুক্তি</a></li>
+      <li><a href="why-us.html" class="drawer-link"><i class="fas fa-shield-alt"></i> কেন Lucky Dental Care</a></li>
+      <li><a href="gallery.html" class="drawer-link"><i class="fas fa-images"></i> ক্লিনিক গ্যালারি</a></li>
+      <li><a href="contact.html" class="drawer-link"><i class="fas fa-map-marked-alt"></i> যোগাযোগ ও লোকেশন</a></li>
+      <li><a href="appointment.html" class="drawer-link active"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <a href="tel:01715917834" class="btn-secondary-white" style="width: 100%;"><i class="fas fa-phone-alt"></i> ০১৭১৫-৯১৭৮৩৪</a>
+      <a href="appointment.html" class="btn-primary-red" style="width: 100%;"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a>
+    </div>
+  </aside>
+
+  <!-- Page Hero with Breadcrumb -->
+  <section class="page-hero">
+    <div class="container page-hero-inner">
+      <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+        <span class="breadcrumb-item"><a href="index.html"><i class="fas fa-home"></i> হোম</a></span>
+        <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-item active">অ্যাপয়েন্টমেন্ট</span>
+      </nav>
+      <span class="page-hero-badge"><i class="far fa-calendar-alt"></i> অনলাইন বুকিং</span>
+      <h1 class="page-hero-title">অ্যাপয়েন্টমেন্ট বুকিং</h1>
+      <p class="page-hero-subtitle">Lucky Dental Care-এ আপনার সুবিধাজনক সময়ে বিশেষজ্ঞ ডেন্টাল পরামর্শ ও চিকিৎসার জন্য বুকিং করুন</p>
+    </div>
+  </section>
+
+  <!-- Appointment Form Container -->
+  <section class="section-spacing" style="background: var(--brand-surface);">
+    <div class="container" style="max-width: 760px;">
+      <div style="background: #ffffff; border-radius: var(--radius-md); padding: 42px 36px; box-shadow: var(--shadow-sm); border: 1px solid var(--brand-border);">
+        <div class="section-header" style="margin-bottom: 28px;">
+          <span class="section-badge"><i class="far fa-calendar-alt"></i> বুকিং তথ্য পূরণ করুন</span>
+          <h2 class="section-title" style="font-size: 1.85rem;">আপনার অ্যাপয়েন্টমেন্ট শিডিউল করুন</h2>
+          <p class="section-subtitle">
+            জরুরি পরামর্শ বা দ্রুততম শিডিউলের জন্য সরাসরি কল করুন: <a href="tel:01715917834" style="color: var(--brand-red); font-weight: 700;">০১৭১৫-৯১৭৮৩৪</a>
+          </p>
+        </div>
+
+        <form id="standaloneAppointmentForm">
+          <div class="form-group">
+            <label class="form-label" for="pagePatientName">আপনার নাম *</label>
+            <input type="text" id="pagePatientName" class="form-control" placeholder="যেমন: মোঃ জাহিদ হাসান" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pagePatientPhone">মোবাইল নম্বর *</label>
+            <input type="tel" id="pagePatientPhone" class="form-control" placeholder="যেমন: 017XXXXXXXX" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pageServiceSelect">প্রয়োজনীয় সেবার ধরন</label>
+            <select id="pageServiceSelect" class="form-control">
+              <option value="দাঁতের সাধারণ চিকিৎসা">দাঁতের সাধারণ চিকিৎসা ও চেকআপ</option>
+              <option value="রুট ক্যানাল চিকিৎসা">রুট ক্যানাল চিকিৎসা (RCT)</option>
+              <option value="দাঁত পরিষ্কার ও স্কেলিং">দাঁত পরিষ্কার ও স্কেলিং</option>
+              <option value="দাঁতের ফিলিং ও রেস্টোরেশন">দাঁতের ফিলিং ও রেস্টোরেশন</option>
+              <option value="দাঁত তোলা ও এক্সট্রাকশন">দাঁত তোলা ও এক্সট্রাকশন</option>
+              <option value="দাঁতের ক্যাপ ও ক্রাউন">দাঁতের ক্যাপ ও ক্রাউন</option>
+              <option value="ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন">ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন</option>
+              <option value="মাড়ির চিকিৎসা">মাড়ির চিকিৎসা (Gums Care)</option>
+              <option value="শিশুদের দাঁতের যত্ন">শিশুদের দাঁতের যত্ন</option>
+              <option value="ওরাল মাইনর সার্জারি">ওরাল মাইনর সার্জারি</option>
+              <option value="দাঁতের সৌন্দর্যবর্ধন">দাঁতের সৌন্দর্যবর্ধন (Smile Design)</option>
+              <option value="ডিজিটাল ডেন্টাল ডায়াগনস্টিক">ডিজিটাল এক্স-রে ও ডায়াগনস্টিক</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="pagePreferredDate">পছন্দের তারিখ</label>
+              <input type="date" id="pagePreferredDate" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pagePreferredTime">পছন্দের সময়সূচি</label>
+              <select id="pagePreferredTime" class="form-control">
+                <option value="সকাল (১০:০০টা - ০১:০০টা)">সকাল (১০:০০টা - ০১:০০টা)</option>
+                <option value="বিকাল (০৪:০০টা - ০৬:০০টা)">বিকাল (০৪:০০টা - ০৬:০০টা)</option>
+                <option value="সন্ধ্যা (০৬:০০টা - ০৯:০০টা)">সন্ধ্যা (০৬:০০টা - ০৯:০০টা)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="pagePatientNote">সমস্যার সংক্ষিপ্ত বিবরণ (ঐচ্ছিক)</label>
+            <textarea id="pagePatientNote" class="form-control" rows="3" placeholder="দাঁতের ব্যথার লক্ষণ বা সমস্যা উল্লেখ করুন..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary-red" style="width: 100%; padding: 14px; font-size: 1.05rem; justify-content: center; margin-top: 8px;">
+            <i class="far fa-paper-plane"></i> অ্যাপয়েন্টমেন্ট অনুরোধ প্রস্তুত করুন
+          </button>
+        </form>
+
+        <div id="standaloneSuccessBox" style="display: none; text-align: center; padding: 25px 10px;">
+          <div style="width: 70px; height: 70px; background: #fdf2f4; color: #941324; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 2rem;">
+            ✓
+          </div>
+          <h3 style="font-size: 1.55rem; color: #0f172a; margin-bottom: 10px;">অনুরোধ সফলভাবে প্রস্তুত হয়েছে!</h3>
+          <p style="color: #475569; margin-bottom: 24px; line-height: 1.75;">
+            আপনার বুকিং দ্রুততম সময়ে নিশ্চিত করার জন্য নিচের বোতামে ক্লিক করে সরাসরি হোয়াটসঅ্যাপে বার্তা পাঠান অথবা সরাসরি আমাদের কল করুন:
+          </p>
+          <div class="action-row" style="justify-content: center;">
+            <a id="pageWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary-red" style="background: #25d366; border: none; padding: 13px 24px;">
+              <i class="fab fa-whatsapp"></i> হোয়াটসঅ্যাপে নিশ্চিত করুন
+            </a>
+            <a href="tel:01715917834" class="btn-secondary-white" style="padding: 13px 24px;">
+              <i class="fas fa-phone-alt"></i> কল: ০১৭১৫-৯১৭৮৩৪
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="brand-logo-link" style="margin-bottom: 16px;">
+            <div class="brand-logo-frame">
+              <img src="lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo" width="52" height="52">
+            </div>
+            <div class="brand-name-group">
+              <span class="brand-title" style="color: var(--brand-white);">LUCKY DENTAL CARE</span>
+              <span class="brand-tagline" style="color: rgba(255,255,255,0.7);">SMILE FOR LIFE • ESTD 1982</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর আস্থার সঙ্গী Lucky Dental Care — চার দশকের ঐতিহ্য ও আধুনিক ডিজিটাল ডেন্টিস্ট্রির সমন্বয়ে আপনার হাসির সুন্দর ভবিষ্যৎ গড়ে তোলাই আমাদের ব্রত।
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">প্রয়োজনীয় লিংক</h4>
+          <ul class="footer-nav-list">
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> হোম পেজ</a></li>
+            <li><a href="about.html"><i class="fas fa-chevron-right"></i> আমাদের সম্পর্কে</a></li>
+            <li><a href="heritage.html"><i class="fas fa-chevron-right"></i> ঐতিহ্য ও পথচলা</a></li>
+            <li><a href="service.html"><i class="fas fa-chevron-right"></i> ডেন্টাল সেবাসমূহ</a></li>
+            <li><a href="digital.html"><i class="fas fa-chevron-right"></i> আধুনিক প্রযুক্তি</a></li>
+            <li><a href="why-us.html"><i class="fas fa-chevron-right"></i> কেন Lucky Dental Care</a></li>
+            <li><a href="gallery.html"><i class="fas fa-chevron-right"></i> ক্লিনিক গ্যালারি</a></li>
+            <li><a href="contact.html"><i class="fas fa-chevron-right"></i> যোগাযোগ ও ম্যাপ</a></li>
+            <li><a href="appointment.html"><i class="fas fa-chevron-right"></i> অ্যাপয়েন্টমেন্ট বুকিং</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">আমাদের সেবাসমূহ</h4>
+          <ul class="footer-nav-list">
+            <li><a href="service.html#root-canal"><i class="fas fa-chevron-right"></i> রুট ক্যানাল চিকিৎসা</a></li>
+            <li><a href="service.html#scaling"><i class="fas fa-chevron-right"></i> দাঁত স্কেলিং ও পলিশিং</a></li>
+            <li><a href="service.html#filling"><i class="fas fa-chevron-right"></i> দাঁতের ফিলিং ও রেস্টোরেশন</a></li>
+            <li><a href="service.html#crown"><i class="fas fa-chevron-right"></i> দাঁতের ক্যাপ ও ক্রাউন</a></li>
+            <li><a href="treatment-of-missing-tooth.html"><i class="fas fa-chevron-right"></i> ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন</a></li>
+            <li><a href="digital.html"><i class="fas fa-chevron-right"></i> ডিজিটাল ডেন্টাল এক্স-রে</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">ঠিকানা ও যোগাযোগ</h4>
+          <ul class="footer-contact-list">
+            <li class="footer-contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Lucky Dental Care<br>কুষ্টিয়া, বাংলাদেশ</span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-user-md"></i>
+              <span>ডেন্টিস্ট মোঃ যোসেফ বিশ্বাস (রকি)</span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-phone-alt"></i>
+              <span><a href="tel:01715917834">০১৭১৫-৯১৭৮৩৪</a></span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fab fa-facebook"></i>
+              <span><a href="https://www.facebook.com/luckydentalcare1982/" target="_blank" rel="noopener noreferrer">অফিসিয়াল ফেসবুক পেজ</a></span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-clock"></i>
+              <span>শনিবার - বৃহস্পতিবার: সকাল ১০:০০ - রাত ৯:০০</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>Lucky Dental Care © 2026. সর্বস্বত্ব সংরক্ষিত। | <strong>SMILE FOR LIFE</strong></div>
+        <div>১৯৮২ থেকে ৪৪ বছরের নির্ভরযোগ্য ডেন্টাল সেবা</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Sticky Bar -->
+  <div class="mobile-sticky-bar">
+    <a href="tel:01715917834" class="mobile-bar-btn call-btn"><i class="fas fa-phone-alt"></i> কল করুন</a>
+    <a href="appointment.html" class="mobile-bar-btn apt-btn"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট</a>
+  </div>
+
+  <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="উপরে যান">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script src="js/main.js"></script>
+  <script>
+    const form = document.getElementById('standaloneAppointmentForm');
+    const successBox = document.getElementById('standaloneSuccessBox');
+    const waBtn = document.getElementById('pageWhatsAppBtn');
+
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('pagePatientName').value.trim();
+        const phone = document.getElementById('pagePatientPhone').value.trim();
+        const service = document.getElementById('pageServiceSelect').value;
+        const date = document.getElementById('pagePreferredDate').value;
+        const time = document.getElementById('pagePreferredTime').value;
+        const note = document.getElementById('pagePatientNote').value.trim();
+
+        if (!name || !phone) {
+          alert('অনুগ্রহ করে আপনার নাম এবং মোবাইল নম্বর প্রদান করুন।');
+          return;
+        }
+
+        let message = `*Lucky Dental Care - অ্যাপয়েন্টমেন্ট অনুরোধ*\n\n`;
+        message += `👤 *রোগীর নাম:* ${name}\n`;
+        message += `📱 *মোবাইল নম্বর:* ${phone}\n`;
+        if (service) message += `🦷 *সেবার ধরন:* ${service}\n`;
+        if (date) message += `📅 *পছন্দের তারিখ:* ${date}\n`;
+        if (time) message += `⏰ *পছন্দের সময়:* ${time}\n`;
+        if (note) message += `📝 *বিবরণ:* ${note}\n`;
+
+        const encoded = encodeURIComponent(message);
+        waBtn.href = `https://wa.me/8801715917834?text=${encoded}`;
+
+        form.style.display = 'none';
+        successBox.style.display = 'block';
+      });
+    }
+  </script>
+</body>
+</html>

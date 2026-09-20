@@ -1,0 +1,200 @@
+/* Patient Gallery — public listing + admin editor (patient2.html) */
+.pt-shell {
+    max-width: 1240px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+}
+
+.pt-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+}
+
+.pt-search {
+    flex: 1 1 260px;
+    max-width: 420px;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, .14);
+    padding: .7rem 1.15rem;
+    font-size: .95rem;
+    outline: none;
+    transition: border-color .25s ease, box-shadow .25s ease;
+}
+
+.pt-search:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, .12);
+}
+
+.pt-count {
+    font-size: .9rem;
+    color: rgba(15, 23, 42, .6);
+}
+
+.pt-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 576px) {
+    .pt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 992px) {
+    .pt-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.pt-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, .07);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, .07);
+    transition: transform .35s cubic-bezier(.25, 1, .5, 1), box-shadow .35s ease;
+    opacity: 0;
+    animation: ptIn .55s cubic-bezier(.25, 1, .5, 1) forwards;
+    animation-delay: calc(var(--pt-i, 0) * 70ms);
+}
+
+@keyframes ptIn {
+    from { opacity: 0; transform: translateY(18px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+.pt-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 54px rgba(15, 23, 42, .14);
+}
+
+.pt-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+    overflow: hidden;
+}
+
+.pt-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s cubic-bezier(.25, 1, .5, 1);
+}
+
+.pt-card:hover .pt-photo img { transform: scale(1.07); }
+
+.pt-photo-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 2.6rem;
+    color: rgba(15, 23, 42, .25);
+}
+
+.pt-body {
+    padding: 1.15rem 1.25rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    flex: 1;
+}
+
+.pt-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    color: #0f172a;
+}
+
+.pt-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.pt-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .8rem;
+    padding: .28rem .7rem;
+    border-radius: 999px;
+    background: rgba(13, 110, 253, .08);
+    color: rgba(15, 23, 42, .78);
+}
+
+.pt-chip i { font-size: .78rem; color: var(--bs-primary); }
+
+.pt-disease {
+    font-weight: 600;
+    color: var(--bs-primary);
+    font-size: .95rem;
+}
+
+.pt-note {
+    font-size: .92rem;
+    line-height: 1.6;
+    color: rgba(15, 23, 42, .7);
+    white-space: pre-line;
+    margin: 0;
+}
+
+.pt-actions {
+    display: flex;
+    gap: .5rem;
+    padding: 0 1.25rem 1.25rem;
+}
+
+.pt-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: rgba(15, 23, 42, .55);
+    border: 1px dashed rgba(15, 23, 42, .18);
+    border-radius: 20px;
+}
+
+/* Admin form */
+.pt-form {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, .08);
+    border-radius: 22px;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, .08);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.pt-form h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.pt-form .row > [class*="col-"] { margin-bottom: .9rem; }
+
+.pt-status { margin-top: .85rem; font-size: .92rem; }
+.pt-status.is-error { color: #dc2626; }
+.pt-status.is-ok { color: #047857; }
+
+.pt-preview {
+    width: 96px;
+    height: 96px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 1px solid rgba(15, 23, 42, .1);
+    margin-top: .5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pt-card { animation: none; opacity: 1; }
+    .pt-card:hover { transform: none; }
+    .pt-card:hover .pt-photo img { transform: none; }
+}

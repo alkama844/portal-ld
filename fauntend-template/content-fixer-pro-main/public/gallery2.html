@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Gallery | Prof. Dr. Md. Rokonujjaman (Selim) | MICS Cardiac Surgeon | Dhaka</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="MICS Bangladesh, Minimally Invasive Cardiac Surgery, VSD closure, ASD closure, CABG, mitral valve, cardiac surgeon Dhaka, Dr Selim gallery" name="keywords">
+    <meta content="Gallery of Prof. Dr. Md. Rokonujjaman (Selim) - MICS cardiac surgery, ICU care and post-operative rounds at Ibrahim Cardiac Hospital & Research Institute, Dhaka." name="description">
+
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Gallery | Prof. Dr. Md. Rokonujjaman (Selim) | MICS Cardiac Surgeon | Dhaka">
+    <meta property="og:description" content="Gallery of Prof. Dr. Md. Rokonujjaman (Selim) - MICS cardiac surgery, ICU care and post-operative rounds at Ibrahim Cardiac Hospital & Research Institute, Dhaka.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Gallery | Prof. Dr. Md. Rokonujjaman (Selim) | MICS Cardiac Surgeon | Dhaka">
+    <meta name="twitter:description" content="Gallery of Prof. Dr. Md. Rokonujjaman (Selim) - MICS cardiac surgery, ICU care and post-operative rounds at Ibrahim Cardiac Hospital & Research Institute, Dhaka.">
+
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Playfair+Display:wght@500;600&family=Work+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--theme-primary);
+            border-radius: 4px;
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                opacity: 0.15;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.35;
+                transform: scale(1.1);
+            }
+        }
+        .glow-orb {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: var(--theme-primary);
+            border-radius: 50%;
+            filter: blur(140px);
+            animation: pulseGlow 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -10;
+        }
+        .orb-1 {
+            top: 0;
+            left: 25%;
+        }
+        .orb-2 {
+            bottom: 2.5rem;
+            right: 25%;
+            animation-delay: 4s;
+            width: 400px;
+            height: 400px;
+            filter: blur(160px);
+        }
+        main {
+            width: 100%;
+            max-width: 90rem;
+            margin: 0 auto;
+            padding: 0 1.5rem 4rem;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            gap: 2rem;
+        }
+        @media (min-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 2rem;
+            }
+        }
+        @media (min-width: 992px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 2.5rem;
+            }
+        }
+        @media (min-width: 1400px) {
+            main {
+                max-width: 95rem;
+            }
+            .gallery-grid {
+                gap: 3rem;
+            }
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .gallery-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            cursor: pointer;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(8, 63, 67, 0.45);
+        }
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery-card:hover img {
+            transform: scale(1.1);
+        }
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(8, 63, 67, 0.25);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery-card:hover .card-overlay {
+            opacity: 1;
+        }
+        .overlay-icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.35rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transform: scale(0.75);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .gallery-card:hover .overlay-icon {
+            transform: scale(1);
+        }
+        #lightbox-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 1rem;
+        }
+        #lightbox-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.35rem;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .close-btn:hover {
+            background-color: var(--theme-primary);
+            transform: rotate(90deg);
+        }
+        .lightbox-content-box {
+            position: relative;
+            max-width: 90rem;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-inner {
+            overflow: hidden;
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgba(8, 63, 67, 0.3);
+            max-width: 100%;
+            max-height: 90vh;
+        }
+        #lightbox-img {
+            max-width: 100%;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 1rem;
+            display: block;
+            margin: 0 auto;
+        }
+        @media (max-width: 576px) {
+            main {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .gallery-grid {
+                gap: 1.25rem;
+            }
+            .gallery-card {
+                border-radius: 1rem;
+                aspect-ratio: 4 / 3;
+            }
+            .close-btn {
+                top: 1rem;
+                right: 1rem;
+                width: 3rem;
+                height: 3rem;
+            }
+        }
+
+        /* -------- WARNING MODAL (White, Red, var(--theme-primary)) -------- */
+        .warning-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: opacity 0.4s ease;
+        }
+        .warning-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .warning-box {
+            background: white;
+            max-width: 520px;
+            width: 100%;
+            padding: 2.5rem 2rem;
+            border-radius: 2rem;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(8, 63, 67, 0.2);
+        }
+        .warning-box .icon-wrap {
+            font-size: 3.5rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        .warning-box h2 {
+            font-weight: 700;
+            color: #dc3545;
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+        .warning-box p {
+            color: #1e1e1e;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .warning-box .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .warning-box .btn-danger-custom {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.25s;
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .warning-box .btn-danger-custom:hover {
+            background: #b02a37;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(220, 53, 69, 0.4);
+        }
+        .warning-box .btn-primary-custom {
+            background: var(--theme-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.25s;
+            box-shadow: 0 8px 20px rgba(8, 63, 67, 0.3);
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .warning-box .btn-primary-custom:hover {
+            background: #0350c7;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(8, 63, 67, 0.4);
+        }
+        .warning-box .btn-secondary-custom {
+            background: #e9ecef;
+            color: #1e1e1e;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.25s;
+            cursor: pointer;
+            min-width: 130px;
+        }
+        .warning-box .btn-secondary-custom:hover {
+            background: #d4d9df;
+        }
+        @media (max-width: 480px) {
+            .warning-box {
+                padding: 2rem 1.25rem;
+            }
+            .warning-box h2 {
+                font-size: 1.5rem;
+            }
+            .warning-box .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .warning-box .btn-danger-custom,
+            .warning-box .btn-primary-custom,
+            .warning-box .btn-secondary-custom {
+                width: 100%;
+                max-width: 220px;
+            }
+        }
+    </style>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="css/site-theme.css" rel="stylesheet" />
+    <script src="js/theme-boot.js"></script>
+
+<style>
+/* Visiting hours animated tag */
+.visiting-hours-tag{display:inline-flex;align-items:center;gap:8px;margin:8px 0 12px;padding:7px 16px;border-radius:999px;font-size:.82rem;font-weight:700;letter-spacing:.4px;color:#fff;background:linear-gradient(135deg,#083F43,#12787F);box-shadow:0 0 0 0 rgba(18,120,127,.55);animation:vhPulse 2s infinite;}
+.visiting-hours-tag i{animation:vhTick 2s linear infinite;}
+@keyframes vhPulse{0%{box-shadow:0 0 0 0 rgba(18,120,127,.55)}70%{box-shadow:0 0 0 14px rgba(18,120,127,0)}100%{box-shadow:0 0 0 0 rgba(18,120,127,0)}}
+@keyframes vhTick{0%{transform:rotate(0)}50%{transform:rotate(14deg)}100%{transform:rotate(0)}}
+/* Achievements */
+.achv-section{padding:70px 0;}
+.achv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px;}
+.achv-card{position:relative;overflow:hidden;background:#fff;border:1px solid rgba(8,63,67,.12);border-radius:18px;padding:34px 26px;text-align:center;box-shadow:0 10px 30px rgba(8,63,67,.07);transition:transform .35s ease,box-shadow .35s ease;}
+.achv-card:hover{transform:translateY(-8px);box-shadow:0 18px 45px rgba(8,63,67,.16);}
+.achv-icon{width:66px;height:66px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#083F43,#12787F);color:#fff;font-size:1.5rem;animation:achvBeat 1.8s ease-in-out infinite;}
+@keyframes achvBeat{0%,100%{transform:scale(1)}25%{transform:scale(1.12)}40%{transform:scale(1)}}
+.achv-number{font-size:2.4rem;font-weight:800;color:#083F43;line-height:1;}
+.achv-label{margin-top:10px;font-size:1rem;font-weight:600;color:#12787F;}
+.achv-sub{margin-top:6px;font-size:.86rem;color:#6b7c7d;}
+/* Country flag chips */
+.country-chip{display:inline-flex;align-items:center;gap:6px;margin:0 6px 8px 0;padding:5px 12px;border-radius:999px;background:rgba(8,63,67,.07);border:1.5px solid rgba(8,63,67,.2);font-weight:600;font-size:.8rem;color:#083F43;}
+.country-chip .flag{font-size:1.15rem;line-height:1;}.country-chip img.flag{width:20px;height:auto;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.08);}
+</style>
+</head>
+
+<body>
+
+    <!-- ===== SPINNER ===== -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only" data-cms-id="c16wz7xz">Loading...</span>
+        </div>
+    </div>
+
+   <!-- nav -->
+    <div class="container-fluid bg-light sticky-top p-0">
+        <nav class="navbar navbar-expand-lg navbar-light p-0">
+            <a href="index2.html" class="navbar-brand py-2 px-3 me-0 d-flex align-items-center gap-2">
+                <img src="img/logo.png" alt="Prof. Dr. Md. Rokonujjaman (Selim) logo" style="height:62px;width:auto;" data-cms-id="ckx4iyn">
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse p-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto">
+                    <a href="index2.html" class="nav-item nav-link active" data-cms-id="cg83do9">Home</a>
+                    <a href="about2.html" class="nav-item nav-link" data-cms-id="cg83do8">About</a>
+                    <a href="service2.html" class="nav-item nav-link" data-cms-id="cg83dob">Services</a>
+                    <a href="gallery2.html" class="nav-item nav-link" data-cms-id="cg83doa">Gallery</a>
+                    <a href="contact2.html" class="nav-item nav-link" data-cms-id="cg83dod">Contact</a>
+                    <a href="video2.html" class="nav-item nav-link" data-cms-id="cg83doc">Video Gallery</a>
+                    <a href="patient2.html" class="nav-item nav-link" data-cms-id="cg83dof">Patient Gallery</a>
+                </div>
+                <a class="btn btn-sm btn-primary" href="contact2.html" data-cms-id="c1djgch3">Book Appointment</a>
+                <div class="language-switcher" role="group" aria-label="Language selector">
+                    <button type="button" class="active" data-language="en" onclick="switchSiteLanguage('en')" data-cms-id="c1drf58v">EN</button>
+                    <button type="button" data-language="bn" onclick="switchSiteLanguage('bn')" data-cms-id="c1drf58u">বাংলা</button>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <!-- nav -->
+
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="container-fluid page-header py-5 mb-5">
+        <div class="container text-center py-5">
+            <h1 class="display-1 animated slideInLeft" data-cms-id="celhnkw">Our Gallery</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center animated slideInLeft mb-0">
+                    <li class="breadcrumb-item"><a class="text-primary" href="index2.html" data-cms-id="c1rsztmq">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" data-cms-id="cnj2b6v">Gallery</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ===== BACKGROUND GLOW ===== -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <!-- ===== GALLERY MAIN ===== -->
+    <main>
+        <div class="gallery-grid">
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/dr-1.jpg" alt="Prof. Dr. Md. Rokonujjaman (Selim) in OT scrubs (1)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+1'" data-cms-id="c1nggfqg"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/dr-2.jpg" alt="Prof. Dr. Md. Rokonujjaman (Selim) in OT scrubs (2)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+2'" data-cms-id="cfebe1"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/dr-3.jpg" alt="Prof. Dr. Md. Rokonujjaman (Selim) in OT scrubs (3)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+3'" data-cms-id="c1ncqt9m"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/dr-4.jpg" alt="Prof. Dr. Md. Rokonujjaman (Selim) in OT scrubs (4)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+4'" data-cms-id="c3epoa3"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/dr-5.jpg" alt="Prof. Dr. Md. Rokonujjaman (Selim) in OT scrubs (5)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+5'" data-cms-id="cahrve4"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/dr-6.jpg" alt="Prof. Dr. Md. Rokonujjaman (Selim) in OT scrubs (6)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+6'" data-cms-id="cmhtt0t"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/team-1.jpg" alt="Surgeon with colleague in the operating theatre (7)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+7'" data-cms-id="cae28xa"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-1.jpg" alt="MICS cardiac surgery in progress (8)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+8'" data-cms-id="cph55wv"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-2.jpg" alt="MICS cardiac surgery in progress (9)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+9'" data-cms-id="c1qxmlk0"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-3.jpg" alt="MICS cardiac surgery in progress (10)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+10'" data-cms-id="c3wkh7l"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-4.jpg" alt="MICS cardiac surgery in progress (11)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+11'" data-cms-id="c10ys8zd"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-5.jpg" alt="MICS cardiac surgery in progress (12)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+12'" data-cms-id="c16f75k"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-6.jpg" alt="MICS cardiac surgery in progress (13)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+13'" data-cms-id="c10v2mij"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-7.jpg" alt="MICS cardiac surgery in progress (14)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+14'" data-cms-id="c45qk1m"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-8.jpg" alt="MICS cardiac surgery in progress (15)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+15'" data-cms-id="c1n17qm5"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-9.jpg" alt="MICS cardiac surgery in progress (16)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+16'" data-cms-id="cn8uosc"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-10.jpg" alt="MICS cardiac surgery in progress (17)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+17'" data-cms-id="c1mxi45b"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-11.jpg" alt="MICS cardiac surgery in progress (18)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+18'" data-cms-id="cq861oe"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-12.jpg" alt="MICS cardiac surgery in progress (19)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+19'" data-cms-id="c14fyesx"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-13.jpg" alt="MICS cardiac surgery in progress (20)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+20'" data-cms-id="c4nlcz4"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-14.jpg" alt="MICS cardiac surgery in progress (21)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+21'" data-cms-id="c1bipd5m"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/surgery-15.jpg" alt="MICS cardiac surgery in progress (22)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+22'" data-cms-id="c4yojtn"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-1.jpg" alt="Cardiac ICU care (23)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+23'" data-cms-id="c18ov6xk"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-2.jpg" alt="Cardiac ICU care (24)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+24'" data-cms-id="c24udll"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-3.jpg" alt="Cardiac ICU care (25)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+25'" data-cms-id="c1xl4use"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-4.jpg" alt="Cardiac ICU care (26)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+26'" data-cms-id="cr141gf"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-5.jpg" alt="Cardiac ICU care (27)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+27'" data-cms-id="c1uraokc"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-6.jpg" alt="Cardiac ICU care (28)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+28'" data-cms-id="co79v8d"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/icu-7.jpg" alt="Cardiac ICU care (29)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+29'" data-cms-id="c1ezviz6"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-1.jpg" alt="Post-operative round (30)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+30'" data-cms-id="c8fupn7"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-2.jpg" alt="Post-operative round (31)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+31'" data-cms-id="c1xo4xq3"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-3.jpg" alt="Post-operative round (32)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+32'" data-cms-id="c1il20qi"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-4.jpg" alt="Post-operative round (33)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+33'" data-cms-id="c1uotku1"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-5.jpg" alt="Post-operative round (34)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+34'" data-cms-id="c1iorn7c"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-6.jpg" alt="Post-operative round (35)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+35'" data-cms-id="ckpgddr"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-7.jpg" alt="Post-operative round (36)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+36'" data-cms-id="c5mdge6"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-8.jpg" alt="Post-operative round (37)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+37'" data-cms-id="chq50hp"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-9.jpg" alt="Post-operative round (38)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+38'" data-cms-id="c5q32v0"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-10.jpg" alt="Post-operative round (39)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+39'" data-cms-id="c2471kj"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-11.jpg" alt="Post-operative round (40)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+40'" data-cms-id="c1m286k2"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+            <div class="gallery-item"><div class="gallery-card glass-panel" onclick="openLightbox(this)"><img src="img/round-12.jpg" alt="Post-operative round (41)" onerror="this.src='https://placehold.co/800x600/0b0f19/0463FA?text=Image+41'" data-cms-id="csdrr4s"><div class="card-overlay"><div class="overlay-icon glass-panel"><i class="fa-solid fa-expand"></i></div></div></div></div>
+        </div>
+    </main>
+
+    <!-- ===== LIGHTBOX ===== -->
+    <div id="lightbox-modal">
+        <button class="close-btn glass-panel" onclick="closeLightbox()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="lightbox-content-box">
+            <div class="lightbox-inner glass-panel">
+                <img id="lightbox-img" src="" alt="Expanded view" data-cms-id="c10cnpdv">
+            </div>
+        </div>
+    </div>
+
+<!-- disclaimer -->
+<div class="container-fluid bg-light py-4">
+    <div class="container">
+        <p class="text-center mb-0 small" data-cms-id="cbxwqst"><i class="fas fa-info-circle text-primary me-2"></i>এই ওয়েবসাইটের তথ্য সাধারণ রোগী-শিক্ষার জন্য। ব্যক্তিগত diagnosis, operation indication বা outcome সম্পর্কে সিদ্ধান্ত treating cardiac team-এর মূল্যায়নের ভিত্তিতে হবে।</p>
+    </div>
+</div>
+<!-- disclaimer -->
+
+<!-- Footer -->
+<div class="container-fluid footer position-relative bg-dark text-white-50 py-5 mt-5 wow fadeIn"
+    data-wow-delay="0.2s">
+
+    <div class="container py-5">
+
+        <div class="row g-5">
+
+            <!-- Doctor Information -->
+            <div class="col-lg-6 pe-lg-5">
+
+                <a href="#" class="navbar-brand d-inline-flex align-items-center">
+                    <img src="img/logo.png" alt="Prof. Dr. Md. Rokonujjaman (Selim) logo" style="height:60px;width:auto;margin-right:10px;" data-cms-id="c1ryixob">
+                    <span class="text-white fw-bold footer-brand-text" style="font-size:clamp(1.05rem,3.2vw,1.35rem);line-height:1.25;min-width:0;" data-cms-id="c10t9aus">Dr. Selim's MICS Heart Surgery Services</span>
+                </a>
+
+                <p data-cms-id="cem4ne4">
+                    Professor Dr. Md. Rokonujjaman (Selim)<br>
+                    MBBS, MS (CVTS), FCPS (CVS), MRCPS (Glasgow), FACS (USA)<br>
+                    Professor & Senior Consultant | Cardiac Surgeon | Minimally Invasive Cardiac Surgeon<br>
+                    Department of Cardiac Surgery, Ibrahim Cardiac Hospital & Research Institute<br>
+                    Dhaka
+                </p>
+
+                <p class="mb-2" data-cms-id="cem4ne5">
+                    <i class="fa fa-map-marker-alt me-2"></i>
+                    122, Kazi Nazrul Islam Avenue, Shahbag, Dhaka-1000
+                </p>
+
+                <p class="mb-2" data-cms-id="cem4ne6">
+                    <i class="fa fa-phone-alt me-2"></i>
+                    +880 1711-311200
+                </p>
+
+                <p class="mb-2" data-cms-id="cem4ne7">
+                    <i class="fa fa-envelope me-2"></i>
+                    drselim74@gmail.com
+                </p>
+
+                <div class="d-flex justify-content-start mt-4">
+
+                    <a class="btn btn-sm-square btn-primary me-3"
+                        href="https://facebook.com/drselim74"
+                        target="_blank">
+
+                        <i class="fab fa-facebook-f"></i>
+
+                    </a>
+
+                    <a class="btn btn-sm-square btn-primary me-3"
+                        href="https://www.youtube.com/@prof.drselim"
+                        target="_blank">
+
+                        <i class="fab fa-youtube"></i>
+
+                    </a>
+
+                    <a class="btn btn-sm-square btn-primary me-3"
+                        href="https://wa.me/8801711311200"
+                        target="_blank">
+
+                        <i class="fab fa-whatsapp"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer Links -->
+            <div class="col-lg-6 ps-lg-5">
+
+                <div class="row g-4">
+
+                    <!-- Surgical Services -->
+                    <div class="col-sm-6">
+
+                        <h5 class="text-primary mb-4" data-cms-id="cy5vsps">
+                            Surgical Services
+                        </h5>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wqk">
+                            MICS VSD Closure
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wql">
+                            MICS ASD Closure
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wqm">
+                            Mitral Valve Repair & Replacement
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wqn">
+                            Aortic Valve Replacement
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wqg">
+                            CABG / MIDCAB
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wqh">
+                            Congenital Cardiac Surgery
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdy6wqi">
+                            Cardiac ICU Follow-up
+                        </a>
+
+                    </div>
+
+
+                    <!-- Quick Links -->
+                    <div class="col-sm-6">
+
+                        <h5 class="text-primary mb-4" data-cms-id="cxfsy69">
+                            Quick Links
+                        </h5>
+
+                        <a class="btn btn-link" href="about2.html" data-cms-id="cdxelfh">
+                            About Us
+                        </a>
+
+                        <a class="btn btn-link" href="contact2.html" data-cms-id="cdxelfg">
+                            Contact Us
+                        </a>
+
+                        <a class="btn btn-link" href="service2.html" data-cms-id="cdxelfj">
+                            Our Services
+                        </a>
+
+                        <a class="btn btn-link" href="gallery2.html" data-cms-id="cdxelfi">
+                            Gallery
+                        </a>
+
+                        <a class="btn btn-link" href="appoinment2.html" data-cms-id="cdxelfd">
+                            Online Appointment
+                        </a>
+
+                        <a class="btn btn-link" href="index2.html" data-cms-id="cdxelfc">
+                            Home
+                        </a>
+
+                    </div>
+
+
+                    <!-- Consultation Center Information -->
+                    <div class="col-sm-12">
+
+                        <h5 class="text-primary mb-4" data-cms-id="czdnqoy">
+                            Consultation Center Information
+                        </h5>
+<span class="visiting-hours-tag" data-cms-id="cfcv88j"><i class="far fa-clock"></i> Visiting Hours: 8:00 AM – 4:00 PM</span>
+
+
+
+                        <!-- Chamber 1 -->
+                        <p class="text-white-50 mb-3" data-cms-id="cdzidv3">
+
+                            <strong class="text-white" data-cms-id="c1q6vul5">
+                                Ibrahim Cardiac Hospital & Research Institute
+                            </strong>
+                            <br>
+
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            122, Kazi Nazrul Islam Avenue, Shahbag, Dhaka-1000
+                            <br>
+
+                            <i class="fas fa-phone-alt me-2"></i>
+                            Appointment: +880 1711-311200
+
+                        </p>
+
+
+                        <!-- Chamber 2 -->
+                        <p class="text-white-50 mb-3" data-cms-id="cdzidv2">
+
+                            <strong class="text-white" data-cms-id="cmi3rso">
+                                Appointment & Consultation
+                            </strong>
+                            <br>
+
+                            <i class="fas fa-phone-alt me-2"></i>
+                            +880 1711-311200 (Phone / WhatsApp)
+
+                        </p>
+
+
+                        <!-- Chamber 3 -->
+                        <p class="text-white-50 mb-0" data-cms-id="cdzidv1">
+
+                            <strong class="text-white" data-cms-id="c13dwxcr">
+                                Email
+                            </strong>
+                            <br>
+
+                            <i class="fas fa-envelope me-2"></i>
+                            drselim74@gmail.com
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Copyright Footer -->
+<div class="container-fluid bg-dark text-white border-top border-secondary py-4 site-copyright wow fadeIn"
+    data-wow-delay="0.1s">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0" data-cms-id="c1ojqhli">
+
+                &copy;
+
+                <a class="border-bottom"
+                    href="https://facebook.com/drselim74" data-cms-id="c196jaya">
+
+                    Prof. Dr. Md. Rokonujjaman (Selim) - MICS Cardiac Surgeon
+
+                </a>,
+
+                All Right Reserved.
+
+            </div>
+
+
+            <div class="col-md-6 text-center text-md-end" data-cms-id="c1ojqhlj">
+
+                Designed By
+
+                <a class="border-bottom"
+                    href="https://www.facebook.com/aurazoneofficial"
+                    target="_blank" data-cms-id="c195qzn7">
+
+                    Aurazone
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- footer -->
+
+
+
+
+        
+    <!-- ===== BACK TO TOP ===== -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ----- LIGHTBOX -----
+        const lightboxModal = document.getElementById('lightbox-modal');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightboxModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightboxModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        lightboxModal.addEventListener('click', function(e) {
+            if (e.target === lightboxModal) closeLightbox();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+        lightboxImg.addEventListener('click', function(e) { e.stopPropagation(); });
+        
+    </script>
+
+    <!-- ===== JS LIBRARIES ===== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/counterup/counterup.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/cms-content.js"></script>
+    <script src="js/cms-editor.js"></script>
+    <script src="js/site-fonts.js"></script>
+    <script src="js/site-settings.js"></script>
+    <script src="js/cms-settings-ui.js"></script>
+</body>
+
+</html>

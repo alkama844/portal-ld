@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Disallow: /index2.html
+Disallow: /about2.html
+Disallow: /service2.html
+Disallow: /gallery2.html
+Disallow: /contact2.html
+Disallow: /appoinment2.html
+Disallow: /patient2.html
+Disallow: /video2.html
+Disallow: /api/
+
+Sitemap: https://profdrselim.com/sitemap.xml
