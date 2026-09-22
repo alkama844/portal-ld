@@ -1,0 +1,73 @@
+# Lucky Dental Care — Public Frontend (fauntend)
+# This file tells Netlify how to deploy the static HTML site.
+# Deploy this folder as its OWN Netlify site (not the monorepo root).
+
+[build]
+  # No build step needed — pure static HTML/CSS/JS
+  publish = "."
+
+# Redirect all clean-URL paths back to the correct HTML file
+[[redirects]]
+  from = "/about"
+  to   = "/about.html"
+  status = 200
+
+[[redirects]]
+  from = "/service"
+  to   = "/service.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-div"
+  to   = "/service-div.html"
+  status = 200
+
+[[redirects]]
+  from = "/contact"
+  to   = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/appointment"
+  to   = "/appointment.html"
+  status = 200
+
+[[redirects]]
+  from = "/estimate"
+  to   = "/estimate.html"
+  status = 200
+
+# 404 fallback
+[[redirects]]
+  from   = "/*"
+  to     = "/404.html"
+  status = 404
+
+# Cache static assets aggressively
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/lucky_image/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
