@@ -143,192 +143,107 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // --------------------------------------------------------------------------
-  // 4. GALLERY CATEGORY FILTER & LIGHTBOX
+  // 4. SCROLL REVEAL ANIMATION SYSTEM & SERVICE DIRECTORY FILTER
   // --------------------------------------------------------------------------
-  const filterBtns = document.querySelectorAll('.filter-tab-btn');
-  const allGalleryItems = document.querySelectorAll('.gallery-card, .gallery-tile');
 
-  // Filter tabs
-  filterBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      filterBtns.forEach(function (b) {
-        b.classList.remove('active');
-      });
-      btn.classList.add('active');
-
-      const filterVal = btn.getAttribute('data-filter');
-
-      allGalleryItems.forEach(function (card) {
-        const category = card.getAttribute('data-category');
-        if (filterVal === 'all' || category === filterVal) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    });
-  });
-
-  // Lightbox
-  const lightboxModal = document.getElementById('lightboxModal');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const lightboxTitle = document.getElementById('lightboxTitle');
-  const lightboxCounter = document.getElementById('lightboxCounter');
-  const lightboxClose = document.getElementById('lightboxClose');
-  const lightboxPrev = document.getElementById('lightboxPrev');
-  const lightboxNext = document.getElementById('lightboxNext');
-  const lightboxZoom = document.getElementById('lightboxZoom');
-  const imgWrapper = document.querySelector('.lightbox-img-wrapper');
-
-  let currentGalleryIndex = 0;
-  const galleryItems = [];
-
-  allGalleryItems.forEach(function (card, index) {
-    const img = card.querySelector('img');
-    if (!img) return;
-
-    const titleEl = card.querySelector('.gallery-caption-title, h4');
-    const title = titleEl ? titleEl.textContent.trim() : '';
-
-    const categoryEl = card.querySelector('.gallery-caption-category, p');
-    const category = categoryEl ? categoryEl.textContent.trim() : '';
-
-    galleryItems.push({
-      src: img.getAttribute('src'),
-      alt: img.getAttribute('alt') || '',
-      title: title,
-      category: category,
-    });
-
-    card.addEventListener('click', function () {
-      openLightbox(index);
-    });
-  });
-
-  function openLightbox(index) {
-    if (!lightboxModal) return;
-    currentGalleryIndex = index;
-    updateLightbox();
-    lightboxModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeLightbox() {
-    if (!lightboxModal) return;
-    lightboxModal.classList.remove('active');
-    if (imgWrapper) imgWrapper.classList.remove('zoomed');
-    document.body.style.overflow = '';
-  }
-
-  function updateLightbox() {
-    const item = galleryItems[currentGalleryIndex];
-    if (!item) return;
-
-    if (lightboxImg) {
-      lightboxImg.src = item.src;
-      lightboxImg.alt = item.alt;
-    }
-    if (lightboxTitle) {
-      lightboxTitle.textContent = item.title;
-    }
-    if (lightboxCounter) {
-      lightboxCounter.textContent = currentGalleryIndex + 1 + ' / ' + galleryItems.length;
-    }
-    if (imgWrapper) {
-      imgWrapper.classList.remove('zoomed');
-    }
-  }
-
-  function showNextImage() {
-    currentGalleryIndex = (currentGalleryIndex + 1) % galleryItems.length;
-    updateLightbox();
-  }
-
-  function showPrevImage() {
-    currentGalleryIndex = (currentGalleryIndex - 1 + galleryItems.length) % galleryItems.length;
-    updateLightbox();
-  }
-
-  if (lightboxClose) {
-    lightboxClose.addEventListener('click', closeLightbox);
-  }
-
-  if (lightboxNext) {
-    lightboxNext.addEventListener('click', function (e) {
-      e.stopPropagation();
-      showNextImage();
-    });
-  }
-
-  if (lightboxPrev) {
-    lightboxPrev.addEventListener('click', function (e) {
-      e.stopPropagation();
-      showPrevImage();
-    });
-  }
-
-  if (lightboxZoom) {
-    lightboxZoom.addEventListener('click', function (e) {
-      e.stopPropagation();
-      if (imgWrapper) {
-        imgWrapper.classList.toggle('zoomed');
-      }
-    });
-  }
-
-  if (lightboxModal) {
-    lightboxModal.addEventListener('click', function (e) {
-      if (e.target === lightboxModal) {
-        closeLightbox();
-      }
-    });
-  }
-
-  // Keyboard navigation for Lightbox
-  document.addEventListener('keydown', function (e) {
-    if (!lightboxModal || !lightboxModal.classList.contains('active')) return;
-
-    if (e.key === 'Escape') {
-      closeLightbox();
-    } else if (e.key === 'ArrowRight') {
-      showNextImage();
-    } else if (e.key === 'ArrowLeft') {
-      showPrevImage();
-    }
-  });
-
-  // Touch swipe support for lightbox on mobile
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  if (lightboxModal) {
-    lightboxModal.addEventListener(
-      'touchstart',
-      function (e) {
-        touchStartX = e.changedTouches[0].screenX;
+  // IntersectionObserver for Scroll Animations
+  const revealElements = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window && revealElements.length > 0) {
+    const revealObserver = new IntersectionObserver(
+      function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
       },
-      { passive: true }
+      {
+        root: null,
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.1,
+      }
     );
 
-    lightboxModal.addEventListener(
-      'touchend',
-      function (e) {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-      },
-      { passive: true }
-    );
+    revealElements.forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  } else {
+    // Fallback if IntersectionObserver not supported
+    revealElements.forEach(function (el) {
+      el.classList.add('is-revealed');
+    });
   }
 
-  function handleSwipe() {
-    const swipeDist = touchEndX - touchStartX;
-    if (Math.abs(swipeDist) > 50) {
-      if (swipeDist < 0) {
-        showNextImage(); // Swipe left
-      } else {
-        showPrevImage(); // Swipe right
-      }
-    }
+  // Bengali Numeral Helper
+  function toBengaliDigits(num) {
+    const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return String(num).replace(/\d/g, d => bnDigits[d]);
+  }
+
+  // Heritage 44+ Counter Animation
+  const counterElements = document.querySelectorAll('.about-exp-number, .animated-counter-number');
+  if ('IntersectionObserver' in window && counterElements.length > 0) {
+    const counterObserver = new IntersectionObserver(
+      function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const targetEl = entry.target;
+            observer.unobserve(targetEl);
+
+            let count = 0;
+            const target = 44;
+            const duration = 1500;
+            const stepTime = Math.abs(Math.floor(duration / target));
+
+            const timer = setInterval(function () {
+              count += 1;
+              targetEl.textContent = `${toBengaliDigits(count)}+`;
+              if (count >= target) {
+                clearInterval(timer);
+                targetEl.textContent = `${toBengaliDigits(target)}+`;
+              }
+            }, stepTime);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    counterElements.forEach(function (el) {
+      counterObserver.observe(el);
+    });
+  }
+
+  // Service Directory Category Filter (for service.html)
+  const serviceFilterBtns = document.querySelectorAll('.service-filter-btn');
+  const serviceCards = document.querySelectorAll('.tdc-service-card-item');
+
+  if (serviceFilterBtns.length > 0 && serviceCards.length > 0) {
+    serviceFilterBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        serviceFilterBtns.forEach(function (b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+
+        const filterVal = btn.getAttribute('data-filter');
+
+        serviceCards.forEach(function (card) {
+          const category = card.getAttribute('data-category');
+          if (filterVal === 'all' || category === filterVal) {
+            card.style.display = '';
+            card.style.opacity = '0';
+            setTimeout(function () {
+              card.style.transition = 'opacity 0.35s ease';
+              card.style.opacity = '1';
+            }, 30);
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
   }
 
   // --------------------------------------------------------------------------
@@ -500,6 +415,165 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // --------------------------------------------------------------------------
+  // 6b. CONTACT PAGE APPOINTMENT FORM & DYNAMIC OPTIONS
+  // --------------------------------------------------------------------------
+  const contactForm = document.getElementById('contactAppointmentForm');
+  const contactServiceSelect = document.getElementById('contactServiceSelect');
+  const contactScheduleSelect = document.getElementById('contactPreferredTime');
+  const contactOtherWrapper = document.getElementById('contact-other-service-wrapper');
+  const contactOtherInput = document.getElementById('contact-other-service-input');
+  const contactSuccessBox = document.getElementById('contactSuccessBox');
+  const contactWhatsAppBtn = document.getElementById('contactWhatsAppBtn');
+
+  const FALLBACK_SERVICES = [
+    'দাঁতের সাধারণ চিকিৎসা ও চেকআপ',
+    'রুট ক্যানাল চিকিৎসা (RCT)',
+    'দাঁত পরিষ্কার ও স্কেলিং',
+    'দাঁতের ফিলিং ও রেস্টোরেশন',
+    'দাঁত তোলা ও এক্সট্রাকশন',
+    'দাঁতের ক্যাপ ও ক্রাউন',
+    'ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন',
+    'মাড়ির চিকিৎসা (Gums Care)',
+    'শিশুদের দাঁতের যত্ন',
+    'ওরাল মাইনর সার্জারি',
+    'দাঁতের সৌন্দর্যবর্ধন (Smile Design)',
+    'ডিজিটাল এক্স-রে ও ডায়াগনস্টিক',
+    'অন্যান্য (Other)'
+  ];
+
+  const FALLBACK_SCHEDULES = [
+    'সকাল (১০:০০টা - ০১:০০টা)',
+    'বিকাল (০৪:০০টা - ০৬:০০টা)',
+    'সন্ধ্যা (০৬:০০টা - ০৯:০০টা)'
+  ];
+
+  function populateSelect(selectEl, list) {
+    if (!selectEl) return;
+    const current = selectEl.value;
+    selectEl.innerHTML = '';
+    const cleanList = (Array.isArray(list) && list.length > 0) ? list : (selectEl === contactServiceSelect ? FALLBACK_SERVICES : FALLBACK_SCHEDULES);
+    cleanList.forEach(item => {
+      const text = typeof item === 'string' ? item : (item.name || item.title || item.label || item.value);
+      if (text && text !== 'undefined' && text !== 'null' && String(text).trim()) {
+        const opt = document.createElement('option');
+        opt.value = String(text).trim();
+        opt.textContent = String(text).trim();
+        selectEl.appendChild(opt);
+      }
+    });
+    if (current && Array.from(selectEl.options).some(o => o.value === current)) {
+      selectEl.value = current;
+    }
+  }
+
+  function checkContactOther() {
+    if (!contactServiceSelect || !contactOtherWrapper) return;
+    const val = contactServiceSelect.value || '';
+    const isOther = val.includes('অন্যান্য') || val.toLowerCase().includes('other');
+    if (isOther) {
+      contactOtherWrapper.style.display = 'block';
+      if (contactOtherInput) contactOtherInput.required = true;
+    } else {
+      contactOtherWrapper.style.display = 'none';
+      if (contactOtherInput) {
+        contactOtherInput.required = false;
+        contactOtherInput.value = '';
+      }
+    }
+  }
+
+  if (contactServiceSelect) {
+    contactServiceSelect.addEventListener('change', checkContactOther);
+    checkContactOther();
+  }
+
+  // Pre-select service from URL query (e.g. ?service=Teeth+Gap+Filling)
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const preselectedServiceParam = urlSearchParams.get('service');
+  if (preselectedServiceParam) {
+    const targetSelects = [contactServiceSelect, serviceSelect, document.getElementById('pageServiceSelect')].filter(Boolean);
+    targetSelects.forEach(sel => {
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text.toLowerCase().includes(preselectedServiceParam.toLowerCase()) || 
+            sel.options[i].value.toLowerCase().includes(preselectedServiceParam.toLowerCase())) {
+          sel.selectedIndex = i;
+          break;
+        }
+      }
+    });
+    checkContactOther();
+  }
+
+  // Fetch appointment options from backend if on contact page
+  if (contactServiceSelect && contactScheduleSelect) {
+    (async function loadContactOptions() {
+      try {
+        const apiBase = window.API_BASE_URL || window.LUCKY_API_BASE_URL || 'https://api.luckydentalcare.com';
+        const res = await fetch(`${apiBase}/api/appointment-options`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.services) && data.services.length > 0) {
+            populateSelect(contactServiceSelect, data.services);
+          }
+          if (data && Array.isArray(data.schedules) && data.schedules.length > 0) {
+            populateSelect(contactScheduleSelect, data.schedules);
+          }
+        }
+      } catch (e) {
+        // Fallbacks remain in place
+      }
+      checkContactOther();
+    })();
+  }
+
+  // Contact form submission
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('contactPatientName').value.trim();
+      const phone = document.getElementById('contactPatientPhone').value.trim();
+      let service = contactServiceSelect ? contactServiceSelect.value : '';
+      const date = document.getElementById('contactPreferredDate').value;
+      const time = contactScheduleSelect ? contactScheduleSelect.value : '';
+      const note = document.getElementById('contactPatientNote').value.trim();
+
+      if (!name || !phone) {
+        alert('অনুগ্রহ করে আপনার নাম এবং মোবাইল নম্বর প্রদান করুন।');
+        return;
+      }
+
+      const isOther = service.includes('অন্যান্য') || service.toLowerCase().includes('other');
+      if (isOther && contactOtherInput) {
+        const detail = contactOtherInput.value.trim();
+        if (!detail) {
+          alert('অনুগ্রহ করে আপনার নির্দিষ্ট সমস্যার বিবরণ লিখুন।');
+          contactOtherInput.focus();
+          return;
+        }
+        service = `অন্যান্য (${detail})`;
+      }
+
+      let message = `*Lucky Dental Care - অ্যাপয়েন্টমেন্ট অনুরোধ*\n\n`;
+      message += `👤 *রোগীর নাম:* ${name}\n`;
+      message += `📱 *মোবাইল নম্বর:* ${phone}\n`;
+      if (service) message += `🦷 *সেবার ধরন:* ${service}\n`;
+      if (date) message += `📅 *পছন্দের তারিখ:* ${date}\n`;
+      if (time) message += `⏰ *পছন্দের সময়:* ${time}\n`;
+      if (note) message += `📝 *বিবরণ:* ${note}\n`;
+
+      const encoded = encodeURIComponent(message);
+      if (contactWhatsAppBtn) {
+        contactWhatsAppBtn.href = `https://wa.me/8801715917834?text=${encoded}`;
+      }
+
+      contactForm.style.display = 'none';
+      if (contactSuccessBox) {
+        contactSuccessBox.style.display = 'block';
+      }
+    });
+  }
+
+  // --------------------------------------------------------------------------
   // 7. MULTI-PAGE ACTIVE NAVIGATION & PAGE TRANSITION
   // --------------------------------------------------------------------------
   document.body.classList.add('page-fade-in');
@@ -559,5 +633,103 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 160);
     }
   });
+
+  // --------------------------------------------------------------------------
+  // 8. HOMEPAGE HERO CAROUSEL INITIALIZATION (Section 2)
+  // --------------------------------------------------------------------------
+  const carouselContainer = document.getElementById('heroCarousel');
+  if (carouselContainer) {
+    const slides = carouselContainer.querySelectorAll('.hero-carousel-slide');
+    const dots = carouselContainer.querySelectorAll('.hero-carousel-dot');
+    const prevBtn = carouselContainer.querySelector('.hero-carousel-arrow.prev');
+    const nextBtn = carouselContainer.querySelector('.hero-carousel-arrow.next');
+    let currentIndex = 0;
+    let autoPlayTimer = null;
+    const intervalTime = 5000;
+
+    function goToSlide(index) {
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+      currentIndex = index;
+
+      slides.forEach(function (slide, i) {
+        slide.classList.toggle('active', i === currentIndex);
+      });
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle('active', i === currentIndex);
+        dot.setAttribute('aria-current', i === currentIndex ? 'true' : 'false');
+      });
+    }
+
+    function nextSlide() {
+      goToSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      goToSlide(currentIndex - 1);
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayTimer = setInterval(nextSlide, intervalTime);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', function () { prevSlide(); startAutoPlay(); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { nextSlide(); startAutoPlay(); });
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener('click', function () {
+        goToSlide(i);
+        startAutoPlay();
+      });
+    });
+
+    carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+    carouselContainer.addEventListener('mouseleave', startAutoPlay);
+    carouselContainer.addEventListener('touchstart', stopAutoPlay, { passive: true });
+    carouselContainer.addEventListener('touchend', startAutoPlay, { passive: true });
+
+    // Keyboard navigation
+    carouselContainer.setAttribute('tabindex', '0');
+    carouselContainer.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { prevSlide(); startAutoPlay(); }
+      else if (e.key === 'ArrowRight') { nextSlide(); startAutoPlay(); }
+    });
+
+    startAutoPlay();
+  }
+
+  // --------------------------------------------------------------------------
+  // 9. HIGH-PERFORMANCE INTERSECTION OBSERVER FOR SCROLL REVEALS (Section 19)
+  // --------------------------------------------------------------------------
+  if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      rootMargin: '0px 0px -40px 0px',
+      threshold: 0.08
+    });
+
+    document.querySelectorAll('[data-reveal]').forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  } else {
+    // Graceful fallback
+    document.querySelectorAll('[data-reveal]').forEach(function (el) {
+      el.classList.add('is-revealed');
+    });
+  }
 });
 

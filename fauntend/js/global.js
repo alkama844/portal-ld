@@ -6,16 +6,69 @@
 (function () {
   'use strict';
 
-  // 1. Central API Base URL Configuration (Section 44, 45, 73)
+  // 1. Centralized API Base URL Configuration & Resilient Fallback (Section 9, 22)
+  const API_BASE_URL = 'https://api.luckydentalcare.com';
+
+  const isFile = window.location.protocol === 'file:';
   const isLocalhost = Boolean(
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
-    window.location.hostname.endsWith('.local')
+    window.location.hostname.endsWith('.local') ||
+    isFile
   );
 
   window.LUCKY_API_BASE_URL = window.LUCKY_API_BASE_OVERRIDE || (
-    isLocalhost ? 'http://localhost:5000' : 'https://api.luckydentalcare.com'
+    isLocalhost ? 'http://localhost:5000' : API_BASE_URL
   );
+  window.LUCKY_FALLBACK_API_URL = isLocalhost ? API_BASE_URL : 'http://localhost:5000';
+
+  /**
+   * Resilient Fetch with Automatic Fallback (Localhost <-> Cloud API)
+   * Prevents "Cannot connect to server" when one backend is offline
+   */
+  window.fetchWithBackendFallback = async function (endpoint, options = {}) {
+    const primary = window.LUCKY_API_BASE_URL || 'http://localhost:5000';
+    const fallback = window.LUCKY_FALLBACK_API_URL || (primary.includes('localhost') ? API_BASE_URL : 'http://localhost:5000');
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+
+    try {
+      const res = await fetch(`${primary}${cleanEndpoint}`, options);
+      return res;
+    } catch (primaryErr) {
+      console.warn(`Lucky API: Primary backend (${primary}) unreachable, attempting fallback (${fallback})...`);
+      try {
+        const fallbackRes = await fetch(`${fallback}${cleanEndpoint}`, options);
+        // Fallback succeeded, remember it for subsequent requests
+        window.LUCKY_API_BASE_URL = fallback;
+        window.LUCKY_FALLBACK_API_URL = primary;
+        return fallbackRes;
+      } catch (fallbackErr) {
+        throw primaryErr;
+      }
+    }
+  };
+
+  /**
+   * Safe Frontend Error Sanitizer (Section 6, 7)
+   * Prevents exposure of internal infrastructure, database tech, or stack traces to public visitors
+   */
+  window.toSafeErrorMessage = function (err, fallbackMsg) {
+    if (!err) return fallbackMsg || 'কিছু সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+    const raw = String(err?.message || err).toLowerCase();
+    if (raw.includes('failed to fetch') || raw.includes('network') || raw.includes('connection refused') || raw.includes('econnrefused')) {
+      return 'সার্ভারের সাথে এই মুহূর্তে যোগাযোগ করা যাচ্ছে না। কিছুক্ষণ পর আবার চেষ্টা করুন।';
+    }
+    if (raw.includes('mongo') || raw.includes('database') || raw.includes('db')) {
+      return 'ডাটা সেবা এই মুহূর্তে উপলভ্য নয়।';
+    }
+    if (raw.includes('unauthorized') || raw.includes('password') || raw.includes('credentials') || raw.includes('লগইন')) {
+      return 'লগইন তথ্য সঠিক নয়।';
+    }
+    if (raw.includes('sms')) {
+      return 'SMS সেবা এই মুহূর্তে উপলভ্য নয়।';
+    }
+    return fallbackMsg || 'কিছু সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
+  };
 
   // 2. Bengali Number Formatter
   window.toBengaliNumerals = function (num) {

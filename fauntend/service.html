@@ -57,15 +57,12 @@
         </div>
       </a>
 
+      <!-- Desktop Navigation -->
       <nav aria-label="Main Navigation">
         <ul class="nav-menu">
           <li><a href="index.html" class="nav-link">হোম</a></li>
           <li><a href="about.html" class="nav-link">আমাদের সম্পর্কে</a></li>
-          <li><a href="heritage.html" class="nav-link">ঐতিহ্য</a></li>
           <li><a href="service.html" class="nav-link active">সেবাসমূহ</a></li>
-          <li><a href="digital.html" class="nav-link">আধুনিক প্রযুক্তি</a></li>
-          <li><a href="why-us.html" class="nav-link">কেন আমরা</a></li>
-          <li><a href="gallery.html" class="nav-link">গ্যালারি</a></li>
           <li><a href="contact.html" class="nav-link">যোগাযোগ</a></li>
         </ul>
       </nav>
@@ -99,11 +96,7 @@
     <ul class="drawer-menu">
       <li><a href="index.html" class="drawer-link"><i class="fas fa-home"></i> হোম</a></li>
       <li><a href="about.html" class="drawer-link"><i class="fas fa-clinic-medical"></i> আমাদের সম্পর্কে</a></li>
-      <li><a href="heritage.html" class="drawer-link"><i class="fas fa-history"></i> ঐতিহ্য ও পথচলা</a></li>
       <li><a href="service.html" class="drawer-link active"><i class="fas fa-tooth"></i> ডেন্টাল সেবাসমূহ</a></li>
-      <li><a href="digital.html" class="drawer-link"><i class="fas fa-microscope"></i> আধুনিক প্রযুক্তি</a></li>
-      <li><a href="why-us.html" class="drawer-link"><i class="fas fa-shield-alt"></i> কেন Lucky Dental Care</a></li>
-      <li><a href="gallery.html" class="drawer-link"><i class="fas fa-images"></i> ক্লিনিক গ্যালারি</a></li>
       <li><a href="contact.html" class="drawer-link"><i class="fas fa-map-marked-alt"></i> যোগাযোগ ও লোকেশন</a></li>
       <li><a href="appointment.html" class="drawer-link"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
     </ul>
@@ -122,7 +115,7 @@
         <span class="breadcrumb-item active">সেবাসমূহ</span>
       </nav>
       <span class="page-hero-badge"><i class="fas fa-tooth"></i> ডেন্টাল কেয়ার ডিরেক্টরি</span>
-      <h1 class="page-hero-title">ডেন্টাল সেবাসমূহ</h1>
+      <h1 class="page-hero-title">সেবাসমূহ</h1>
       <p class="page-hero-subtitle">"আপনার দাঁতের যত্নে আমাদের সকল সেবা" — নিরাপদ, ব্যথাহীন ও আধুনিক প্রযুক্তিনির্ভর ডেন্টাল সলিউশন</p>
     </div>
   </section>
@@ -138,172 +131,295 @@
         </p>
       </div>
 
-      <div class="services-grid">
-        <!-- 1. Root Canal -->
-        <div class="service-card" id="root-canal">
-          <div class="service-icon-box">
-            <i class="fas fa-tooth" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">রুট ক্যানাল চিকিৎসা (RCT)</h3>
-          <p class="service-card-desc">
-            গভীরভাবে ক্ষয়প্রাপ্ত, সংক্রমিত বা প্রচণ্ড ব্যথায় আক্রান্ত প্রাকৃতিক দাঁত না ফেলে আধুনিক রুটের সাহায্যে জীবাণুমুক্ত করে সারিয়ে তোলা। দাঁতের গোড়ার স্নায়ু পরিষ্কার করে সিল করা হয়, ফলে দাঁতটি বহু বছর সুস্থভাবে কাজ করে।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+      <!-- Category Filter Tabs -->
+      <div class="service-filter-bar" data-reveal="fade-up">
+        <button type="button" class="service-filter-btn active" data-filter="all">সকল সেবা (১২)</button>
+        <button type="button" class="service-filter-btn" data-filter="restorative">রিস্টোরেটিভ ও ফিলিং</button>
+        <button type="button" class="service-filter-btn" data-filter="cosmetic">কসমেটিক ও স্মাইল</button>
+        <button type="button" class="service-filter-btn" data-filter="general">সাধারণ ও প্রতিরোধমূলক</button>
+        <button type="button" class="service-filter-btn" data-filter="surgery">ইমপ্লান্ট ও অর্থোডন্টিক্স</button>
+      </div>
 
-        <!-- 2. Scaling & Polishing -->
-        <div class="service-card" id="scaling">
-          <div class="service-icon-box">
-            <i class="fas fa-wand-magic-sparkles"></i>
-          </div>
-          <h3 class="service-card-title">দাঁত পরিষ্কার ও স্কেলিং</h3>
-          <p class="service-card-desc">
-            আল্ট্রাসনিক স্কেলারের মৃদু কম্পন ও পানির প্রবাহের মাধ্যমে দাঁতের ফাঁকে জমে থাকা ক্ষতিকর ক্যালকুলাস (পাথর), প্লাক ও চা-পানের দাগ নিরাপদে পরিষ্কার করা। এটি মাড়ির প্রদাহ ও মুখের দুর্গন্ধ দূর করে দাঁত সুরক্ষিত রাখে।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+      <div class="tdc-dental-section-wrapper">
+        <div class="tdc-services-grid-container">
 
-        <!-- 3. Dental Filling -->
-        <div class="service-card" id="filling">
-          <div class="service-icon-box">
-            <i class="fas fa-shield-alt" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">দাঁতের ফিলিং ও রেস্টোরেশন</h3>
-          <p class="service-card-desc">
-            ক্যাভিটি বা গর্ত হওয়া দাঁতের জন্য দাঁতের রঙের সাথে হুবহু মানানসই উন্নত লাইট-কিউর কম্পোজিট ফিলিং। এটি দাঁতের প্রাকৃতিক শক্তি ও স্বাভাবিক চিবানোর শক্তি ফিরিয়ে দেয় এবং ভবিষ্যতে ক্ষয় রোধ করে।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 1. Cosmetic Teeth Gap Filling -->
+          <a href="appointment.html?service=Teeth+Gap+Filling" class="tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-gap-filling-before.webp" alt="Teeth gap filling before treatment" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-gap-filling-after.webp" alt="Teeth gap filling after treatment" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">কসমেটিক দাঁতের ফাঁকা ফিলিং</h3>
+              <div class="tdc-meta-info">
+                <span><i class="far fa-clock"></i> ৪০ মিনিট</span>
+                <span>• কসমেটিক</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">৫,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 4. Extraction -->
-        <div class="service-card" id="extraction">
-          <div class="service-icon-box">
-            <i class="fas fa-user-md" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">দাঁত তোলা ও এক্সট্রাকশন</h3>
-          <p class="service-card-desc">
-            অতিরিক্ত নড়ে যাওয়া, ভেঙে যাওয়া বা মেরামতের অযোগ্য দাঁত এবং জটিল বাঁকা আক্কেল দাঁতের সমস্যায় নিরাপদ লোকাল অ্যানেস্থেসিয়ায় যথাসম্ভব আরামদায়ক ও ব্যথাহীন পদ্ধতিতে দাঁত অপসারণ।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 2. Painless Root Canal -->
+          <a href="appointment.html?service=Root+Canal+Treatment" class="tdc-service-card-item" data-category="restorative" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-root-canal-before.webp" alt="Painless root canal treatment before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-root-canal-after.webp" alt="Root canal after treatment" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">ব্যথাহীন রুট ক্যানাল চিকিৎসা (RCT)</h3>
+              <div class="tdc-meta-info">
+                <span><i class="far fa-clock"></i> ৪৫ মিনিট</span>
+                <span>• রিস্টোরেটিভ</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">৮,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 5. Crown & Cap -->
-        <div class="service-card" id="crown">
-          <div class="service-icon-box">
-            <i class="fas fa-crown" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">দাঁতের ক্যাপ ও ক্রাউন</h3>
-          <p class="service-card-desc">
-            রুট ক্যানাল করা দাঁত অথবা দুর্বল ও ভেঙে যাওয়া দাঁতের দীর্ঘস্থায়ী সুরক্ষায় প্রিমিয়াম সিরামিক, জিরকোনিয়া ও পোর্সেলিন ক্রাউন বা ক্যাপ। এটি দাঁতকে পুনরায় মজবুত করে এবং প্রাকৃতিক দাঁতের মতো উজ্জ্বল দেখায়।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 3. Ceramic Dental Crown -->
+          <a href="appointment.html?service=Dental+Crown" class="tdc-service-card-item" data-category="restorative" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-crown-before.webp" alt="Ceramic dental crown before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-crown-after.webp" alt="Dental crown after placement" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">সিরামিক ডেন্টাল ক্রাউন ও ক্যাপ</h3>
+              <div class="tdc-meta-info">
+                <span><i class="far fa-clock"></i> ৪৫ মিনিট</span>
+                <span>• স্থায়ী সুরক্ষা</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">৮,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 6. Dental Bridge (Missing Tooth Replacement) -->
-        <div class="service-card" id="bridge">
-          <div class="service-icon-box">
-            <i class="fas fa-grip-lines" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন</h3>
-          <p class="service-card-desc">
-            একটি বা একাধিক হারানো দাঁতের জায়গায় স্থায়ী ডেন্টাল ব্রিজ অথবা কাস্টম পার্শিয়াল ডেঞ্চার প্রতিস্থাপন। এর মাধ্যমে চিবানোর ক্ষমতা ও মুখের প্রাকৃতিক ভারসাম্য পুনরায় নিশ্চিত করা হয়।
-          </p>
-          <a href="treatment-of-missing-tooth.html" class="service-card-cta">
-            চিকিৎসার বিস্তারিত পাতা <i class="fas fa-arrow-right"></i>
+          <!-- 4. Professional Teeth Scaling -->
+          <a href="appointment.html?service=Teeth+Scaling" class="tdc-service-card-item" data-category="general" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-scaling-before.webp" alt="Teeth scaling before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-scaling-after.webp" alt="Teeth scaling after polishing" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">দাঁতের স্কেলিং ও পলিশিং</h3>
+              <div class="tdc-meta-info">
+                <span><i class="fas fa-soap"></i> হাইজিন</span>
+                <span>• মাড়ি সুরক্ষা</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">১,৯৯০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 7. Gum Care -->
-        <div class="service-card" id="gum-care">
-          <div class="service-icon-box">
-            <i class="fas fa-heartbeat" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">মাড়ির চিকিৎসা (Gums Care)</h3>
-          <p class="service-card-desc">
-            মাড়ি দিয়ে রক্ত পড়া, ফোলাভাব, ব্যথা, মাড়ি আলগা হয়ে যাওয়া বা মাড়ির সংক্রমণের গভীর চিকিৎসা ও বিশেষায়িত পরিচর্যা। সুস্থ মাড়িই দাঁতের দীর্ঘায়ু নিশ্চিত করে।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 5. Advanced Nano-Composite Filling -->
+          <a href="appointment.html?service=Dental+Filling" class="tdc-service-card-item" data-category="restorative" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-filling-before.webp" alt="Tooth filling before treatment" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-filling-after.webp" alt="Tooth filling after treatment" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">ন্যানো-কম্পোজিট ডেন্টাল ফিলিং</h3>
+              <div class="tdc-meta-info">
+                <span><i class="fas fa-tooth"></i> রেস্টোরেশন</span>
+                <span>• ন্যাচারাল লুক</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">৩,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 8. Pediatric Dentistry -->
-        <div class="service-card" id="pediatric">
-          <div class="service-icon-box">
-            <i class="fas fa-child" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">শিশুদের দাঁতের চিকিৎসা</h3>
-          <p class="service-card-desc">
-            শিশুদের দুধদাঁতের ক্ষয় রোধ, ফ্লুরাইড ট্রিটমেন্ট এবং ভীতিহীন পরম যত্নশীল পরিবেশে শিশুদের সাধারণ ডেন্টাল চিকিৎসা। এতে শিশুদের স্থায়ী দাঁতের সুন্দর বিকাশ নিশ্চিত হয়।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 6. Metal & Ceramic Braces -->
+          <a href="appointment.html?service=Teeth+Braces" class="tdc-service-card-item" data-category="surgery" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-braces-before.webp" alt="Teeth braces before treatment" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-braces-after.webp" alt="Teeth braces after alignment" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">মেটাল ও সিরামিক ব্রেসিস</h3>
+              <div class="tdc-meta-info">
+                <span><i class="far fa-clock"></i> সহজ কিস্তি</span>
+                <span>• অর্থোডন্টিক্স</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">৫০,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 9. Oral Minor Surgery -->
-        <div class="service-card" id="surgery">
-          <div class="service-icon-box">
-            <i class="fas fa-notes-medical" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">ওরাল মাইনর সার্জারি</h3>
-          <p class="service-card-desc">
-            মাড়ির ক্ষুদ্র সিস্ট বা টিউমার অপসারণ, ফ্রেনোটমি এবং চোয়ালের ভেতরের সমস্যাযুক্ত আক্কেল দাঁতের জটিল সার্জিক্যাল এক্সট্রাকশন নিরাপদে সম্পন্ন করা হয়।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 7. Permanent Dental Implants -->
+          <a href="appointment.html?service=Dental+Implants" class="tdc-service-card-item" data-category="surgery" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-implants-before.webp" alt="Dental implants before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-implants-after.webp" alt="Dental implants after restoration" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">স্থায়ী ডেন্টাল ইমপ্লান্ট</h3>
+              <div class="tdc-meta-info">
+                <span><i class="far fa-clock"></i> ৬০ মিনিট</span>
+                <span>• স্থায়ী দাঁত</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">৬০,০০০ – ৮০,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 10. Smile Design / Cosmetic -->
-        <div class="service-card" id="cosmetic">
-          <div class="service-icon-box">
-            <i class="fas fa-smile" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">দাঁতের সৌন্দর্যবর্ধন (Smile Design)</h3>
-          <p class="service-card-desc">
-            দাঁতের ফাঁকা বন্ধ করা, অসম দাঁতের আকার সুন্দর করা এবং মুখের সামগ্রিক সৌন্দর্যের সাথে মিলিয়ে উজ্জ্বল ও আত্মবিশ্বাসী হাসি গড়ে তোলা।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 8. Direct Composite Veneers -->
+          <a href="appointment.html?service=Composite+Veneers" class="tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-veneers-before.webp" alt="Composite veneers before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-veneers-after.webp" alt="Veneers smile design after" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">ডিরেক্ট কম্পোজিট ভিনিয়ার্স</h3>
+              <div class="tdc-meta-info">
+                <span><i class="fas fa-gem"></i> পোর্সেলিন লুক</span>
+                <span>• পারফেক্ট হাসি</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">প্রতি দাঁত খরচ শুরু</span>
+                <span class="tdc-price-value">৫,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 11. Digital Dental Diagnostics -->
-        <div class="service-card" id="digital">
-          <div class="service-icon-box">
-            <i class="fas fa-x-ray" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">ডিজিটাল ডেন্টাল সেবা ও এক্স-রে</h3>
-          <p class="service-card-desc">
-            উন্নত ডিজিটাল এক্স-রে সেন্সর ও হাই-রেজোলিউশন ভিউয়িং প্রযুক্তির মাধ্যমে দাঁতের অভ্যন্তরীণ ক্ষয়, সংক্রমণ ও চোয়ালের হাড়ের অবস্থা তাৎক্ষণিক ও নির্ভুলভাবে পর্যবেক্ষণ।
-          </p>
-          <a href="digital.html" class="service-card-cta">
-            প্রযুক্তি পাতা দেখুন <i class="fas fa-arrow-right"></i>
+          <!-- 9. Invisalign Clear Aligners -->
+          <a href="appointment.html?service=Invisalign+Aligners" class="tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-invisalign-before.webp" alt="Invisalign clear aligners before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-invisalign-after.webp" alt="Invisalign clear aligners after" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">ইনভিজালাইন ক্লিয়ার অ্যালাইনার</h3>
+              <div class="tdc-meta-info">
+                <span><i class="fas fa-eye-slash"></i> সম্পূর্ণ অদৃশ্য</span>
+                <span>• আরামদায়ক</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">ফুল কোর্স প্যাকেজ</span>
+                <span class="tdc-price-value">১,৮০,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
           </a>
-        </div>
 
-        <!-- 12. General Dental Checkup -->
-        <div class="service-card" id="general">
-          <div class="service-icon-box">
-            <i class="fas fa-clipboard-check" style="font-size: 1.8rem;"></i>
-          </div>
-          <h3 class="service-card-title">নিয়মিত দাঁত ও মুখ পরীক্ষা</h3>
-          <p class="service-card-desc">
-            মুখ ও দাঁতের পূর্ণাঙ্গ পর্যবেক্ষণ, দাঁতের সুরক্ষায় সঠিক ব্রাশিং গাইডলাইন এবং প্রাথমিক সমস্যা শুরুতেই শনাক্ত করে প্রতিরোধমূলক পরামর্শ প্রদান।
-          </p>
-          <a href="appointment.html" class="service-card-cta">
-            অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i>
+          <!-- 10. Digital Smile Design -->
+          <a href="appointment.html?service=Smile+Design" class="tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-smile-design-before.webp" alt="Digital smile design before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-smile-design-after.webp" alt="Digital smile design 3D after" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">ডিজিটাল স্মাইল ডিজাইন (DSD)</h3>
+              <div class="tdc-meta-info">
+                <span><i class="fas fa-camera"></i> ৩ডি স্ক্যানিং</span>
+                <span>• নিখুঁত ফেসিয়াল রেশিও</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">প্যাকেজ শুরু</span>
+                <span class="tdc-price-value">২০,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- 11. Laser Teeth Whitening -->
+          <a href="appointment.html?service=Teeth+Whitening" class="tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-whitening-before.webp" alt="Teeth whitening before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-whitening-after.webp" alt="Teeth whitening after laser session" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">লেজার টিথ হোয়াইটেনিং</h3>
+              <div class="tdc-meta-info">
+                <span><i class="far fa-clock"></i> ৩০ মিনিট</span>
+                <span>• উজ্জ্বল সাদা হাসি</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">চিকিৎসা খরচ শুরু</span>
+                <span class="tdc-price-value">১৫,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+          <!-- 12. Pediatric Dentistry -->
+          <a href="appointment.html?service=Pediatric+Dentistry" class="tdc-service-card-item" data-category="general" data-reveal="fade-up">
+            <div class="tdc-card-image-box">
+              <img width="1024" height="731" class="tdc-img-before" src="img/service-pediatric-before.webp" alt="Pediatric dentistry before" loading="lazy">
+              <img width="1024" height="731" class="tdc-img-after" src="img/service-pediatric-after.webp" alt="Pediatric dentistry gentle care" loading="lazy">
+              <span class="tdc-image-status-badge">Before / After</span>
+            </div>
+            <div class="tdc-card-content-body">
+              <h3 class="tdc-service-heading">শিশুদের ডেন্টাল কেয়ার</h3>
+              <div class="tdc-meta-info">
+                <span><i class="fas fa-baby"></i> পরম যত্ন</span>
+                <span>• ভীতিহীন পরিবেশ</span>
+              </div>
+              <div class="tdc-divider-line"></div>
+              <div class="tdc-price-box">
+                <span class="tdc-price-label">পরামর্শ ফি শুরু</span>
+                <span class="tdc-price-value">১,০০০ ৳</span>
+              </div>
+              <span class="tdc-card-cta-btn">অ্যাপয়েন্টমেন্ট নিন <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Estimator Promo Banner -->
+      <div class="service-estimator-promo-banner" data-reveal="zoom-in" style="margin-top: 50px; background: linear-gradient(135deg, #941324 0%, #cb0437 100%); border-radius: 16px; padding: 36px 32px; color: #ffffff; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; box-shadow: 0 14px 36px rgba(148, 19, 36, 0.22);">
+        <div style="max-width: 650px;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 12px;"><i class="fas fa-calculator"></i> স্মার্ট ক্যালকুলেটর</span>
+          <h3 style="font-size: 1.65rem; color: #ffffff; margin-bottom: 8px; font-weight: 700;">আপনার প্রয়োজনীয় চিকিৎসার আনুমানিক খরচ জানতে চান?</h3>
+          <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 0.98rem; line-height: 1.6;">আমাদের লাইভ ইন্টারেক্টিভ প্রাইস এস্টিমেটরে তাৎক্ষণিকভাবে বিভিন্ন চিকিৎসা প্যাকেজ ও খরচের হিসাব মিলিয়ে নিন।</p>
+        </div>
+        <div>
+          <a href="index.html#price-estimator" class="btn-primary-red" style="background: #ffffff; color: #941324; font-weight: 700; padding: 14px 28px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: transform 0.2s ease;">
+            <i class="fas fa-calculator"></i> খরচ হিসাব করুন <i class="fas fa-arrow-right"></i>
           </a>
         </div>
       </div>
@@ -333,10 +449,11 @@
     </div>
   </section>
 
-  <!-- Shared Footer -->
+    <!-- Shared Footer (Simplified 3-Column Clean Design - Section 7 & 25) -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
+      <div class="footer-grid simplified-footer-grid">
+        <!-- Brand Column -->
         <div class="footer-brand-col">
           <div class="brand-logo-link" style="margin-bottom: 16px;">
             <div class="brand-logo-frame">
@@ -348,37 +465,24 @@
             </div>
           </div>
           <p class="footer-desc">
-            ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর আস্থার সঙ্গী Lucky Dental Care — চার দশকের ঐতিহ্য ও আধুনিক ডিজিটাল ডেন্টিস্ট্রির সমন্বয়ে আপনার হাসির সুন্দর ভবিষ্যৎ গড়ে তোলাই আমাদের ব্রত।
+            ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর আস্থার প্রতীক Lucky Dental Care — চার দশকের ঐতিহ্য ও আধুনিক ডেন্টিস্ট্রির সমন্বয়ে আপনার সুন্দর ও সুস্থ হাসির বিশ্বস্ত ঠিকানা।
           </p>
         </div>
 
+        <!-- Essential Quick Links Column (Only 4 main pages + Appointment + Location) -->
         <div>
           <h4 class="footer-col-title">প্রয়োজনীয় লিংক</h4>
           <ul class="footer-nav-list">
-            <li><a href="index.html"><i class="fas fa-chevron-right"></i> হোম পেজ</a></li>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> হোম</a></li>
             <li><a href="about.html"><i class="fas fa-chevron-right"></i> আমাদের সম্পর্কে</a></li>
-            <li><a href="heritage.html"><i class="fas fa-chevron-right"></i> ঐতিহ্য ও পথচলা</a></li>
-            <li><a href="service.html"><i class="fas fa-chevron-right"></i> ডেন্টাল সেবাসমূহ</a></li>
-            <li><a href="digital.html"><i class="fas fa-chevron-right"></i> আধুনিক প্রযুক্তি</a></li>
-            <li><a href="why-us.html"><i class="fas fa-chevron-right"></i> কেন Lucky Dental Care</a></li>
-            <li><a href="gallery.html"><i class="fas fa-chevron-right"></i> ক্লিনিক গ্যালারি</a></li>
-            <li><a href="contact.html"><i class="fas fa-chevron-right"></i> যোগাযোগ ও ম্যাপ</a></li>
-            <li><a href="appointment.html"><i class="fas fa-chevron-right"></i> অ্যাপয়েন্টমেন্ট বুকিং</a></li>
+            <li><a href="service.html"><i class="fas fa-chevron-right"></i> সেবাসমূহ</a></li>
+            <li><a href="contact.html"><i class="fas fa-chevron-right"></i> যোগাযোগ</a></li>
+            <li><a href="appointment.html"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
+            <li><a href="https://www.google.com/maps/place/Lucky+Dental+Care/@23.9080413,89.13006,978m/data=!3m1!1e3!4m6!3m5!1s0x39fe97007520661f:0xbec8cc848fb24d5d!8m2!3d23.9080413!4d89.13006!16s%2Fg%2F11wy1mrwj2?entry=ttu" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> লোকেশন দেখুন (Google Maps)</a></li>
           </ul>
         </div>
 
-        <div>
-          <h4 class="footer-col-title">আমাদের সেবাসমূহ</h4>
-          <ul class="footer-nav-list">
-            <li><a href="service.html#root-canal"><i class="fas fa-chevron-right"></i> রুট ক্যানাল চিকিৎসা</a></li>
-            <li><a href="service.html#scaling"><i class="fas fa-chevron-right"></i> দাঁত স্কেলিং ও পলিশিং</a></li>
-            <li><a href="service.html#filling"><i class="fas fa-chevron-right"></i> দাঁতের ফিলিং ও রেস্টোরেশন</a></li>
-            <li><a href="service.html#crown"><i class="fas fa-chevron-right"></i> দাঁতের ক্যাপ ও ক্রাউন</a></li>
-            <li><a href="treatment-of-missing-tooth.html"><i class="fas fa-chevron-right"></i> ডেন্টাল ব্রিজ ও দাঁত প্রতিস্থাপন</a></li>
-            <li><a href="digital.html"><i class="fas fa-chevron-right"></i> ডিজিটাল ডেন্টাল এক্স-রে</a></li>
-          </ul>
-        </div>
-
+        <!-- Clinic & Contact Information Column -->
         <div>
           <h4 class="footer-col-title">ঠিকানা ও যোগাযোগ</h4>
           <ul class="footer-contact-list">
@@ -400,15 +504,15 @@
             </li>
             <li class="footer-contact-item">
               <i class="fas fa-clock"></i>
-              <span>শনিবার - বৃহস্পতিবার: সকাল ১০:০০ - রাত ৯:০০</span>
+              <span>শনিবার - বৃহস্পতিবার: সকাল ১০:০০ - রাত ৯:০০ (শুক্রবার বন্ধ)</span>
             </li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom-bar">
-        <div>Lucky Dental Care © 2026. সর্বস্বত্ব সংরক্ষিত। | <strong>SMILE FOR LIFE</strong> | <a href="#" class="cms-admin-entry-link" title="অ্যাডমিন সম্পাদনা মোড"><i class="fas fa-lock"></i> সম্পাদনা</a></div>
-        <div>১৯৮২ থেকে ৪৪ বছরের নির্ভরযোগ্য ডেন্টাল সেবা</div>
+        <div>Lucky Dental Care © 2026. সর্বস্বত্ব সংরক্ষিত। | <strong>SMILE FOR LIFE • ESTD 1982</strong> | <a href="#" class="cms-admin-entry-link" title="অ্যাডমিন সম্পাদনা মোড"><i class="fas fa-lock"></i> সম্পাদনা</a></div>
+        <div>কুষ্টিয়া, বাংলাদেশ | মোবাইল: ০১৭১৫-৯১৭৮৩৪</div>
       </div>
     </div>
   </footer>
