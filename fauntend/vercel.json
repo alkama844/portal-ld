@@ -2,19 +2,40 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/about",       "destination": "/about.html" },
+    { "source": "/service",     "destination": "/service.html" },
+    { "source": "/service-div", "destination": "/service-div.html" },
+    { "source": "/contact",     "destination": "/contact.html" },
+    { "source": "/appointment", "destination": "/appointment.html" },
+    { "source": "/estimate",    "destination": "/estimate.html" },
+    { "source": "/service-gap-filling",    "destination": "/service-gap-filling.html" },
+    { "source": "/service-root-canal",     "destination": "/service-root-canal.html" },
+    { "source": "/service-crown",          "destination": "/service-crown.html" },
+    { "source": "/service-scaling",        "destination": "/service-scaling.html" },
+    { "source": "/service-filling",        "destination": "/service-filling.html" },
+    { "source": "/service-braces",         "destination": "/service-braces.html" },
+    { "source": "/service-implants",       "destination": "/service-implants.html" },
+    { "source": "/service-veneers",        "destination": "/service-veneers.html" },
+    { "source": "/service-invisalign",     "destination": "/service-invisalign.html" },
+    { "source": "/service-smile-design",   "destination": "/service-smile-design.html" },
+    { "source": "/service-whitening",      "destination": "/service-whitening.html" },
+    { "source": "/service-pediatric",      "destination": "/service-pediatric.html" },
+    { "source": "/service-detail-template","destination": "/service-detail-template.html" }
+  ],
   "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    },
     {
       "source": "/(css|js|img|lucky_image)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options",  "value": "nosniff" },
+        { "key": "X-Frame-Options",          "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy",          "value": "strict-origin-when-cross-origin" }
       ]
     }
   ]

@@ -48,18 +48,10 @@
 
   // Existing Clinic Gallery Presets
   const GALLERY_PRESETS = [
-    { label: 'ক্লিনিক লোগো', src: 'lucky_image/logo_main.jpg' },
-    { label: 'ক্লিনিক ফ্রন্ট ভিউ', src: 'lucky_image/image_front.jpg' },
-    { label: 'ডাঃ মোঃ জোসেফ বিশ্বাস রকি', src: 'lucky_image/dr_rocky_portrait.jpg' },
-    { label: 'অত্যাধুনিক ডেন্টাল চেয়ার ১', src: 'lucky_image/image_02.jpg' },
-    { label: 'ডেন্টাল কনসাল্টেশন জোন', src: 'lucky_image/image_03.jpg' },
-    { label: 'আধুনিক চিকিৎসা চেম্বার', src: 'lucky_image/image_04.jpg' },
-    { label: 'স্টেরিলাইজেশন অটোক্লেভ', src: 'lucky_image/image_05.jpg' },
-    { label: 'ডিজিটাল ডেন্টাল ডায়াগনস্টিক', src: 'lucky_image/image_06.jpg' },
-    { label: 'রুট ক্যানাল চিকিৎসা', src: 'lucky_image/root_canal.jpg' },
-    { label: 'স্কেলিং ও পলিশিং', src: 'lucky_image/scaling_polishing.jpg' },
-    { label: 'দাঁতের ফিলিং', src: 'lucky_image/dental_filling.jpg' },
-    { label: 'ক্যাপ ও ক্রাউন', src: 'lucky_image/crown_bridge.jpg' }
+    { label: 'ক্লিনিক লোগো', src: '/lucky_image/logo_main.jpg' },
+    { label: 'ক্লিনিক বাহ্যিক দৃশ্য (Front View)', src: '/lucky_image/image_front.jpg' },
+    { label: 'আধুনিক চিকিৎসা চেম্বার ও ডেন্টাল চেয়ার', src: '/lucky_image/image_internal (2).jpg' },
+    { label: 'ডেন্টাল কনসাল্টেশন জোন ও ডায়াগনস্টিক', src: '/lucky_image/image_internal (3).png' }
   ];
 
   function getPageId() {
@@ -72,7 +64,7 @@
     if (typeof window.fetchWithBackendFallback === 'function') {
       return window.fetchWithBackendFallback(endpoint, options);
     }
-    const apiBase = window.LUCKY_API_BASE_URL || 'http://localhost:5000';
+    const apiBase = (window.LUCKY_API_BASE_URL || 'https://api.luckydentalcare.com').replace(/\/+$/, '');
     const clean = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
     return fetch(`${apiBase}${clean}`, options);
   }
@@ -303,9 +295,16 @@
     const form = document.getElementById('cmsLoginForm');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const password = pwdInput.value;
+      const password = pwdInput.value.trim();
       const errorBox = document.getElementById('cmsLoginError');
       const submitBtn = document.getElementById('cmsLoginSubmitBtn');
+
+      if (!password) {
+        errorBox.textContent = 'অনুগ্রহ করে অ্যাডমিন পাসওয়ার্ড প্রদান করুন।';
+        errorBox.style.display = 'flex';
+        pwdInput.focus();
+        return;
+      }
 
       errorBox.style.display = 'none';
       submitBtn.disabled = true;
@@ -316,7 +315,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ email: 'admin@luckydental.com', password })
+          body: JSON.stringify({ password })
         });
 
         let data = {};
@@ -334,13 +333,27 @@
           enableEditMode();
           if (window.showToast) window.showToast('অ্যাডমিন সম্পাদনা মোড সক্রিয় হয়েছে!', 'success');
         } else {
-          const safeMsg = (window.toSafeErrorMessage && window.toSafeErrorMessage(data.error)) || 'লগইন তথ্য সঠিক নয়। অনুগ্রহ করে পুনরায় চেষ্টা করুন।';
-          errorBox.textContent = safeMsg;
+          // Status code error mapping according to Section 8 & 9
+          if (res.status === 401) {
+            errorBox.textContent = 'অ্যাডমিন পাসওয়ার্ড সঠিক নয়।';
+          } else if (res.status === 403) {
+            errorBox.textContent = 'এই কার্যক্রমের অনুমতি নেই।';
+          } else if (res.status === 404) {
+            errorBox.textContent = 'এডিট ইঞ্জিনের অনুরোধের ঠিকানা পাওয়া যায়নি।';
+          } else if (res.status === 422) {
+            errorBox.textContent = 'অনুরোধের তথ্য সঠিক নয়।';
+          } else if (res.status >= 500) {
+            errorBox.textContent = 'এডিট ইঞ্জিন এই মুহূর্তে অনুপলভ্য।';
+          } else {
+            errorBox.textContent = 'এডিট ইঞ্জিন এই মুহূর্তে অনুপলভ্য।';
+          }
           errorBox.style.display = 'flex';
           pwdInput.focus();
         }
       } catch (err) {
-        errorBox.textContent = 'সার্ভারের সাথে এই মুহূর্তে যোগাযোগ করা যাচ্ছে না। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।';
+        // Network/fetch failure mapping according to Section 8, 9 & 49:
+        // Must be EXACTLY: "unable to connect edit engine"
+        errorBox.textContent = 'unable to connect edit engine';
         errorBox.style.display = 'flex';
       } finally {
         submitBtn.disabled = false;
@@ -1047,11 +1060,22 @@
         updateDockUI();
         if (window.showToast) window.showToast('সকল পরিবর্তন স্থায়ীভাবে ডেটাবেজে সংরক্ষিত হয়েছে!', 'success');
       } else {
-        const msg = window.toSafeErrorMessage ? window.toSafeErrorMessage(data.error, 'সংরক্ষণ ব্যর্থ হয়েছে') : 'সংরক্ষণ ব্যর্থ হয়েছে';
-        alert(msg);
+        if (res.status === 401) {
+          alert('অ্যাডমিন পাসওয়ার্ড সঠিক নয়।');
+        } else if (res.status === 403) {
+          alert('এই কার্যক্রমের অনুমতি নেই।');
+        } else if (res.status === 404) {
+          alert('এডিট ইঞ্জিনের অনুরোধের ঠিকানা পাওয়া যায়নি।');
+        } else if (res.status === 422) {
+          alert('অনুরোধের তথ্য সঠিক নয়।');
+        } else if (res.status >= 500) {
+          alert('এডিট ইঞ্জিন এই মুহূর্তে অনুপলভ্য।');
+        } else {
+          alert('সংরক্ষণ ব্যর্থ হয়েছে');
+        }
       }
     } catch (err) {
-      alert('সার্ভারের সাথে এই মুহূর্তে যোগাযোগ করা যাচ্ছে না। কিছুক্ষণ পর আবার চেষ্টা করুন।');
+      alert('unable to connect edit engine');
     } finally {
       saveBtn.disabled = pendingChanges.size === 0;
       saveBtn.innerHTML = originalHtml;
@@ -1070,8 +1094,7 @@
   function logoutAdmin() {
     if (window.LuckyAuth) window.LuckyAuth.clearToken();
     try {
-      const apiBase = window.LUCKY_API_BASE_URL || 'http://localhost:5000';
-      fetch(`${apiBase}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+      apiFetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     } catch (e) {}
     disableEditMode();
     if (window.showToast) window.showToast('সফলভাবে লগআউট হয়েছে', 'info');
@@ -1413,12 +1436,20 @@
           closeManager();
           if (window.showToast) window.showToast('তালিকা সফলভাবে ডেটাবেজে সংরক্ষিত হয়েছে!', 'success');
         } else {
-          const errData = await res.json().catch(() => ({}));
-          const errMsg = window.toSafeErrorMessage ? window.toSafeErrorMessage(errData.error, 'সংরক্ষণ ব্যর্থ হয়েছে') : 'সংরক্ষণ ব্যর্থ হয়েছে';
-          alert(errMsg);
+          if (res.status === 401) {
+            alert('অ্যাডমিন পাসওয়ার্ড সঠিক নয়।');
+          } else if (res.status === 403) {
+            alert('এই কার্যক্রমের অনুমতি নেই।');
+          } else if (res.status === 404) {
+            alert('এডিট ইঞ্জিনের অনুরোধের ঠিকানা পাওয়া যায়নি।');
+          } else if (res.status === 422) {
+            alert('অনুরোধের তথ্য সঠিক নয়।');
+          } else {
+            alert('এডিট ইঞ্জিন এই মুহূর্তে অনুপলভ্য।');
+          }
         }
       } catch (e) {
-        alert('সার্ভারের সাথে এই মুহূর্তে যোগাযোগ করা যাচ্ছে না। কিছুক্ষণ পর আবার চেষ্টা করুন।');
+        alert('unable to connect edit engine');
       } finally {
         saveBtn.disabled = false;
         saveBtn.innerHTML = origHtml;

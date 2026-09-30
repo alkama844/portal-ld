@@ -6,14 +6,28 @@
    ========================================================================== */
 
 :root {
-  /* Brand Colors */
-  --brand-red: #941324;
-  --brand-red-dark: #720d1a;
-  --brand-red-deep: #4f0812;
-  --brand-red-light: #b81d33;
-  --brand-red-soft: #fdf2f4;
-  --brand-red-subtle: rgba(148, 19, 36, 0.05);
-  --brand-red-glow: rgba(148, 19, 36, 0.18);
+  /* Lucky Dental Care — Burnt-Orange Brand System (Main Accent) */
+  --brand-primary: #c2410c;
+  --brand-primary-rgb: 194, 65, 12;
+  --brand-primary-dark: #9a3412;
+  --brand-primary-deep: #7c2d12;
+  --brand-primary-light: #ea580c;
+  --brand-primary-soft: #fff7ed;
+  --brand-primary-subtle: rgba(194, 65, 12, 0.08);
+  --brand-primary-border: rgba(194, 65, 12, 0.25);
+  --brand-primary-shadow: 0 10px 25px rgba(194, 65, 12, 0.20);
+  --brand-primary-glow: rgba(194, 65, 12, 0.18);
+  --bs-primary: #c2410c;
+  --bs-primary-rgb: 194, 65, 12;
+
+  /* Brand Accent Colors (Dynamically Synchronized with Settings) */
+  --brand-red: var(--brand-primary);
+  --brand-red-dark: var(--brand-primary-dark);
+  --brand-red-deep: var(--brand-primary-deep);
+  --brand-red-light: var(--brand-primary-light);
+  --brand-red-soft: var(--brand-primary-soft);
+  --brand-red-subtle: var(--brand-primary-subtle);
+  --brand-red-glow: var(--brand-primary-glow);
   --brand-gold: #c59b27;
   --brand-gold-soft: #fef9ed;
 
@@ -74,7 +88,7 @@ html {
   scroll-padding-top: 90px;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -82,7 +96,7 @@ body {
   background-color: var(--brand-offwhite);
   color: var(--brand-charcoal);
   line-height: 1.7;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -1898,16 +1912,681 @@ button, input, select, textarea {
 }
 
 .service-filter-btn:hover {
-  background: var(--brand-red-soft);
-  color: var(--brand-red);
-  border-color: rgba(203, 4, 55, 0.3);
+  background: var(--brand-primary-soft);
+  color: var(--brand-primary);
+  border-color: var(--brand-primary-border);
 }
 
 .service-filter-btn.active {
-  background: var(--brand-red);
+  background: var(--brand-primary);
   color: #ffffff;
-  border-color: var(--brand-red);
-  box-shadow: 0 4px 12px rgba(203, 4, 55, 0.25);
+  border-color: var(--brand-primary);
+  box-shadow: 0 4px 12px rgba(194, 65, 12, 0.28);
+}
+
+/* ==========================================================================
+   LUCKY DENTAL CARE — NEW MODERN EDITORIAL SERVICE SYSTEM
+   Main Theme: #c2410c (Burnt-Orange)
+   ========================================================================== */
+.services-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .services-grid-modern {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .services-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Modern Service Card */
+.service-card-modern {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  position: relative;
+}
+
+.service-card-modern:hover {
+  transform: translateY(-5px);
+  border-color: var(--brand-primary-border);
+  box-shadow: 0 14px 34px rgba(194, 65, 12, 0.14);
+}
+
+.service-card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-primary) 0%, #ea580c 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 4;
+}
+
+.service-card-modern:hover::before {
+  opacity: 1;
+}
+
+/* Media Area */
+.service-card-media {
+  position: relative;
+  width: 100%;
+  padding-top: 60%;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.service-card-media img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card-img-before {
+  opacity: 1;
+  z-index: 1;
+}
+
+.service-card-img-after {
+  opacity: 0;
+  z-index: 2;
+}
+
+.service-card-modern:hover .service-card-img-after {
+  opacity: 1;
+}
+
+.service-card-modern:hover .service-card-img-before {
+  opacity: 0;
+}
+
+.service-card-modern:hover .service-card-media img {
+  transform: scale(1.04);
+}
+
+.service-card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  z-index: 3;
+  pointer-events: none;
+  transition: background-color 0.25s ease;
+}
+
+.service-card-modern:hover .service-card-badge {
+  background: var(--brand-primary);
+}
+
+.service-card-category-pill {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  color: var(--brand-primary-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Body */
+.service-card-body {
+  padding: 22px 22px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.service-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--brand-muted);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.service-card-meta i {
+  color: var(--brand-primary);
+  font-size: 0.9rem;
+}
+
+.service-card-title {
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+  margin: 0 0 10px 0;
+  line-height: 1.38;
+  transition: color 0.2s ease;
+}
+
+.service-card-modern:hover .service-card-title {
+  color: var(--brand-primary);
+}
+
+.service-card-desc {
+  font-size: 0.92rem;
+  color: var(--brand-muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+  flex-grow: 1;
+}
+
+/* Card Footer */
+.service-card-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--brand-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.service-price {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-price-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--brand-muted-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.service-price-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  font-family: var(--font-latin), var(--font-bangla);
+  line-height: 1.25;
+  margin-top: 2px;
+}
+
+.service-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-primary);
+  color: #ffffff !important;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(194, 65, 12, 0.22);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.service-card-cta i {
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.service-card-modern:hover .service-card-cta {
+  background: var(--brand-primary-dark);
+  box-shadow: 0 5px 14px rgba(194, 65, 12, 0.32);
+}
+
+.service-card-modern:hover .service-card-cta i {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   SERVICE DETAIL PAGE DESIGN SYSTEM
+   ========================================================================== */
+.service-detail-section {
+  padding: 36px 0 40px 0;
+  background: var(--brand-offwhite);
+}
+
+.service-detail-section [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+
+.service-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 36px;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .service-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Detail Main Article */
+.service-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Media Showcase */
+.service-detail-media-showcase {
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-media-viewer {
+  position: relative;
+  width: 100%;
+  padding-top: 55%;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.detail-media-viewer img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.detail-media-viewer:hover img {
+  transform: scale(1.02);
+}
+
+.detail-media-caption {
+  padding: 14px 20px;
+  background: #ffffff;
+  border-top: 1px solid var(--brand-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Quick Metadata Pills */
+.service-quick-meta-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.service-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--brand-primary-soft);
+  border: 1px solid var(--brand-primary-border);
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand-primary-dark);
+}
+
+.service-meta-pill i {
+  color: var(--brand-primary);
+}
+
+/* Content Blocks */
+.detail-content-block {
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: var(--shadow-xs);
+}
+
+.detail-section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-left: 3px solid var(--brand-primary);
+  padding-left: 12px;
+}
+
+.detail-section-title i {
+  color: var(--brand-primary);
+}
+
+.detail-text-lead {
+  font-size: 1.08rem;
+  line-height: 1.8;
+  color: var(--brand-charcoal);
+  margin-bottom: 14px;
+}
+
+.detail-text-body {
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: var(--brand-muted);
+  margin-bottom: 0;
+}
+
+/* Treatment Step Cards */
+.detail-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .detail-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-step-card {
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.detail-step-card:hover {
+  border-color: var(--brand-primary-border);
+  transform: translateY(-2px);
+}
+
+.step-number-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-primary-soft);
+  color: var(--brand-primary);
+  font-weight: 800;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.step-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 0.9rem;
+  color: var(--brand-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Benefits Checklist */
+.detail-benefits-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .detail-benefits-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--brand-surface);
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: var(--brand-charcoal);
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.detail-benefit-item:hover {
+  border-color: var(--brand-primary-border);
+}
+
+.detail-benefit-item i {
+  color: var(--brand-primary);
+  font-size: 1.05rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* Aftercare Card */
+.detail-aftercare-box {
+  background: var(--brand-primary-soft);
+  border: 1px solid var(--brand-primary-border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 8px;
+}
+
+.detail-aftercare-box h4 {
+  font-size: 1.15rem;
+  color: var(--brand-primary-dark);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-aftercare-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--brand-charcoal);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+/* Sticky Sidebar */
+.service-detail-sidebar {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-card-main {
+  background: #ffffff;
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-price-container {
+  background: var(--brand-primary-soft);
+  border: 1px solid var(--brand-primary-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.sidebar-price-caption {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--brand-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: block;
+}
+
+.sidebar-price-tag {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--brand-primary);
+  font-family: var(--font-latin), var(--font-bangla);
+  margin: 4px 0 2px 0;
+}
+
+.sidebar-price-disclaimer {
+  font-size: 0.78rem;
+  color: var(--brand-muted-light);
+  display: block;
+}
+
+.sidebar-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-primary-burnt-orange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--brand-primary);
+  color: #ffffff !important;
+  padding: 14px 24px;
+  border-radius: 9999px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(194, 65, 12, 0.28);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-primary-burnt-orange:hover {
+  background: var(--brand-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(194, 65, 12, 0.38);
+}
+
+.btn-secondary-phone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffffff;
+  color: var(--brand-charcoal) !important;
+  border: 1px solid var(--brand-border);
+  padding: 12px 20px;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-secondary-phone:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary) !important;
+  background: var(--brand-primary-soft);
+}
+
+.sidebar-guarantee-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--brand-border-light);
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-guarantee-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--brand-muted);
+}
+
+.sidebar-guarantee-item i {
+  color: var(--brand-primary);
+  font-size: 0.95rem;
+}
+
+.back-to-services-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--brand-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 8px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.back-to-services-link:hover {
+  color: var(--brand-primary-dark);
+  transform: translateX(-4px);
+}
+
+/* Related Services Section */
+.related-services-section {
+  background: var(--brand-surface);
+  padding: 40px 0 40px 0;
+  border-top: 1px solid var(--brand-border);
 }
 
 /* ==========================================================================
@@ -2331,9 +3010,27 @@ button, input, select, textarea {
    GLOBAL APPOINTMENT CTA BANNER COMPONENT
    ========================================================================== */
 .appointment-cta-banner {
-  padding: 30px 0 60px 0;
+  padding: 20px 0 40px 0;
   position: relative;
   overflow: hidden;
+}
+
+.service-directory-section {
+  padding-bottom: 24px !important;
+}
+
+.service-estimator-promo-banner {
+  margin-top: 36px;
+  background: linear-gradient(135deg, #9a3412 0%, #c2410c 100%);
+  border-radius: 16px;
+  padding: 32px 28px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: 0 14px 36px rgba(194, 65, 12, 0.25);
 }
 
 .cta-banner-card {

@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Service Directory Category Filter (for service.html)
   const serviceFilterBtns = document.querySelectorAll('.service-filter-btn');
-  const serviceCards = document.querySelectorAll('.tdc-service-card-item');
+  const serviceCards = document.querySelectorAll('.service-card-modern, .tdc-service-card-item');
 
   if (serviceFilterBtns.length > 0 && serviceCards.length > 0) {
     serviceFilterBtns.forEach(function (btn) {

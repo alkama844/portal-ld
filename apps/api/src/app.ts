@@ -38,14 +38,16 @@ app.use(
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g. mobile apps, curl, or server-to-server)
-      if (!origin) return callback(null, true);
+      // Allow requests with no origin or file:// origin (origin: 'null')
+      if (!origin || origin === 'null') return callback(null, true);
 
       const cleanOrigin = origin.replace(/\/$/, '');
       const isLocalhost = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin);
+      const isLuckyDomain = /^https?:\/\/([a-z0-9-]+\.)*luckydentalcare\.com$/i.test(cleanOrigin);
 
       if (
         isLocalhost ||
+        isLuckyDomain ||
         allowedOrigins.includes(cleanOrigin) ||
         allowedOrigins.includes('*') ||
         process.env.NODE_ENV !== 'production'

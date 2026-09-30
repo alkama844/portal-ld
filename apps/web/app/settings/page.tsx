@@ -37,15 +37,106 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
 
   // Clinic Info State
-  const [clinicName, setClinicName] = useState('Luckydental');
-  const [tagline, setTagline] = useState('Specialized Dental Care & Maxillofacial Surgery');
-  const [clinicPhone, setClinicPhone] = useState('+880 1900-000000');
-  const [clinicEmail, setClinicEmail] = useState('appointment@luckydental.com');
-  const [clinicAddress, setClinicAddress] = useState('Dhaka / Bangladesh');
-  const [website, setWebsite] = useState('https://luckydental.com');
-  const [receiptFooter, setReceiptFooter] = useState('Thank you for choosing Luckydental. Wishing you a healthy and bright smile!');
+  const [clinicName, setClinicName] = useState('Lucky Dental Care');
+  const [tagline, setTagline] = useState('SMILE FOR LIFE • ESTD 1982');
+  const [clinicPhone, setClinicPhone] = useState('01715-917834');
+  const [clinicEmail, setClinicEmail] = useState('');
+  const [clinicAddress, setClinicAddress] = useState('Kushtia, Bangladesh');
+  const [website, setWebsite] = useState('https://luckydentalcare.com');
+  const [receiptFooter, setReceiptFooter] = useState('Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh');
   const [isSavingClinic, setIsSavingClinic] = useState(false);
   const [isLoadingClinic, setIsLoadingClinic] = useState(true);
+
+  // Frontend Theme Color State (Sections 25-34)
+  const [frontendColor, setFrontendColor] = useState('#c2410c');
+  const [isSavingFrontendColor, setIsSavingFrontendColor] = useState(false);
+  const [colorSaveStatus, setColorSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+
+  const THEME_PRESETS = [
+    { name: 'Lucky Orange', color: '#c2410c' },
+    { name: 'Orion Deep Blue', color: '#1e3a8a' },
+    { name: 'Dark Obsidian', color: '#0f172a' },
+    { name: 'Classic Crimson', color: '#941324' },
+    { name: 'Emerald Forest', color: '#059669' },
+    { name: 'Amber Gold', color: '#d97706' }
+  ];
+
+  const hexToRgb = (hex: string) => {
+    const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return res ? {
+      r: parseInt(res[1], 16),
+      g: parseInt(res[2], 16),
+      b: parseInt(res[3], 16)
+    } : null;
+  };
+
+  const adjustColor = (rgb: { r: number; g: number; b: number }, percent: number) => {
+    const r = Math.min(255, Math.max(0, Math.round(rgb.r * (1 + percent))));
+    const g = Math.min(255, Math.max(0, Math.round(rgb.g * (1 + percent))));
+    const b = Math.min(255, Math.max(0, Math.round(rgb.b * (1 + percent))));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  };
+
+  const applyThemeColor = (hex: string) => {
+    if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) return;
+    const rgb = hexToRgb(hex);
+    if (!rgb) return;
+    const darkHex = adjustColor(rgb, -0.2);
+    const deepHex = adjustColor(rgb, -0.38);
+    const lightHex = adjustColor(rgb, 0.15);
+    const softHex = adjustColor(rgb, 0.85);
+
+    const root = document.documentElement;
+    root.style.setProperty('--brand-primary', hex);
+    root.style.setProperty('--brand-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+    root.style.setProperty('--brand-primary-dark', darkHex);
+    root.style.setProperty('--brand-primary-deep', deepHex);
+    root.style.setProperty('--brand-primary-light', lightHex);
+    root.style.setProperty('--brand-primary-soft', softHex);
+    root.style.setProperty('--brand-primary-subtle', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08)`);
+    root.style.setProperty('--brand-primary-border', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`);
+    root.style.setProperty('--brand-primary-glow', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)`);
+    root.style.setProperty('--bs-primary', hex);
+    root.style.setProperty('--bs-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+  };
+
+  const handleColorChange = (newColor: string) => {
+    setFrontendColor(newColor);
+    setColorSaveStatus('idle');
+    applyThemeColor(newColor);
+  };
+
+  const handleSaveFrontendColor = async () => {
+    if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(frontendColor)) {
+      showToast('Please enter a valid hex color code (e.g. #c2410c)', 'error');
+      return;
+    }
+
+    setIsSavingFrontendColor(true);
+    setColorSaveStatus('saving');
+    try {
+      const res = await apiFetch<ClinicSettings>('/settings/clinic', {
+        method: 'PUT',
+        body: JSON.stringify({ frontendColor })
+      });
+
+      if (res.success) {
+        setColorSaveStatus('saved');
+        showToast('Frontend theme color saved and synchronized!', 'success');
+        try {
+          localStorage.setItem('lucky_dental_frontend_color', frontendColor);
+        } catch {}
+      } else {
+        setColorSaveStatus('idle');
+        showToast(res.error || 'Failed to persist theme color', 'error');
+      }
+    } catch {
+      setColorSaveStatus('idle');
+      showToast('Network error saving theme color', 'error');
+    } finally {
+      setIsSavingFrontendColor(false);
+    }
+  };
 
   // Custom Fields State
   const [customFields, setCustomFields] = useState<CustomFieldDefinition[]>([]);
@@ -133,13 +224,17 @@ export default function SettingsPage() {
     try {
       const res = await apiFetch<ClinicSettings>('/settings/clinic');
       if (res.success && res.data) {
-        setClinicName(res.data.clinicName || 'Luckydental');
-        setTagline(res.data.tagline || '');
-        setClinicPhone(res.data.phone || '+880 1900-000000');
-        setClinicEmail(res.data.email || 'appointment@luckydental.com');
-        setClinicAddress(res.data.address || 'Dhaka / Bangladesh');
-        setWebsite(res.data.website || '');
-        setReceiptFooter(res.data.receiptFooter || '');
+        setClinicName(res.data.clinicName || 'Lucky Dental Care');
+        setTagline(res.data.tagline || 'SMILE FOR LIFE • ESTD 1982');
+        setClinicPhone(res.data.phone || '01715-917834');
+        setClinicEmail(res.data.email || '');
+        setClinicAddress(res.data.address || 'Kushtia, Bangladesh');
+        setWebsite(res.data.website || 'https://luckydentalcare.com');
+        setReceiptFooter(res.data.receiptFooter || 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh');
+        if (res.data.frontendColor) {
+          setFrontendColor(res.data.frontendColor);
+          applyThemeColor(res.data.frontendColor);
+        }
       }
     } catch {
       // Fallback
@@ -398,13 +493,157 @@ export default function SettingsPage() {
           </div>
         </GlassCard>
 
-        {/* Section 2: Clinic Identity & Receipt Settings */}
+        {/* Section 2: Frontend Color Control (Sections 25-34) */}
+        <GlassCard className="p-6 space-y-5">
+          <div className="flex items-center justify-between border-b border-white/10 dark:border-white/10 pb-3">
+            <div className="flex items-center gap-2.5">
+              <Palette className="w-4 h-4 text-red-400" />
+              <h2 className="text-sm font-bold uppercase tracking-wider">
+                2. Frontend Color
+              </h2>
+            </div>
+            <span className="text-[10px] text-gray-400 font-mono">
+              Live Real-Time Sync
+            </span>
+          </div>
+
+          <p className="text-xs text-gray-400">
+            Control the public brand accent color. Updates buttons, badges, links, section accents, and headers across all pages in real-time.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-1">
+            {/* Left: Color Picker & Hex Input */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div 
+                  className="w-12 h-12 rounded-xl border-2 border-white/20 shadow-md shrink-0 relative overflow-hidden cursor-pointer"
+                  style={{ backgroundColor: frontendColor }}
+                >
+                  <input
+                    type="color"
+                    value={frontendColor}
+                    onChange={(e) => handleColorChange(e.target.value)}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                    title="Choose custom brand color"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wide text-gray-300 mb-1">
+                    Hex Color Code (#RRGGBB)
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={frontendColor}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                      placeholder="#c2410c"
+                      className="font-mono uppercase text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Theme Presets */}
+              <div className="space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 block">
+                  Curated Brand Presets
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {THEME_PRESETS.map((preset) => (
+                    <button
+                      key={preset.color}
+                      type="button"
+                      onClick={() => handleColorChange(preset.color)}
+                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition-all ${
+                        frontendColor.toLowerCase() === preset.color.toLowerCase()
+                          ? 'border-white bg-white/10 text-white font-bold'
+                          : 'border-white/10 bg-black/20 text-gray-400 hover:border-white/20'
+                      }`}
+                    >
+                      <span 
+                        className="w-3.5 h-3.5 rounded-full shrink-0 border border-white/30"
+                        style={{ backgroundColor: preset.color }}
+                      />
+                      <span className="truncate">{preset.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Real-time Live Preview Components */}
+            <div className="space-y-3 bg-black/20 p-4 rounded-xl border border-white/10 flex flex-col justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 block mb-3">
+                  Live Component Synchronization Preview
+                </span>
+                <div className="space-y-3">
+                  {/* Preview Button */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      style={{ backgroundColor: frontendColor }}
+                      className="text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition-all flex items-center gap-1.5"
+                    >
+                      <span>অ্যাপয়েন্টমেন্ট নিন</span>
+                    </button>
+                    <span className="text-[10px] text-gray-400">Primary CTA</span>
+                  </div>
+
+                  {/* Preview Badge & Link */}
+                  <div className="flex items-center gap-3">
+                    <span 
+                      style={{ 
+                        color: frontendColor,
+                        backgroundColor: `${frontendColor}18`,
+                        borderColor: `${frontendColor}40`
+                      }}
+                      className="px-2.5 py-1 rounded-full text-[11px] font-bold border"
+                    >
+                      ★ ৪৪+ বছরের সমৃদ্ধ ঐতিহ্য
+                    </span>
+                    <span 
+                      style={{ color: frontendColor }} 
+                      className="text-xs font-semibold underline cursor-pointer"
+                    >
+                      বিস্তারিত দেখুন →
+                    </span>
+                  </div>
+
+                  {/* Preview Card Border */}
+                  <div 
+                    style={{ borderLeftColor: frontendColor }}
+                    className="border-l-4 bg-white/5 p-2 rounded-r-lg text-[11px] text-gray-300"
+                  >
+                    লাইভ ইন্টারেক্টিভ প্রাইস এস্টিমেটর ও সার্ভিস কার্ড অ্যাকসেন্ট
+                  </div>
+                </div>
+              </div>
+
+              {/* Save Button for Frontend Color */}
+              <div className="flex justify-end pt-3 border-t border-white/10">
+                <Button
+                  type="button"
+                  onClick={handleSaveFrontendColor}
+                  isLoading={isSavingFrontendColor}
+                  size="sm"
+                  className="gap-1.5 text-xs text-white"
+                  style={{ backgroundColor: frontendColor }}
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  {colorSaveStatus === 'saved' ? 'Saved ✓' : colorSaveStatus === 'saving' ? 'Saving...' : 'Save Frontend Color'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </GlassCard>
+
+        {/* Section 3: Clinic Identity & Receipt Settings */}
         <GlassCard className="p-6 space-y-5">
           <div className="flex items-center justify-between border-b border-white/10 dark:border-white/10 pb-3">
             <div className="flex items-center gap-2.5">
               <Building2 className="w-4 h-4 text-red-400" />
               <h2 className="text-sm font-bold uppercase tracking-wider">
-                2. Clinic Identity & Receipt Settings
+                3. Clinic Identity & Receipt Settings
               </h2>
             </div>
             {isLoadingClinic && (
@@ -485,7 +724,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2.5">
               <Layers className="w-4 h-4 text-red-400" />
               <h2 className="text-sm font-bold uppercase tracking-wider">
-                3. Dynamic Patient Custom Fields
+                4. Dynamic Patient Custom Fields
               </h2>
             </div>
             <Button
@@ -574,7 +813,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-2.5">
               <Package className="w-4 h-4 text-red-400" />
               <h2 className="text-sm font-bold uppercase tracking-wider">
-                4. Treatment Packages &amp; Procedures Catalog
+                5. Treatment Packages &amp; Procedures Catalog
               </h2>
             </div>
             <Link href="/packages">
@@ -594,7 +833,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2.5 border-b border-white/10 dark:border-white/10 pb-3">
             <ShieldCheck className="w-4 h-4 text-red-400" />
             <h2 className="text-sm font-bold uppercase tracking-wider">
-              5. Data Backup &amp; Restore
+              6. Data Backup &amp; Restore
             </h2>
           </div>
 

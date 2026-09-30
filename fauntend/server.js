@@ -24,7 +24,12 @@ const server = http.createServer((req, res) => {
   let reqUrl = decodeURI(req.url.split('?')[0]);
   if (reqUrl === '/') reqUrl = '/index.html';
 
-  const filePath = path.join(__dirname, reqUrl);
+  let filePath = path.join(__dirname, reqUrl);
+
+  // Support clean URLs (e.g. /service-root-canal -> /service-root-canal.html)
+  if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
+    filePath = filePath + '.html';
+  }
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {

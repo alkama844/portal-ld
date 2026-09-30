@@ -27,8 +27,8 @@
    * Prevents "Cannot connect to server" when one backend is offline
    */
   window.fetchWithBackendFallback = async function (endpoint, options = {}) {
-    const primary = window.LUCKY_API_BASE_URL || 'http://localhost:5000';
-    const fallback = window.LUCKY_FALLBACK_API_URL || (primary.includes('localhost') ? API_BASE_URL : 'http://localhost:5000');
+    const primary = (window.LUCKY_API_BASE_URL || API_BASE_URL).replace(/\/+$/, '');
+    const fallback = (window.LUCKY_FALLBACK_API_URL || (primary.includes('localhost') ? API_BASE_URL : 'http://localhost:5000')).replace(/\/+$/, '');
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
 
     try {
@@ -56,13 +56,13 @@
     if (!err) return fallbackMsg || 'কিছু সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।';
     const raw = String(err?.message || err).toLowerCase();
     if (raw.includes('failed to fetch') || raw.includes('network') || raw.includes('connection refused') || raw.includes('econnrefused')) {
-      return 'সার্ভারের সাথে এই মুহূর্তে যোগাযোগ করা যাচ্ছে না। কিছুক্ষণ পর আবার চেষ্টা করুন।';
+      return 'unable to connect edit engine';
     }
     if (raw.includes('mongo') || raw.includes('database') || raw.includes('db')) {
       return 'ডাটা সেবা এই মুহূর্তে উপলভ্য নয়।';
     }
     if (raw.includes('unauthorized') || raw.includes('password') || raw.includes('credentials') || raw.includes('লগইন')) {
-      return 'লগইন তথ্য সঠিক নয়।';
+      return 'অ্যাডমিন পাসওয়ার্ড সঠিক নয়।';
     }
     if (raw.includes('sms')) {
       return 'SMS সেবা এই মুহূর্তে উপলভ্য নয়।';
@@ -144,4 +144,85 @@
       return Boolean(this.getToken());
     }
   };
+
+  // ==========================================================================
+  // Lucky Dental Care — Frontend Theme Synchronization (Sections 25-34)
+  // ==========================================================================
+  function hexToRgb(hex) {
+    const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return res ? {
+      r: parseInt(res[1], 16),
+      g: parseInt(res[2], 16),
+      b: parseInt(res[3], 16)
+    } : null;
+  }
+
+  function adjustColor(rgb, percent) {
+    const r = Math.min(255, Math.max(0, Math.round(rgb.r * (1 + percent))));
+    const g = Math.min(255, Math.max(0, Math.round(rgb.g * (1 + percent))));
+    const b = Math.min(255, Math.max(0, Math.round(rgb.b * (1 + percent))));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  }
+
+  function applyBrandColor(hex) {
+    if (!hex || !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) return;
+    const rgb = hexToRgb(hex);
+    if (!rgb) return;
+    const darkHex = adjustColor(rgb, -0.2);
+    const deepHex = adjustColor(rgb, -0.38);
+    const lightHex = adjustColor(rgb, 0.15);
+    const softHex = adjustColor(rgb, 0.85);
+
+    const root = document.documentElement;
+    root.style.setProperty('--brand-primary', hex);
+    root.style.setProperty('--brand-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+    root.style.setProperty('--brand-primary-dark', darkHex);
+    root.style.setProperty('--brand-primary-deep', deepHex);
+    root.style.setProperty('--brand-primary-light', lightHex);
+    root.style.setProperty('--brand-primary-soft', softHex);
+    root.style.setProperty('--brand-primary-subtle', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.08)`);
+    root.style.setProperty('--brand-primary-border', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`);
+    root.style.setProperty('--brand-primary-glow', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)`);
+    root.style.setProperty('--brand-primary-shadow', `0 10px 25px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.20)`);
+    root.style.setProperty('--bs-primary', hex);
+    root.style.setProperty('--bs-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+
+    // Dynamic aliases for legacy & component styles
+    root.style.setProperty('--brand-red', hex);
+    root.style.setProperty('--brand-red-dark', darkHex);
+    root.style.setProperty('--brand-red-deep', deepHex);
+    root.style.setProperty('--brand-red-light', lightHex);
+    root.style.setProperty('--brand-red-soft', softHex);
+    root.style.setProperty('--brand-red-subtle', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.05)`);
+    root.style.setProperty('--brand-red-glow', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)`);
+    root.style.setProperty('--shadow-red', `0 10px 25px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`);
+    root.style.setProperty('--shadow-red-lg', `0 16px 36px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.35)`);
+  }
+
+  function initThemeColor() {
+    try {
+      const saved = localStorage.getItem('lucky_dental_frontend_color');
+      if (saved) applyBrandColor(saved);
+    } catch (e) {}
+
+    const apiBase = (window.LUCKY_API_BASE_URL || 'https://api.luckydentalcare.com').replace(/\/+$/, '');
+    fetch(`${apiBase}/api/settings/clinic`)
+      .then(res => res.json())
+      .then(json => {
+        if (json.success && json.data && json.data.frontendColor) {
+          applyBrandColor(json.data.frontendColor);
+          try {
+            localStorage.setItem('lucky_dental_frontend_color', json.data.frontendColor);
+          } catch (e) {}
+        }
+      })
+      .catch(() => {});
+  }
+
+  window.LuckyTheme = {
+    applyColor: applyBrandColor,
+    init: initThemeColor
+  };
+
+  initThemeColor();
 })();

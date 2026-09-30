@@ -23,6 +23,8 @@ export interface IReceipt extends Document {
   receiptNumber: string;
   patientId: Schema.Types.ObjectId;
   patientNumber: number;
+  patientName?: string;
+  patientPhone?: string;
   items: IReceiptItem[];
   subtotal: number;
   discount: number;
@@ -68,6 +70,8 @@ const receiptSchema = new Schema<IReceipt>(
     receiptNumber: { type: String, required: true, unique: true, index: true },
     patientId: { type: Schema.Types.ObjectId, ref: 'Patient', required: true, index: true },
     patientNumber: { type: Number, required: true, index: true },
+    patientName: { type: String },
+    patientPhone: { type: String },
     items: [
       {
         description: { type: String, required: true },

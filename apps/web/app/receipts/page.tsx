@@ -232,7 +232,7 @@ export default function ReceiptsPage() {
         onClose={() => setShowReceiptModal(false)}
         title="Official Dental Invoice"
         description={`Luckydental Receipt #${selectedReceipt?.receiptNumber}`}
-        maxWidth="lg"
+        maxWidth="4xl"
       >
         {selectedReceipt && (
           <div className="space-y-4">
