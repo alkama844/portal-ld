@@ -37,6 +37,71 @@
   to   = "/estimate.html"
   status = 200
 
+[[redirects]]
+  from = "/service-gap-filling"
+  to   = "/service-gap-filling.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-root-canal"
+  to   = "/service-root-canal.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-crown"
+  to   = "/service-crown.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-scaling"
+  to   = "/service-scaling.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-filling"
+  to   = "/service-filling.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-braces"
+  to   = "/service-braces.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-implants"
+  to   = "/service-implants.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-veneers"
+  to   = "/service-veneers.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-invisalign"
+  to   = "/service-invisalign.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-smile-design"
+  to   = "/service-smile-design.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-whitening"
+  to   = "/service-whitening.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-pediatric"
+  to   = "/service-pediatric.html"
+  status = 200
+
+[[redirects]]
+  from = "/service-detail-template"
+  to   = "/service-detail-template.html"
+  status = 200
+
 # 404 fallback
 [[redirects]]
   from   = "/*"

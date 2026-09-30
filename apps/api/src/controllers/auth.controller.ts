@@ -126,7 +126,7 @@ export const login = async (req: Request, res: Response) => {
   } catch (error: any) {
     logger.error('Login error', { error: error?.message || error });
     return res.status(500).json({
-      error: 'Failed to process login request. Please verify MongoDB connection or server logs.'
+      error: 'Failed to process login request. Please try again later.'
     });
   }
 };

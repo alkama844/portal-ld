@@ -9,23 +9,25 @@ export interface IClinicSettings extends Document {
   website?: string;
   receiptFooter: string;
   logoUrl?: string;
+  frontendColor?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const clinicSettingsSchema = new Schema<IClinicSettings>(
   {
-    clinicName: { type: String, required: true, default: 'Luckydental' },
-    tagline: { type: String, default: 'Specialized Dental Care & Maxillofacial Surgery' },
-    phone: { type: String, required: true, default: '+880 1900-000000' },
-    email: { type: String, default: 'appointment@luckydental.com' },
-    address: { type: String, required: true, default: 'Dhaka, Bangladesh' },
-    website: { type: String, default: 'https://luckydental.com' },
+    clinicName: { type: String, required: true, default: 'Lucky Dental Care' },
+    tagline: { type: String, default: 'SMILE FOR LIFE • ESTD 1982' },
+    phone: { type: String, required: true, default: '01715-917834' },
+    email: { type: String, default: '' },
+    address: { type: String, required: true, default: 'Kushtia, Bangladesh' },
+    website: { type: String, default: 'https://luckydentalcare.com' },
     receiptFooter: {
       type: String,
-      default: 'Thank you for choosing Luckydental. Wishing you a healthy and bright smile!'
+      default: 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh'
     },
-    logoUrl: { type: String }
+    logoUrl: { type: String },
+    frontendColor: { type: String, default: '#c2410c' }
   },
   { timestamps: true }
 );

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>লেজার টিথ হোয়াইটেনিং | Lucky Dental Care — কুষ্টিয়া</title>
+  <meta name="description" content="লেজার টিথ হোয়াইটেনিং: Lucky Dental Care-এ আধুনিক ও বিজ্ঞানসম্মত ডেন্টাল চিকিৎসা। ৪৪ বছরের ঐতিহ্য, অভিজ্ঞ চিকিৎসক এবং শতভাগ জীবাণুমুক্ত পরিবেশে সেবা।">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="লেজার টিথ হোয়াইটেনিং | Lucky Dental Care">
+  <meta property="og:description" content="অত্যাধুনিক ডেন্টাল লেজার ও নিরাপদ বায়ো-জেলের সাহায্যে মাত্র ৩০ মিনিটে কয়েক শেড উজ্জ্বল ও সাদা দাঁত">
+  <meta property="og:image" content="/lucky_image/logo_main.jpg">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/lucky_image/favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/lucky_image/favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/lucky_image/favicon_io/favicon-16x16.png">
+  <link rel="manifest" href="/lucky_image/favicon_io/site.webmanifest">
+  <link rel="shortcut icon" href="/lucky_image/favicon_io/favicon.ico">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <!-- Top Bar -->
+  <div class="top-info-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="top-bar-badge">ESTD 1982</span>
+        <span class="top-bar-item"><i class="fas fa-certificate"></i> ৪৪ বছরের ঐতিহ্যবাহী সেবা</span>
+        <span class="top-bar-item"><i class="fas fa-map-marker-alt"></i> কুষ্টিয়া, বাংলাদেশ</span>
+      </div>
+      <div class="top-bar-right">
+        <span class="top-bar-item"><i class="fas fa-phone-alt"></i> <a href="tel:01715917834">০১৭১৫-৯১৭৮৩৪</a></span>
+        <span class="top-bar-item"><a href="https://www.facebook.com/luckydentalcare1982/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i> ফেসবুক পেজ</a></span>
+        <span class="top-bar-item" style="font-family: var(--font-latin); font-weight: 700; letter-spacing: 0.05em;">SMILE FOR LIFE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar-wrapper">
+    <div class="container navbar-container">
+      <a href="/" class="brand-logo-link">
+        <div class="brand-logo-frame">
+          <img src="/lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo" width="52" height="52">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE • ESTD 1982</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li><a href="/" class="nav-link">হোম</a></li>
+          <li><a href="/about" class="nav-link">আমাদের সম্পর্কে</a></li>
+          <li><a href="/service" class="nav-link active">সেবাসমূহ</a></li>
+          <li><a href="/contact" class="nav-link">যোগাযোগ</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-actions">
+        <a href="/appointment" class="btn-primary-red nav-appointment-btn" style="background-color: var(--brand-primary); box-shadow: 0 4px 14px rgba(194, 65, 12, 0.25);">
+          <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন
+        </a>
+        <button type="button" class="mobile-toggle-btn" id="mobileMenuToggle" aria-label="মেনু খুলুন">
+          <i class="fas fa-bars fa-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="brand-logo-link">
+        <div class="brand-logo-frame" style="width: 44px; height: 44px;">
+          <img src="/lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title" style="font-size: 1.05rem;">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE</span>
+        </div>
+      </div>
+      <button type="button" class="drawer-close-btn" id="drawerCloseBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <ul class="drawer-menu">
+      <li><a href="/" class="drawer-link"><i class="fas fa-home"></i> হোম</a></li>
+      <li><a href="/about" class="drawer-link"><i class="fas fa-clinic-medical"></i> আমাদের সম্পর্কে</a></li>
+      <li><a href="/service" class="drawer-link active"><i class="fas fa-tooth"></i> ডেন্টাল সেবাসমূহ</a></li>
+      <li><a href="/contact" class="drawer-link"><i class="fas fa-map-marked-alt"></i> যোগাযোগ ও লোকেশন</a></li>
+      <li><a href="/appointment" class="drawer-link"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <a href="tel:01715917834" class="btn-secondary-white" style="width: 100%;"><i class="fas fa-phone-alt"></i> ০১৭১৫-৯১৭৮৩৪</a>
+      <a href="/appointment" class="btn-primary-red" style="width: 100%; background: var(--brand-primary);"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a>
+    </div>
+  </aside>
+
+  <!-- Page Hero with Breadcrumb -->
+  <section class="page-hero">
+    <div class="container page-hero-inner">
+      <nav class="breadcrumb-trail" aria-label="Breadcrumb">
+        <span class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> হোম</a></span>
+        <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-item"><a href="/service">সেবাসমূহ</a></span>
+        <span class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="breadcrumb-item active">লেজার টিথ হোয়াইটেনিং</span>
+      </nav>
+      <span class="page-hero-badge"><i class="fas fa-tooth"></i> বিশেষায়িত ডেন্টাল চিকিৎসা</span>
+      <h1 class="page-hero-title">লেজার টিথ হোয়াইটেনিং</h1>
+      <p class="page-hero-subtitle">অত্যাধুনিক ডেন্টাল লেজার ও নিরাপদ বায়ো-জেলের সাহায্যে মাত্র ৩০ মিনিটে কয়েক শেড উজ্জ্বল ও সাদা দাঁত</p>
+    </div>
+  </section>
+
+  <!-- Service Detail Main Body -->
+  <section class="service-detail-section">
+    <div class="container">
+      <div class="service-detail-layout">
+
+        <!-- Left / Primary Column -->
+        <article class="service-detail-main">
+
+          <!-- Media Showcase (Interactive Before/After) -->
+          <div class="service-detail-media-showcase" data-reveal="fade-up">
+            <div class="detail-media-viewer">
+              <img src="/img/service-whitening-after.webp" alt="লেজার টিথ হোয়াইটেনিং সফল ফলাফল" class="detail-img-main">
+            </div>
+            <div class="detail-media-caption">
+              <span style="font-size: 0.88rem; font-weight: 600; color: var(--brand-dark);">
+                <i class="fas fa-camera" style="color: var(--brand-primary); margin-right: 6px;"></i>
+                Lucky Dental Care-এ সম্পন্ন সফল ক্লিনিক্যাল ফলাফল
+              </span>
+              <span class="service-card-badge" style="position: static; background: var(--brand-primary);">
+                ক্লিনিক্যাল ফলাফল
+              </span>
+            </div>
+          </div>
+
+          <!-- Quick Metadata Bar -->
+          <div class="service-quick-meta-bar" data-reveal="fade-up">
+            <span class="service-meta-pill">
+              <i class="fas fa-layer-group"></i> কসমেটিক ও স্মাইল
+            </span>
+            <span class="service-meta-pill">
+              <i class="far fa-clock"></i> ৩০ মিনিট
+            </span>
+            <span class="service-meta-pill">
+              <i class="fas fa-shield-virus"></i> শতভাগ অটোক্লেভ জীবাণুমুক্ত
+            </span>
+            <span class="service-meta-pill">
+              <i class="fas fa-hand-holding-medical"></i> সম্পূর্ণ ব্যথাহীন প্রযুক্তি
+            </span>
+          </div>
+
+          <!-- 1. Clinical Overview -->
+          <div class="detail-content-block" data-reveal="fade-up">
+            <h2 class="detail-section-title">
+              <i class="fas fa-info-circle"></i> চিকিৎসা সম্পর্কিত বিস্তারিত তথ্য
+            </h2>
+            <p class="detail-text-lead">
+              চা, কফি, মসলাযুক্ত খাবার, তামাক বা বয়সের কারণে দাঁতের স্বাভাবিক উজ্জ্বলতা হারিয়ে হলুদ ও মলিন হয়ে যায়। Lucky Dental Care-এ অনুমোদিত ডেন্টাল লেজার প্রযুক্তির সাহায্যে এনামেলের কোনো ক্ষতি না করে দাঁতকে দুধসাদা ও উজ্জ্বল করা হয়।
+            </p>
+            <p class="detail-text-body">
+              এই চিকিৎসাটি সম্পূর্ণ বিজ্ঞানসম্মত ও নিয়ন্ত্রিত। বিশেষ গাম প্রটেকশন ব্যবহার করায় মাড়ির কোনো ক্ষতি হয় না এবং মাত্র একটি সেশনেই রোগী দৃশ্যমান পরিবর্তন উপভোগ করেন।
+            </p>
+          </div>
+
+          <!-- 2. Procedure Steps -->
+          <div class="detail-content-block" data-reveal="fade-up">
+            <h2 class="detail-section-title">
+              <i class="fas fa-list-ol"></i> চিকিৎসা প্রক্রিয়া ও ধাপসমূহ
+            </h2>
+            <p class="detail-text-body">
+              Lucky Dental Care চেম্বারে প্রতিটি চিকিৎসা একটি সুবিন্যস্ত ও বৈজ্ঞানিক ধাপে পরিচালিত হয়:
+            </p>
+            <div class="detail-steps-grid">
+
+              <div class="detail-step-card">
+                <span class="step-number-chip">০১</span>
+                <h3 class="step-title">শেড অ্যানালাইসিস ও প্রিপারেশন</h3>
+                <p class="step-desc">বর্তমান দাঁতের শেড রেকর্ড করা হয় এবং দাঁতের উপরিভাগ পরিষ্কার করা হয়।</p>
+              </div>
+
+              <div class="detail-step-card">
+                <span class="step-number-chip">০২</span>
+                <h3 class="step-title">জিঞ্জিভাল প্রটেকশন ব্যারিয়ার</h3>
+                <p class="step-desc">মাড়ির সুরক্ষায় বিশেষ লাইট-কিউরড প্রোটেক্টিভ ব্যারিয়ার স্থাপন করা হয়।</p>
+              </div>
+
+              <div class="detail-step-card">
+                <span class="step-number-chip">০৩</span>
+                <h3 class="step-title">অ্যাক্টিভ লেজার জেল ও এক্সপোজার</h3>
+                <p class="step-desc">মেডিকেল-গ্রেড জেল প্রয়োগ করে নির্দিষ্ট তরঙ্গদৈর্ঘ্যের ডেন্টাল লেজার সক্রিয় করা হয়।</p>
+              </div>
+
+              <div class="detail-step-card">
+                <span class="step-number-chip">০৪</span>
+                <h3 class="step-title">রিন্স ও এনামেল মিনারেল প্রটেকশন</h3>
+                <p class="step-desc">জেল পরিষ্কার করে দাঁতকে সংবেদনশীলতা মুক্ত রাখতে ফ্লোরাইড জেল প্রয়োগ করা হয়।</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Key Benefits -->
+          <div class="detail-content-block" data-reveal="fade-up">
+            <h2 class="detail-section-title">
+              <i class="fas fa-check-circle"></i> এই চিকিৎসার প্রধান সুবিধাসমূহ
+            </h2>
+            <div class="detail-benefits-list">
+
+              <div class="detail-benefit-item">
+                <i class="fas fa-check"></i>
+                <span>মাত্র ৩০ থেকে ৪৫ মিনিটে দাঁত ৪ থেকে ৮ শেড পর্যন্ত উজ্জ্বল সাদা হয়।</span>
+              </div>
+
+              <div class="detail-benefit-item">
+                <i class="fas fa-check"></i>
+                <span>দাঁতের এনামেলের কোনো প্রকার কাঠামোগত ক্ষয়ক্ষতি হয় না।</span>
+              </div>
+
+              <div class="detail-benefit-item">
+                <i class="fas fa-check"></i>
+                <span>বছরের পর বছর জমে থাকা চা, কফি ও তামাকের জেদি দাগ নিমেষেই দূর হয়।</span>
+              </div>
+
+              <div class="detail-benefit-item">
+                <i class="fas fa-check"></i>
+                <span>বিয়ে, ইন্টারভিউ বা যেকোনো অনুষ্ঠানের পূর্বে তাৎক্ষণিক আত্মবিশ্বাস বৃদ্ধি পায়।</span>
+              </div>
+
+              <div class="detail-benefit-item">
+                <i class="fas fa-check"></i>
+                <span>দীর্ঘস্থায়ী ফলাফল যা সঠিক যত্নে ১ থেকে ২ বছর উজ্জ্বল থাকে।</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Symptoms / Who needs it -->
+          <div class="detail-content-block" data-reveal="fade-up">
+            <h2 class="detail-section-title">
+              <i class="fas fa-stethoscope"></i> কখন এই চিকিৎসার প্রয়োজন হয়?
+            </h2>
+            <p class="detail-text-body">
+              যদি আপনার দাঁতে নিচের এক বা একাধিক লক্ষণ পরিলক্ষিত হয়, তবে দেরি না করে অভিজ্ঞ ডেন্টিস্টের পরামর্শ নেওয়া উচিত:
+            </p>
+            <ul style="padding-left: 20px; color: var(--brand-muted); line-height: 1.8; margin-bottom: 0;">
+
+              <li>দাঁতের স্বাভাবিক রঙ হারিয়ে হলুদ, বাদামী বা কালচে বর্ণ ধারণ করা</li>
+
+              <li>নিয়মিত স্কেলিং ও ব্রাশ করার পরও ভেতরের দাগ দূর না হওয়া</li>
+
+              <li>বিয়ের অনুষ্ঠান বা গুরুত্বপূর্ণ উপলক্ষে উজ্জ্বল হাসি অর্জন করতে চাওয়া</li>
+            </ul>
+          </div>
+
+          <!-- 5. Post-Treatment Care -->
+          <div class="detail-aftercare-box" data-reveal="fade-up">
+            <h4>
+              <i class="fas fa-heart"></i> চিকিৎসা পরবর্তী যত্ন ও চিকিৎসকের পরামর্শ
+            </h4>
+            <ul class="detail-aftercare-list">
+
+              <li>চিকিৎসার পর প্রথম ৪৮ ঘণ্টা হলুদযুক্ত তরকারি, চা, কফি, কোলা ও ধূমপান সম্পূর্ণ এড়িয়ে চলুন ("White Diet" অনুসরণ করুন)।</li>
+
+              <li>খাওয়ার পর সাধারণ পানি দিয়ে মুখ ভালো করে কুলকুচি করুন।</li>
+
+              <li>অতিরিক্ত সংবেদনশীলতা রোধে চিকিৎসকের নির্দেশিত পেস্ট ব্যবহার করুন।</li>
+            </ul>
+          </div>
+
+          <!-- 6. Service FAQ Accordion -->
+          <div class="detail-content-block" data-reveal="fade-up">
+            <h2 class="detail-section-title">
+              <i class="fas fa-question-circle"></i> সচরাচর সাধারণ প্রশ্ন ও উত্তর (FAQ)
+            </h2>
+            <div class="faq-accordion-wrapper">
+
+              <div class="faq-item">
+                <button type="button" class="faq-question-btn" aria-expanded="true">
+                  <span>হোয়াইটেনিং কি দাঁতের ক্ষতি করে?</span>
+                  <i class="fas fa-chevron-down faq-chevron"></i>
+                </button>
+                <div class="faq-answer">
+                  <div class="faq-answer-inner">
+                    না, অনুমোদিত ডেন্টাল লেজারে এনামেল অক্ষত থাকে এবং এটি সম্পূর্ণ নিরাপদ।
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <button type="button" class="faq-question-btn" aria-expanded="false">
+                  <span>উজ্জ্বলতা কতদিন টিকে থাকে?</span>
+                  <i class="fas fa-chevron-down faq-chevron"></i>
+                </button>
+                <div class="faq-answer">
+                  <div class="faq-answer-inner">
+                    ধূমপান ও অতিরিক্ত চা-কফি পরিহার করলে এর ফলাফল ১ থেকে ২ বছর পর্যন্ত চমৎকার থাকে।
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <button type="button" class="faq-question-btn" aria-expanded="false">
+                  <span>চিকিৎসায় কি শিরশিরানি হয়?</span>
+                  <i class="fas fa-chevron-down faq-chevron"></i>
+                </button>
+                <div class="faq-answer">
+                  <div class="faq-answer-inner">
+                    কারো কারো সামান্য ক্ষণস্থায়ী সংবেদনশীলতা হতে পারে, যা ২৪ ঘণ্টার মধ্যেই মিলিয়ে যায়।
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- Right / Sticky Sidebar -->
+        <aside class="service-detail-sidebar" data-reveal="fade-left">
+          <div class="sidebar-card-main">
+
+            <!-- Verified Pricing Area -->
+            <div class="sidebar-price-container">
+              <span class="sidebar-price-caption">চিকিৎসা খরচ শুরু</span>
+              <div class="sidebar-price-tag">১৫,০০০ ৳</div>
+              <span class="sidebar-price-disclaimer">* সম্পূর্ণ সেশন ও এনামেল প্রটেকশন সহ</span>
+            </div>
+
+            <!-- Booking Actions -->
+            <div class="sidebar-action-buttons">
+              <a href="/appointment?service=%E0%A6%B2%E0%A7%87%E0%A6%9C%E0%A6%BE%E0%A6%B0%20%E0%A6%9F%E0%A6%BF%E0%A6%A5%20%E0%A6%B9%E0%A7%8B%E0%A6%AF%E0%A6%BC%E0%A6%BE%E0%A6%87%E0%A6%9F%E0%A7%87%E0%A6%A8%E0%A6%BF%E0%A6%82" class="btn-primary-burnt-orange">
+                <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন
+              </a>
+              <a href="tel:01715917834" class="btn-secondary-phone">
+                <i class="fas fa-phone-alt"></i> কল: ০১৭১৫-৯১৭৮৩৪
+              </a>
+              <a href="https://wa.me/8801715917834?text=%E0%A6%86%E0%A6%AE%E0%A6%BF%20%E0%A6%B2%E0%A7%87%E0%A6%9C%E0%A6%BE%E0%A6%B0%20%E0%A6%9F%E0%A6%BF%E0%A6%A5%20%E0%A6%B9%E0%A7%8B%E0%A6%AF%E0%A6%BC%E0%A6%BE%E0%A6%87%E0%A6%9F%E0%A7%87%E0%A6%A8%E0%A6%BF%E0%A6%82%20%E0%A6%9A%E0%A6%BF%E0%A6%95%E0%A6%BF%E0%A7%8E%E0%A6%B8%E0%A6%BE%20%E0%A6%B8%E0%A6%AE%E0%A7%8D%E0%A6%AA%E0%A6%B0%E0%A7%8D%E0%A6%95%E0%A7%87%20%E0%A6%AC%E0%A6%BF%E0%A6%B8%E0%A7%8D%E0%A6%A4%E0%A6%BE%E0%A6%B0%E0%A6%BF%E0%A6%A4%20%E0%A6%A4%E0%A6%A5%E0%A7%8D%E0%A6%AF%20%E0%A6%9C%E0%A6%BE%E0%A6%A8%E0%A6%A4%E0%A7%87%20%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A5%A4" target="_blank" rel="noopener noreferrer" class="btn-secondary-phone" style="border-color: #25d366; color: #128c7e !important;">
+                <i class="fab fa-whatsapp" style="color: #25d366; font-size: 1.1rem;"></i> হোয়াটসঅ্যাপে তথ্য জানুন
+              </a>
+            </div>
+
+            <!-- Trust Highlights -->
+            <ul class="sidebar-guarantee-list">
+              <li class="sidebar-guarantee-item">
+                <i class="fas fa-check-circle"></i>
+                <span>৪৪ বছরের ঐতিহ্যবাহী ক্লিনিক্যাল অভিজ্ঞতা</span>
+              </li>
+              <li class="sidebar-guarantee-item">
+                <i class="fas fa-check-circle"></i>
+                <span>ক্লাস-বি অটোক্লেভ শতভাগ স্টেরিলাইজেশন</span>
+              </li>
+              <li class="sidebar-guarantee-item">
+                <i class="fas fa-check-circle"></i>
+                <span>অভিজ্ঞ ডেন্টাল প্র্যাকটিশনার দ্বারা চিকিৎসা</span>
+              </li>
+              <li class="sidebar-guarantee-item">
+                <i class="fas fa-check-circle"></i>
+                <span>রোগীকেন্দ্রিক আন্তরিক ও যত্নশীল পরামর্শ</span>
+              </li>
+            </ul>
+
+            <div style="margin-top: 22px; text-align: center; border-top: 1px solid var(--brand-border-light); padding-top: 14px;">
+              <a href="/service" class="back-to-services-link">
+                <i class="fas fa-arrow-left"></i> সকল সেবা ডিরেক্টরি দেখুন
+              </a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services Section -->
+  <section class="related-services-section">
+    <div class="container">
+      <div class="section-header" style="margin-bottom: 36px;">
+        <span class="section-badge"><i class="fas fa-stethoscope"></i> সম্পর্কিত সেবা</span>
+        <h2 class="section-title">সম্পর্কিত অন্যান্য চিকিৎসাসমূহ</h2>
+        <p class="section-subtitle">
+          আপনার সুস্থ হাসির সম্পূর্ণ সুরক্ষায় আমাদের অন্যান্য বিশেষায়িত ডেন্টাল কেয়ার সমাধান।
+        </p>
+      </div>
+
+      <div class="services-grid-modern">
+
+          <!-- দাঁতের স্কেলিং ও পলিশিং -->
+          <div class="service-card-modern tdc-service-card-item" data-category="general" data-reveal="fade-up">
+            <div class="service-card-media">
+              <img class="service-card-img-before" width="1024" height="731" src="/img/service-scaling-before.webp" alt="দাঁতের স্কেলিং ও পলিশিং পূর্বে" loading="lazy">
+              <img class="service-card-img-after" width="1024" height="731" src="/img/service-scaling-after.webp" alt="দাঁতের স্কেলিং ও পলিশিং পরে" loading="lazy">
+              <span class="service-card-badge">Before / After</span>
+              <span class="service-card-category-pill">সাধারণ ও প্রতিরোধমূলক</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-card-meta">
+                <span><i class="fas fa-soap"></i> হাইজিন • মাড়ি সুরক্ষা</span>
+              </div>
+              <h3 class="service-card-title">দাঁতের স্কেলিং ও পলিশিং</h3>
+              <p class="service-card-desc">আল্ট্রাসনিক স্কেলারের সাহায্যে দাঁতের পাথর ও দাগ দূর করে মাড়িকে সুস্থ ও মুখের দুর্গন্ধমুক্ত রাখার সেবা।</p>
+              <div class="service-card-footer">
+                <div class="service-price">
+                  <span class="service-price-label">চিকিৎসা খরচ শুরু</span>
+                  <span class="service-price-value">১,৯৯০ ৳</span>
+                </div>
+                <a href="/service-scaling.html" class="service-card-cta">
+                  বিস্তারিত দেখুন <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ডিরেক্ট কম্পোজিট ভিনিয়ার্স -->
+          <div class="service-card-modern tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="service-card-media">
+              <img class="service-card-img-before" width="1024" height="731" src="/img/service-veneers-before.webp" alt="ডিরেক্ট কম্পোজিট ভিনিয়ার্স পূর্বে" loading="lazy">
+              <img class="service-card-img-after" width="1024" height="731" src="/img/service-veneers-after.webp" alt="ডিরেক্ট কম্পোজিট ভিনিয়ার্স পরে" loading="lazy">
+              <span class="service-card-badge">Before / After</span>
+              <span class="service-card-category-pill">কসমেটিক ও স্মাইল</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-card-meta">
+                <span><i class="fas fa-gem"></i> পোর্সেলিন লুক • পারফেক্ট হাসি</span>
+              </div>
+              <h3 class="service-card-title">ডিরেক্ট কম্পোজিট ভিনিয়ার্স</h3>
+              <p class="service-card-desc">দাঁতের স্থায়ী দাগ ও অসমান আকার দূর করে কাঙ্ক্ষিত সেলিব্রিটি স্মাইল অর্জনের নান্দনিক চিকিৎসা।</p>
+              <div class="service-card-footer">
+                <div class="service-price">
+                  <span class="service-price-label">চিকিৎসা খরচ শুরু</span>
+                  <span class="service-price-value">৫,০০০ ৳</span>
+                </div>
+                <a href="/service-veneers.html" class="service-card-cta">
+                  বিস্তারিত দেখুন <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ডিজিটাল স্মাইল ডিজাইন (DSD) -->
+          <div class="service-card-modern tdc-service-card-item" data-category="cosmetic" data-reveal="fade-up">
+            <div class="service-card-media">
+              <img class="service-card-img-before" width="1024" height="731" src="/img/service-smile-design-before.webp" alt="ডিজিটাল স্মাইল ডিজাইন (DSD) পূর্বে" loading="lazy">
+              <img class="service-card-img-after" width="1024" height="731" src="/img/service-smile-design-after.webp" alt="ডিজিটাল স্মাইল ডিজাইন (DSD) পরে" loading="lazy">
+              <span class="service-card-badge">Before / After</span>
+              <span class="service-card-category-pill">কসমেটিক ও স্মাইল</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-card-meta">
+                <span><i class="fas fa-camera"></i> ৩ডি স্ক্যানিং • গোল্ডেন রেশিও</span>
+              </div>
+              <h3 class="service-card-title">ডিজিটাল স্মাইল ডিজাইন (DSD)</h3>
+              <p class="service-card-desc">চিকিৎসার পূর্বেই ভবিষ্যৎ হাসির ৩ডি ডিজিটাল প্রিভিউ দেখে নিখুঁত গোল্ডেন রেশিওতে পারফেক্ট হাসি অর্জনের সেবা।</p>
+              <div class="service-card-footer">
+                <div class="service-price">
+                  <span class="service-price-label">চিকিৎসা খরচ শুরু</span>
+                  <span class="service-price-value">২০,০০০ ৳</span>
+                </div>
+                <a href="/service-smile-design.html" class="service-card-cta">
+                  বিস্তারিত দেখুন <i class="fas fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Appointment CTA Banner -->
+  <section class="appointment-cta-banner">
+    <div class="container">
+      <div class="cta-banner-card">
+        <div class="cta-banner-content">
+          <span class="cta-banner-badge"><i class="far fa-clock"></i> দ্রুত শিডিউল করুন</span>
+          <h2 class="cta-banner-title">আপনার দাঁতের সমস্যায় বিশেষজ্ঞ পরামর্শ চান?</h2>
+          <p class="cta-banner-desc">
+            Lucky Dental Care-এ এখনই আপনার পছন্দের দিনে ও সময়ে অভিজ্ঞ চিকিৎসকের অ্যাপয়েন্টমেন্ট বুক করুন।
+          </p>
+        </div>
+        <div class="cta-banner-actions">
+          <a href="/appointment" class="btn-primary-red cta-main-btn" style="background: var(--brand-primary);">
+            <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট বুক করুন
+          </a>
+          <a href="tel:01715917834" class="btn-secondary-white cta-call-btn">
+            <i class="fas fa-phone-alt"></i> কল: ০১৭১৫-৯১৭৮৩৪
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid simplified-footer-grid">
+        <!-- Brand Column -->
+        <div class="footer-brand-col">
+          <div class="brand-logo-link" style="margin-bottom: 16px;">
+            <div class="brand-logo-frame">
+              <img src="/lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo" width="52" height="52">
+            </div>
+            <div class="brand-name-group">
+              <span class="brand-title" style="color: var(--brand-white);">LUCKY DENTAL CARE</span>
+              <span class="brand-tagline" style="color: rgba(255,255,255,0.7);">SMILE FOR LIFE • ESTD 1982</span>
+            </div>
+          </div>
+          <p class="footer-desc">
+            ১৯৮২ সাল থেকে কুষ্টিয়াবাসীর আস্থার প্রতীক Lucky Dental Care — চার দশকের ঐতিহ্য ও আধুনিক ডেন্টিস্ট্রির সমন্বয়ে আপনার সুন্দর ও সুস্থ হাসির বিশ্বস্ত ঠিকানা।
+          </p>
+        </div>
+
+        <!-- Essential Quick Links Column -->
+        <div>
+          <h4 class="footer-col-title">প্রয়োজনীয় লিংক</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/"><i class="fas fa-chevron-right"></i> হোম</a></li>
+            <li><a href="/about"><i class="fas fa-chevron-right"></i> আমাদের সম্পর্কে</a></li>
+            <li><a href="/service"><i class="fas fa-chevron-right"></i> সেবাসমূহ</a></li>
+            <li><a href="/contact"><i class="fas fa-chevron-right"></i> যোগাযোগ</a></li>
+            <li><a href="/appointment"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
+            <li><a href="https://www.google.com/maps/place/Lucky+Dental+Care/@23.9080413,89.13006,978m/data=!3m1!1e3!4m6!3m5!1s0x39fe97007520661f:0xbec8cc848fb24d5d!8m2!3d23.9080413!4d89.13006!16s%2Fg%2F11wy1mrwj2?entry=ttu" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> লোকেশন দেখুন (Google Maps)</a></li>
+          </ul>
+        </div>
+
+        <!-- Clinic & Contact Information Column -->
+        <div>
+          <h4 class="footer-col-title">ঠিকানা ও যোগাযোগ</h4>
+          <ul class="footer-contact-list">
+            <li class="footer-contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Lucky Dental Care<br>কুষ্টিয়া, বাংলাদেশ</span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-user-md"></i>
+              <span>ডেন্টিস্ট মোঃ যোসেফ বিশ্বাস (রকি)</span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-phone-alt"></i>
+              <span><a href="tel:01715917834">০১৭১৫-৯১৭৮৩৪</a></span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fab fa-facebook"></i>
+              <span><a href="https://www.facebook.com/luckydentalcare1982/" target="_blank" rel="noopener noreferrer">অফিসিয়াল ফেসবুক পেজ</a></span>
+            </li>
+            <li class="footer-contact-item">
+              <i class="fas fa-clock"></i>
+              <span>শনিবার - বৃহস্পতিবার: সকাল ১০:০০ - রাত ৯:০০ (শুক্রবার বন্ধ)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>Lucky Dental Care © 2026. সর্বস্বত্ব সংরক্ষিত। | <strong>SMILE FOR LIFE • ESTD 1982</strong> | <a href="#" class="cms-admin-entry-link" title="অ্যাডমিন সম্পাদনা মোড"><i class="fas fa-lock"></i> সম্পাদনা</a></div>
+        <div>কুষ্টিয়া, বাংলাদেশ | মোবাইল: ০১৭১৫-৯১৭৮৩৪</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Sticky Bar -->
+  <div class="mobile-sticky-bar">
+    <a href="tel:01715917834" class="mobile-bar-btn call-btn"><i class="fas fa-phone-alt"></i> কল করুন</a>
+    <a href="/appointment" class="mobile-bar-btn apt-btn" style="background: var(--brand-primary);"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট</a>
+  </div>
+
+  <button type="button" class="back-to-top-btn" id="backToTopBtn" aria-label="উপরে যান">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Lucky Dental Care Scripts -->
+  <script src="/js/global.js"></script>
+  <script src="/js/cms.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

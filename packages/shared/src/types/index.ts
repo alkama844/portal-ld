@@ -185,6 +185,7 @@ export interface ClinicSettings {
   website?: string;
   receiptFooter: string;
   logoUrl?: string;
+  frontendColor?: string;
   updatedAt?: string;
 }
 

@@ -295,6 +295,8 @@ export class ReceiptService {
           receiptNumber: String(receiptNumber),
           patientId: patient._id || patient.id,
           patientNumber: patient.patientNumber,
+          patientName: patient.fullName,
+          patientPhone: patient.phone,
           items: calculatedItems.map((i) => ({
             description: i.name,
             packageId: i.packageId,
@@ -727,21 +729,44 @@ export class ReceiptService {
 
         const doc = await MongoReceipt.findOne(filter).populate('patientId').lean();
         if (doc) {
-          return this.mapMongoToReceipt(doc);
+          const mapped = this.mapMongoToReceipt(doc);
+          if ((!mapped.patientName || mapped.patientName === 'Patient') && mapped.patientNumber) {
+            try {
+              const p = await patientService.getPatientByNumberOrId(String(mapped.patientNumber));
+              if (p) {
+                mapped.patientName = p.fullName;
+                mapped.patientPhone = p.phone || mapped.patientPhone;
+                mapped.patientAge = p.age || mapped.patientAge;
+                mapped.patientAddress = p.address || p.village || p.district || mapped.patientAddress;
+                mapped.patientProblem = p.patientProblem || mapped.patientProblem;
+              }
+            } catch {}
+          }
+          return mapped;
         }
       } catch (err) {
         logger.warn('MongoDB getReceiptByNumberOrId failed', { err });
       }
     }
 
-    return (
-      inMemoryReceipts.find(
-        (r) =>
-          (!isNaN(num) && (Number(r.receiptNumber) === num || r.receiptNumber === String(num))) ||
-          r.id === identifier ||
-          r._id === identifier
-      ) || null
-    );
+    const memoryMatch = inMemoryReceipts.find(
+      (r) =>
+        (!isNaN(num) && (Number(r.receiptNumber) === num || r.receiptNumber === String(num))) ||
+        r.id === identifier ||
+        r._id === identifier
+    ) || null;
+
+    if (memoryMatch && (!memoryMatch.patientName || memoryMatch.patientName === 'Patient') && memoryMatch.patientNumber) {
+      try {
+        const p = await patientService.getPatientByNumberOrId(String(memoryMatch.patientNumber));
+        if (p) {
+          memoryMatch.patientName = p.fullName;
+          memoryMatch.patientPhone = p.phone || memoryMatch.patientPhone;
+        }
+      } catch {}
+    }
+
+    return memoryMatch;
   }
 
   async getPatientReceipts(patientIdentifier: string): Promise<Receipt[]> {
@@ -753,7 +778,24 @@ export class ReceiptService {
         const filter: any = !isNaN(num) ? { patientNumber: num } : { patientId: patientIdentifier };
         const docs = await MongoReceipt.find(filter).sort({ createdAt: -1 }).populate('patientId').lean();
         if (docs && docs.length > 0) {
-          return docs.map((d) => this.mapMongoToReceipt(d));
+          const mappedList = docs.map((d) => this.mapMongoToReceipt(d));
+          if (!isNaN(num) && mappedList.some((r) => !r.patientName || r.patientName === 'Patient')) {
+            try {
+              const p = await patientService.getPatientByNumberOrId(String(num));
+              if (p) {
+                for (const r of mappedList) {
+                  if (!r.patientName || r.patientName === 'Patient') {
+                    r.patientName = p.fullName;
+                    r.patientPhone = p.phone || r.patientPhone;
+                    r.patientAge = p.age || r.patientAge;
+                    r.patientAddress = p.address || p.village || p.district || r.patientAddress;
+                    r.patientProblem = p.patientProblem || r.patientProblem;
+                  }
+                }
+              }
+            } catch {}
+          }
+          return mappedList;
         }
       } catch (err) {
         logger.warn('MongoDB getPatientReceipts failed', { err });

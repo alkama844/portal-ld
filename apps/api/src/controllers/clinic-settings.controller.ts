@@ -14,7 +14,7 @@ export const getClinicSettings = async (req: Request, res: Response) => {
 
 export const updateClinicSettings = async (req: Request, res: Response) => {
   try {
-    const { clinicName, tagline, phone, email, address, website, receiptFooter, logoUrl } = req.body;
+    const { clinicName, tagline, phone, email, address, website, receiptFooter, logoUrl, frontendColor } = req.body;
 
     if (!clinicName || !phone || !address) {
       return res.status(400).json({
@@ -31,7 +31,8 @@ export const updateClinicSettings = async (req: Request, res: Response) => {
       address,
       website,
       receiptFooter,
-      logoUrl
+      logoUrl,
+      frontendColor
     });
 
     return res.status(200).json({

@@ -11,16 +11,18 @@ export interface ClinicSettingsDTO {
   website?: string;
   receiptFooter?: string;
   logoUrl?: string;
+  frontendColor?: string;
 }
 
 const DEFAULT_SETTINGS: ClinicSettingsDTO = {
-  clinicName: 'Luckydental',
-  tagline: 'Specialized Dental Care & Maxillofacial Surgery',
-  phone: '+880 1900-000000',
-  email: 'appointment@luckydental.com',
-  address: 'Dhaka, Bangladesh',
-  website: 'https://luckydental.com',
-  receiptFooter: 'Thank you for choosing Luckydental. Wishing you a healthy and bright smile!'
+  clinicName: 'Lucky Dental Care',
+  tagline: 'SMILE FOR LIFE • ESTD 1982',
+  phone: '01715-917834',
+  email: '',
+  address: 'Kushtia, Bangladesh',
+  website: 'https://luckydentalcare.com',
+  receiptFooter: 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh',
+  frontendColor: '#c2410c'
 };
 
 class ClinicSettingsService {
@@ -45,11 +47,12 @@ class ClinicSettingsService {
           clinicName: doc.clinicName || DEFAULT_SETTINGS.clinicName,
           tagline: doc.tagline || DEFAULT_SETTINGS.tagline,
           phone: doc.phone || DEFAULT_SETTINGS.phone,
-          email: doc.email || DEFAULT_SETTINGS.email,
+          email: doc.email !== undefined ? doc.email : DEFAULT_SETTINGS.email,
           address: doc.address || DEFAULT_SETTINGS.address,
           website: doc.website || DEFAULT_SETTINGS.website,
           receiptFooter: doc.receiptFooter || DEFAULT_SETTINGS.receiptFooter,
           logoUrl: doc.logoUrl,
+          frontendColor: doc.frontendColor || DEFAULT_SETTINGS.frontendColor,
           updatedAt: (doc as any).updatedAt ? new Date((doc as any).updatedAt).toISOString() : new Date().toISOString()
         };
       } catch (err) {
@@ -72,6 +75,12 @@ class ClinicSettingsService {
     if (data.website !== undefined) cleanData.website = data.website.trim();
     if (data.receiptFooter !== undefined) cleanData.receiptFooter = data.receiptFooter.trim();
     if (data.logoUrl !== undefined) cleanData.logoUrl = data.logoUrl;
+    if (data.frontendColor !== undefined) {
+      const col = data.frontendColor.trim();
+      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(col)) {
+        cleanData.frontendColor = col;
+      }
+    }
 
     if (isDbConnected) {
       try {
@@ -92,7 +101,8 @@ class ClinicSettingsService {
           address: doc.address,
           website: doc.website,
           receiptFooter: doc.receiptFooter,
-          logoUrl: doc.logoUrl
+          logoUrl: doc.logoUrl,
+          frontendColor: doc.frontendColor
         };
 
         return {

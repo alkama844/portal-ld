@@ -1107,7 +1107,7 @@ function ReceiptFormContent() {
         }}
         title="Official Dental Invoice"
         description="Luckydental official receipt"
-        maxWidth="lg"
+        maxWidth="4xl"
       >
         {savedReceipt && (
           <div className="space-y-4">
