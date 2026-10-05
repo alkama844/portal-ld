@@ -25,7 +25,10 @@ import {
   Copy,
   Check,
   X,
-  Eye
+  Eye,
+  Undo2,
+  History,
+  RotateCcw
 } from 'lucide-react';
 import DashboardLayout from '@/app/dashboard/layout';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -37,7 +40,7 @@ import { TimePicker } from '@/components/ui/time-picker';
 import { ReceiptDocument } from '@/components/receipt/receipt-document';
 import { useToast } from '@/components/ui/toast';
 import { apiFetch } from '@/lib/api/client';
-import { Patient, ImageMetadata, Receipt, Appointment, AppointmentStatus, PatientAccountBalance, PaymentMethod } from '@patient-portal/shared';
+import { Patient, ImageMetadata, Receipt, Appointment, AppointmentStatus, PatientAccountBalance, PaymentMethod, InvoicePayment } from '@patient-portal/shared';
 import { getAppointmentLifecycle } from '@/lib/utils/date-time';
 
 export default function PatientProfilePage() {
@@ -80,6 +83,20 @@ export default function PatientProfilePage() {
   const [paymentTransactionId, setPaymentTransactionId] = useState('');
   const [paymentNotes, setPaymentNotes] = useState('');
   const [isSavingPayment, setIsSavingPayment] = useState(false);
+
+  // Edit Payment modal state
+  const [editPaymentTarget, setEditPaymentTarget] = useState<{ payment: InvoicePayment; receiptNumber: number } | null>(null);
+  const [editPayAmount, setEditPayAmount] = useState('');
+  const [editPayMethod, setEditPayMethod] = useState<PaymentMethod>('cash');
+  const [editPayTransactionId, setEditPayTransactionId] = useState('');
+  const [editPayNotes, setEditPayNotes] = useState('');
+  const [editPayReason, setEditPayReason] = useState('');
+  const [isSavingEditPayment, setIsSavingEditPayment] = useState(false);
+
+  // Revert Payment modal state
+  const [revertPaymentTarget, setRevertPaymentTarget] = useState<{ payment: InvoicePayment; receiptNumber: number } | null>(null);
+  const [revertReason, setRevertReason] = useState('');
+  const [isRevertingPayment, setIsRevertingPayment] = useState(false);
 
   // Cancel Invoice modal state
   const [cancelReceiptTarget, setCancelReceiptTarget] = useState<Receipt | null>(null);
@@ -298,6 +315,95 @@ export default function PatientProfilePage() {
       showToast('Network error recording payment', 'error');
     } finally {
       setIsSavingPayment(false);
+    }
+  };
+
+  // Open Edit Payment Modal
+  const handleOpenEditPayment = (payment: InvoicePayment, receiptNumber: number) => {
+    setEditPaymentTarget({ payment, receiptNumber });
+    setEditPayAmount(String(payment.amount));
+    setEditPayMethod((payment.paymentMethod as PaymentMethod) || 'cash');
+    setEditPayTransactionId(payment.transactionId || '');
+    setEditPayNotes(payment.notes || '');
+    setEditPayReason('');
+  };
+
+  // Submit Edit Payment
+  const handleSaveEditPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editPaymentTarget) return;
+    const amt = Number(editPayAmount);
+    if (!amt || amt <= 0) {
+      showToast('Please enter a valid payment amount', 'error');
+      return;
+    }
+    if (!editPayReason.trim()) {
+      showToast('Please provide a reason for editing this payment (for audit logging)', 'error');
+      return;
+    }
+
+    setIsSavingEditPayment(true);
+    try {
+      const res = await apiFetch(`/receipts/${editPaymentTarget.receiptNumber}/payments/${editPaymentTarget.payment.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          amount: amt,
+          paymentMethod: editPayMethod,
+          transactionId: editPayTransactionId.trim() || undefined,
+          notes: editPayNotes.trim() || undefined,
+          reason: editPayReason.trim()
+        })
+      });
+
+      if (res.success) {
+        showToast('Payment modified and audit history recorded', 'success');
+        setEditPaymentTarget(null);
+        fetchPatientData();
+      } else {
+        showToast(res.error || 'Failed to update payment', 'error');
+      }
+    } catch {
+      showToast('Network error updating payment', 'error');
+    } finally {
+      setIsSavingEditPayment(false);
+    }
+  };
+
+  // Open Revert Payment Modal
+  const handleOpenRevertPayment = (payment: InvoicePayment, receiptNumber: number) => {
+    setRevertPaymentTarget({ payment, receiptNumber });
+    setRevertReason('');
+  };
+
+  // Confirm Revert Payment
+  const handleConfirmRevertPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!revertPaymentTarget) return;
+    if (!revertReason.trim()) {
+      showToast('Please provide a reason for reversing this payment', 'error');
+      return;
+    }
+
+    setIsRevertingPayment(true);
+    try {
+      const res = await apiFetch(`/receipts/${revertPaymentTarget.receiptNumber}/payments/${revertPaymentTarget.payment.id}/revert`, {
+        method: 'POST',
+        body: JSON.stringify({
+          reversalReason: revertReason.trim()
+        })
+      });
+
+      if (res.success) {
+        showToast(`Payment of ৳${revertPaymentTarget.payment.amount} reversed successfully`, 'success');
+        setRevertPaymentTarget(null);
+        fetchPatientData();
+      } else {
+        showToast(res.error || 'Failed to revert payment', 'error');
+      }
+    } catch {
+      showToast('Network error reverting payment', 'error');
+    } finally {
+      setIsRevertingPayment(false);
     }
   };
 
@@ -921,6 +1027,22 @@ export default function PatientProfilePage() {
                               <Eye className="w-3.5 h-3.5 text-red-400" />
                               View
                             </Button>
+                            {!isCancelled && dueRem > 0 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setPaymentReceiptNumber(String(rec.receiptNumber));
+                                  setPaymentAmount(String(dueRem));
+                                  setShowPaymentModal(true);
+                                }}
+                                className="h-7 px-2 text-xs text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 gap-1"
+                                title="Add payment to this invoice"
+                              >
+                                <CreditCard className="w-3.5 h-3.5" />
+                                + Pay
+                              </Button>
+                            )}
                             {!isCancelled && (
                               <>
                                 <Link href={`/patients/${patient.patientNumber}/receipt/new?edit=${rec.receiptNumber}`}>
@@ -985,12 +1107,14 @@ export default function PatientProfilePage() {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-white/10 text-gray-400 font-semibold uppercase tracking-wider">
-                    <th className="pb-2.5">Date</th>
+                    <th className="pb-2.5">Date & Time</th>
                     <th className="pb-2.5">Invoice #</th>
                     <th className="pb-2.5">Method</th>
                     <th className="pb-2.5">Trx ID / Ref</th>
+                    <th className="pb-2.5 text-center">Status</th>
                     <th className="pb-2.5 text-right">Amount Paid</th>
-                    <th className="pb-2.5">Notes</th>
+                    <th className="pb-2.5">Notes & Audit</th>
+                    <th className="pb-2.5 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -999,16 +1123,72 @@ export default function PatientProfilePage() {
                     .sort((a, b) => new Date(b.paymentDate || b.date || b.createdAt || 0).getTime() - new Date(a.paymentDate || a.date || a.createdAt || 0).getTime())
                     .map((pay, pIdx) => {
                       const payDate = pay.paymentDate || pay.date || pay.createdAt;
+                      const isReversed = pay.status === 'reversed';
+                      const auditCount = pay.auditTrail?.length || 0;
                       return (
-                        <tr key={pay.id || pIdx} className="hover:bg-white/[0.02]">
-                          <td className="py-2.5 text-gray-400">{payDate ? new Date(payDate).toLocaleDateString('en-GB') : '—'}</td>
+                        <tr key={pay.id || pIdx} className={`hover:bg-white/[0.02] ${isReversed ? 'opacity-60 bg-red-950/10' : ''}`}>
+                          <td className="py-2.5 text-gray-400 whitespace-nowrap">
+                            <div>{payDate ? new Date(payDate).toLocaleDateString('en-GB') : '—'}</div>
+                            {pay.paymentTime && <div className="text-[10px] text-gray-500">{pay.paymentTime}</div>}
+                          </td>
                           <td className="py-2.5 font-mono font-bold text-red-400">#{pay.receiptNumber}</td>
                           <td className="py-2.5 uppercase font-semibold text-gray-300">{pay.paymentMethod || 'cash'}</td>
                           <td className="py-2.5 font-mono text-gray-400">{pay.transactionId || '—'}</td>
-                          <td className="py-2.5 text-right font-mono font-bold text-emerald-400">
+                          <td className="py-2.5 text-center">
+                            {isReversed ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-950/80 text-rose-400 border border-rose-800/60">
+                                Reversed
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">
+                                Completed
+                              </span>
+                            )}
+                          </td>
+                          <td className={`py-2.5 text-right font-mono font-bold ${isReversed ? 'line-through text-gray-500' : 'text-emerald-400'}`}>
                             ৳{pay.amount?.toLocaleString('en-BD')}
                           </td>
-                          <td className="py-2.5 text-gray-400 italic max-w-xs truncate">{pay.notes || '—'}</td>
+                          <td className="py-2.5 text-gray-400 text-xs max-w-xs">
+                            {pay.notes && <p className="truncate italic">&ldquo;{pay.notes}&rdquo;</p>}
+                            {isReversed && (
+                              <p className="text-[11px] text-rose-400 font-medium">
+                                Reversal: {pay.reversalReason || 'Reversed by admin'}
+                              </p>
+                            )}
+                            {auditCount > 0 && (
+                              <p className="text-[10px] text-amber-400/90 font-mono mt-0.5">
+                                Edited ({auditCount}x)
+                              </p>
+                            )}
+                          </td>
+                          <td className="py-2.5 text-right whitespace-nowrap">
+                            {!isReversed ? (
+                              <div className="inline-flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleOpenEditPayment(pay, Number(pay.receiptNumber))}
+                                  className="h-6 px-2 text-[11px] text-gray-300 hover:text-white hover:bg-white/10"
+                                  title="Edit payment details"
+                                >
+                                  <Edit3 className="w-3 h-3 mr-1 text-amber-400" />
+                                  Edit
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleOpenRevertPayment(pay, Number(pay.receiptNumber))}
+                                  className="h-6 px-2 text-[11px] text-rose-400 hover:text-rose-300 hover:bg-rose-950/40"
+                                  title="Revert / Void payment"
+                                >
+                                  <Undo2 className="w-3 h-3 mr-1" />
+                                  Revert
+                                </Button>
+                              </div>
+                            ) : (
+                              <span className="text-[11px] text-gray-500 italic">Excluded from balance</span>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}
@@ -1654,6 +1834,167 @@ export default function PatientProfilePage() {
               </div>
             </div>
           </div>
+        )}
+      </Modal>
+
+      {/* Edit Payment Modal */}
+      <Modal
+        isOpen={Boolean(editPaymentTarget)}
+        onClose={() => setEditPaymentTarget(null)}
+        title="Edit Payment Transaction"
+        description={`Modify recorded payment on Invoice #${editPaymentTarget?.receiptNumber}`}
+      >
+        {editPaymentTarget && (
+          <form onSubmit={handleSaveEditPayment} className="space-y-4">
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300">
+              <p className="font-semibold">Audit Notice:</p>
+              <p className="text-[11px] text-amber-200/80 mt-0.5">
+                Every modification to recorded payments is preserved with an immutable timestamped audit log.
+              </p>
+            </div>
+
+            <Input
+              label="Payment Amount (৳) *"
+              type="number"
+              min="1"
+              value={editPayAmount}
+              onChange={(e) => setEditPayAmount(e.target.value)}
+              required
+              autoFocus
+            />
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-300 mb-1.5">Payment Method</label>
+              <div className="grid grid-cols-3 gap-2">
+                {(['cash', 'bkash', 'nagad', 'card', 'bank_transfer'] as PaymentMethod[]).map((method) => (
+                  <button
+                    key={method}
+                    type="button"
+                    onClick={() => setEditPayMethod(method)}
+                    className={`p-2 rounded-xl border text-xs font-bold capitalize transition-all ${
+                      editPayMethod === method
+                        ? 'bg-red-600 border-red-500 text-white shadow-glow-red-sm'
+                        : 'bg-white/[0.03] border-white/10 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    {method.replace('_', ' ')}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Input
+              label="Transaction ID / Voucher Reference"
+              placeholder="e.g. BKASH-89X21"
+              value={editPayTransactionId}
+              onChange={(e) => setEditPayTransactionId(e.target.value)}
+            />
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-gray-300">Payment Notes</label>
+              <textarea
+                rows={2}
+                value={editPayNotes}
+                onChange={(e) => setEditPayNotes(e.target.value)}
+                placeholder="Payment notes or remarks..."
+                className="w-full glass-input rounded-xl p-2.5 text-xs text-gray-100 placeholder:text-gray-500 resize-none"
+              />
+            </div>
+
+            <div className="space-y-1.5 pt-2 border-t border-white/10">
+              <label className="block text-xs font-bold text-red-400">
+                Reason for Modification *
+              </label>
+              <textarea
+                rows={2}
+                value={editPayReason}
+                onChange={(e) => setEditPayReason(e.target.value)}
+                placeholder="Explain why this payment amount or method is being changed..."
+                className="w-full glass-input rounded-xl p-2.5 text-xs text-gray-100 placeholder:text-gray-500 resize-none border-red-500/40"
+                required
+              />
+            </div>
+
+            <div className="flex justify-end gap-2.5 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setEditPaymentTarget(null)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isSavingEditPayment}
+                className="gap-1.5 shadow-glow-red-sm"
+              >
+                <Save className="w-3.5 h-3.5" />
+                Save & Update Balance
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      {/* Revert Payment Modal */}
+      <Modal
+        isOpen={Boolean(revertPaymentTarget)}
+        onClose={() => setRevertPaymentTarget(null)}
+        title="Revert / Void Payment"
+        description={`Reverse payment of ৳${revertPaymentTarget?.payment.amount.toLocaleString('en-BD')} on Invoice #${revertPaymentTarget?.receiptNumber}`}
+      >
+        {revertPaymentTarget && (
+          <form onSubmit={handleConfirmRevertPayment} className="space-y-4">
+            <div className="p-4 rounded-xl bg-red-950/60 border border-red-700/50 space-y-2 text-xs">
+              <div className="flex items-center gap-2 text-red-300 font-bold">
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                <span>Financial Impact of Reversal</span>
+              </div>
+              <p className="text-red-200/90 leading-relaxed">
+                This transaction of <strong>৳{revertPaymentTarget.payment.amount.toLocaleString('en-BD')}</strong> will be excluded from the active paid amount. The patient&apos;s outstanding due balance will immediately increase by <strong>৳{revertPaymentTarget.payment.amount.toLocaleString('en-BD')}</strong>.
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold text-gray-200">
+                Reason for Reversal *
+              </label>
+              <textarea
+                rows={3}
+                value={revertReason}
+                onChange={(e) => setRevertReason(e.target.value)}
+                placeholder="e.g. Accidental duplicate entry, bounced bank check, or patient refunded fees..."
+                className="w-full glass-input rounded-xl p-3 text-xs text-gray-100 placeholder:text-gray-500 resize-none border-red-500/50 focus:border-red-500"
+                required
+                autoFocus
+              />
+            </div>
+
+            <div className="flex justify-end gap-2.5 pt-2 border-t border-white/10">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setRevertPaymentTarget(null)}
+                disabled={isRevertingPayment}
+              >
+                Keep Payment
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="sm"
+                isLoading={isRevertingPayment}
+                className="bg-rose-700 hover:bg-rose-600 border-rose-600 gap-1.5"
+              >
+                <Undo2 className="w-3.5 h-3.5" />
+                Confirm Reversal
+              </Button>
+            </div>
+          </form>
         )}
       </Modal>
     </DashboardLayout>

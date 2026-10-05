@@ -14,7 +14,8 @@ import {
   LogOut, 
   Activity,
   Wrench,
-  Briefcase
+  Briefcase,
+  FileSpreadsheet
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
@@ -22,6 +23,7 @@ import { ThemeToggle } from '@/components/ui/theme-toggle';
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Patients', href: '/patients', icon: Users },
+  { name: 'All Patients', href: '/all-patients', icon: FileSpreadsheet },
   { name: 'Appointments', href: '/appointments', icon: Calendar },
   { name: 'Receipts', href: '/receipts', icon: Receipt },
   { name: 'Accessories', href: '/accessories', icon: Wrench },

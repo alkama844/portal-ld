@@ -1,4 +1,5 @@
 import { Receipt as MongoReceipt } from '../models/Receipt';
+import { AllPatientEntry as MongoAllPatientEntry } from '../models/AllPatientEntry';
 import { getNextSequenceValue } from '../models/Counter';
 import { getDatabaseStatus } from '../config/database';
 import { getNafijDB } from '../config/nafijdb';
@@ -6,7 +7,7 @@ import { withTimeout } from '../utils/async';
 import { getDhakaDateString } from '../utils/date-time';
 import { patientService } from './patient.service';
 import { appointmentService } from './appointment.service';
-import { Receipt, ReceiptItem, PaymentMethod, PaymentStatus, InvoicePayment, PatientAccountBalance } from '@patient-portal/shared';
+import { Receipt, ReceiptItem, PaymentMethod, PaymentStatus, InvoicePayment, PatientAccountBalance, AllPatientEntry } from '@patient-portal/shared';
 import { logger } from '../utils/logger';
 
 export interface CreateReceiptDTO {
@@ -17,6 +18,7 @@ export interface CreateReceiptDTO {
     packageId?: string;
     price: number;
     quantity: number;
+    teeth?: string[];
   }>;
   discount?: number;
   discountType?: 'flat' | 'percentage';
@@ -26,6 +28,7 @@ export interface CreateReceiptDTO {
   appointmentTime?: string;
   notes?: string;
   previousDueSnapshot?: number;
+  entrySerial?: string;
 }
 
 export interface UpdateReceiptDTO {
@@ -35,6 +38,7 @@ export interface UpdateReceiptDTO {
     packageId?: string;
     price: number;
     quantity: number;
+    teeth?: string[];
   }>;
   discount?: number;
   discountType?: 'flat' | 'percentage';
@@ -48,6 +52,8 @@ export interface UpdateReceiptDTO {
 
 const inMemoryReceipts: Receipt[] = [];
 let inMemoryReceiptSeq = 1000;
+const inMemoryAllPatientEntries: AllPatientEntry[] = [];
+let inMemoryEntrySerialSeq = 0;
 
 export class ReceiptService {
   private async getNextReceiptNumber(): Promise<number> {
@@ -87,11 +93,20 @@ export class ReceiptService {
       try {
         const invoices = await MongoReceipt.find(
           { patientNumber, status: { $ne: 'cancelled' } },
-          { dueAmount: 1, resultingDue: 1 }
+          { totalAmount: 1, paidAmount: 1, dueAmount: 1, payments: 1 }
         ).lean();
 
-        // Each invoice's dueAmount represents its individual remaining unpaid charges
-        return invoices.reduce((sum, inv) => sum + (Number(inv.dueAmount) || 0), 0);
+        return invoices.reduce((sum, inv: any) => {
+          let paidForInv = 0;
+          if (Array.isArray(inv.payments) && inv.payments.length > 0) {
+            const activePays = inv.payments.filter((p: any) => p.status !== 'reversed' && p.status !== 'voided');
+            paidForInv = activePays.reduce((pSum: number, p: any) => pSum + (Number(p.amount) || 0), 0);
+          } else {
+            paidForInv = Number(inv.paidAmount) || 0;
+          }
+          const dueForInv = Math.max(0, (Number(inv.totalAmount) || 0) - paidForInv);
+          return sum + dueForInv;
+        }, 0);
       } catch (err) {
         logger.warn('Error calculating patient outstanding balance', { err });
       }
@@ -100,7 +115,16 @@ export class ReceiptService {
     const localInvoices = inMemoryReceipts.filter(
       (r) => Number(r.patientNumber) === patientNumber && r.status !== 'cancelled'
     );
-    return localInvoices.reduce((sum, inv) => sum + (Number(inv.dueAmount) || 0), 0);
+    return localInvoices.reduce((sum, inv) => {
+      let paidForInv = 0;
+      if (Array.isArray(inv.payments) && inv.payments.length > 0) {
+        const activePays = inv.payments.filter((p) => p.status !== 'reversed' && p.status !== 'voided');
+        paidForInv = activePays.reduce((pSum, p) => pSum + (Number(p.amount) || 0), 0);
+      } else {
+        paidForInv = Number(inv.paidAmount) || 0;
+      }
+      return sum + Math.max(0, (Number(inv.totalAmount) || 0) - paidForInv);
+    }, 0);
   }
 
   /**
@@ -119,16 +143,27 @@ export class ReceiptService {
         let totalPaid = 0;
         let totalOutstanding = 0;
 
-        for (const inv of invoices) {
-          totalInvoiced += Number(inv.totalAmount) || 0;
-          totalPaid += Number(inv.paidAmount) || 0;
-          totalOutstanding += Number(inv.dueAmount) || 0;
+        for (const inv of invoices as any[]) {
+          const invTotal = Number(inv.totalAmount) || 0;
+          totalInvoiced += invTotal;
+
+          let paidForInv = 0;
+          if (Array.isArray(inv.payments) && inv.payments.length > 0) {
+            const activePays = inv.payments.filter((p: any) => p.status !== 'reversed' && p.status !== 'voided');
+            paidForInv = activePays.reduce((pSum: number, p: any) => pSum + (Number(p.amount) || 0), 0);
+          } else {
+            paidForInv = Number(inv.paidAmount) || 0;
+          }
+          totalPaid += paidForInv;
+          totalOutstanding += Math.max(0, invTotal - paidForInv);
         }
 
         return {
           totalInvoiced,
           totalPaid,
           totalOutstanding,
+          outstandingDue: totalOutstanding,
+          remainingDue: totalOutstanding,
           invoiceCount: invoices.length
         };
       } catch (err) {
@@ -139,14 +174,29 @@ export class ReceiptService {
     const patientInvoices = inMemoryReceipts.filter(
       (r) => Number(r.patientNumber) === patientNumber && r.status !== 'cancelled'
     );
-    const totalInvoiced = patientInvoices.reduce((sum, r) => sum + (Number(r.totalAmount) || 0), 0);
-    const totalPaid = patientInvoices.reduce((sum, r) => sum + (Number(r.paidAmount) || 0), 0);
-    const totalOutstanding = patientInvoices.reduce((sum, r) => sum + (Number(r.dueAmount) || 0), 0);
+    let totalInvoiced = 0;
+    let totalPaid = 0;
+    let totalOutstanding = 0;
+    for (const inv of patientInvoices) {
+      const invTotal = Number(inv.totalAmount) || 0;
+      totalInvoiced += invTotal;
+      let paidForInv = 0;
+      if (Array.isArray(inv.payments) && inv.payments.length > 0) {
+        const activePays = inv.payments.filter((p) => p.status !== 'reversed' && p.status !== 'voided');
+        paidForInv = activePays.reduce((pSum, p) => pSum + (Number(p.amount) || 0), 0);
+      } else {
+        paidForInv = Number(inv.paidAmount) || 0;
+      }
+      totalPaid += paidForInv;
+      totalOutstanding += Math.max(0, invTotal - paidForInv);
+    }
 
     return {
       totalInvoiced,
       totalPaid,
       totalOutstanding,
+      outstandingDue: totalOutstanding,
+      remainingDue: totalOutstanding,
       invoiceCount: patientInvoices.length
     };
   }
@@ -175,7 +225,8 @@ export class ReceiptService {
         packageId: item.packageId,
         price,
         quantity,
-        total: price * quantity
+        total: price * quantity,
+        teeth: Array.isArray(item.teeth) ? item.teeth : []
       };
     });
 
@@ -241,6 +292,7 @@ export class ReceiptService {
     const initialPayments: InvoicePayment[] = [];
     if (paidAmount > 0) {
       initialPayments.push({
+        id: `pay-${receiptNumber}-1`,
         receiptNumber: String(receiptNumber),
         patientId: patient.id || patient._id,
         patientNumber: patient.patientNumber,
@@ -249,6 +301,8 @@ export class ReceiptService {
         notes: 'Initial visit cash deposit',
         recordedBy: 'Admin',
         paymentDate: todayDhaka,
+        paymentTime: data.appointmentTime || '10:30 AM',
+        status: 'active',
         createdAt: new Date().toISOString()
       });
     }
@@ -257,6 +311,7 @@ export class ReceiptService {
       id: `rec-${receiptNumber}`,
       _id: `rec-${receiptNumber}`,
       receiptNumber,
+      entrySerial: data.entrySerial,
       patientId: patient.id || patient._id,
       patientNumber: patient.patientNumber,
       patientName: patient.fullName,
@@ -293,6 +348,7 @@ export class ReceiptService {
       try {
         const mongoDoc = new MongoReceipt({
           receiptNumber: String(receiptNumber),
+          entrySerial: data.entrySerial,
           patientId: patient._id || patient.id,
           patientNumber: patient.patientNumber,
           patientName: patient.fullName,
@@ -301,7 +357,8 @@ export class ReceiptService {
             description: i.name,
             packageId: i.packageId,
             amount: i.price,
-            quantity: i.quantity
+            quantity: i.quantity,
+            teeth: i.teeth || []
           })),
           subtotal,
           discount,
@@ -324,6 +381,8 @@ export class ReceiptService {
             notes: p.notes,
             recordedBy: p.recordedBy,
             paymentDate: p.paymentDate,
+            paymentTime: p.paymentTime,
+            status: 'active',
             createdAt: new Date()
           })),
           appointmentDate: receiptPayload.appointmentDate,
@@ -370,7 +429,8 @@ export class ReceiptService {
           packageId: item.packageId,
           price,
           quantity,
-          total: price * quantity
+          total: price * quantity,
+          teeth: Array.isArray(item.teeth) ? item.teeth : (existing.items?.[index]?.teeth || [])
         };
       });
       subtotal = calculatedItems.reduce((acc, curr) => acc + curr.total, 0);
@@ -461,7 +521,8 @@ export class ReceiptService {
               description: i.name,
               packageId: i.packageId,
               amount: i.price,
-              quantity: i.quantity
+              quantity: i.quantity,
+              teeth: i.teeth || []
             })),
             subtotal,
             discount,
@@ -863,12 +924,599 @@ export class ReceiptService {
     return true;
   }
 
+  /**
+   * Add a payment directly to an existing receipt
+   */
+  async addInvoicePayment(
+    receiptIdentifier: string,
+    data: {
+      amount: number;
+      paymentMethod?: PaymentMethod | string;
+      paymentDate?: string;
+      paymentTime?: string;
+      recordedBy?: string;
+      notes?: string;
+    },
+    adminUser: string = 'Admin'
+  ): Promise<{ receipt: Receipt; payment: InvoicePayment }> {
+    const amount = Number(data.amount);
+    if (!amount || amount <= 0) {
+      throw new Error('Payment amount must be greater than 0.');
+    }
+
+    const receipt = await this.getReceiptByNumberOrId(receiptIdentifier);
+    if (!receipt) {
+      throw new Error(`Invoice #${receiptIdentifier} not found.`);
+    }
+    if (receipt.status === 'cancelled') {
+      throw new Error(`Cannot record payment against cancelled invoice #${receiptIdentifier}.`);
+    }
+
+    const todayDhaka = getDhakaDateString();
+    const method: PaymentMethod = (data.paymentMethod as PaymentMethod) || 'cash';
+    const paymentRecord: InvoicePayment = {
+      id: `pay-${Date.now()}`,
+      receiptNumber: String(receipt.receiptNumber),
+      patientId: receipt.patientId,
+      patientNumber: receipt.patientNumber,
+      amount,
+      paymentMethod: method,
+      notes: data.notes || 'Additional payment installment',
+      recordedBy: data.recordedBy || adminUser,
+      paymentDate: data.paymentDate || todayDhaka,
+      paymentTime: data.paymentTime || '',
+      status: 'active',
+      auditTrail: [
+        {
+          action: 'created',
+          changedBy: adminUser,
+          changedAt: new Date().toISOString(),
+          newAmount: amount,
+          reason: 'Initial payment creation'
+        }
+      ],
+      createdAt: new Date().toISOString()
+    };
+
+    const currentPayments = Array.isArray(receipt.payments) ? [...receipt.payments] : [];
+    currentPayments.push(paymentRecord);
+
+    const activePayments = currentPayments.filter((p) => p.status !== 'reversed' && p.status !== 'voided');
+    const newPaid = activePayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const newDue = Math.max(0, receipt.totalAmount - newPaid);
+    const totalPayable = receipt.totalPayable !== undefined ? receipt.totalPayable : receipt.totalAmount + (receipt.previousDueSnapshot || 0);
+    const newResulting = Math.max(0, totalPayable - newPaid);
+    const newStatus: PaymentStatus = newDue === 0 ? 'paid' : newPaid > 0 ? 'partial' : 'pending';
+
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    if (isDbConnected) {
+      await MongoReceipt.findOneAndUpdate(
+        { receiptNumber: String(receipt.receiptNumber) },
+        {
+          paidAmount: newPaid,
+          dueAmount: newDue,
+          resultingDue: newResulting,
+          paymentStatus: newStatus,
+          status: newStatus === 'paid' ? 'paid' : newStatus === 'partial' ? 'partial' : receipt.status,
+          $push: {
+            payments: {
+              receiptNumber: String(receipt.receiptNumber),
+              patientId: receipt.patientId,
+              patientNumber: receipt.patientNumber,
+              amount: paymentRecord.amount,
+              paymentMethod: paymentRecord.paymentMethod,
+              notes: paymentRecord.notes,
+              recordedBy: paymentRecord.recordedBy,
+              paymentDate: paymentRecord.paymentDate,
+              paymentTime: paymentRecord.paymentTime,
+              status: 'active',
+              auditTrail: paymentRecord.auditTrail,
+              createdAt: new Date()
+            }
+          }
+        }
+      );
+    }
+
+    const idx = inMemoryReceipts.findIndex((r) => String(r.receiptNumber) === String(receipt.receiptNumber));
+    if (idx !== -1) {
+      inMemoryReceipts[idx].payments = currentPayments;
+      inMemoryReceipts[idx].paidAmount = newPaid;
+      inMemoryReceipts[idx].dueAmount = newDue;
+      inMemoryReceipts[idx].resultingDue = newResulting;
+      inMemoryReceipts[idx].paymentStatus = newStatus;
+    }
+
+    const updated = await this.getReceiptByNumberOrId(receiptIdentifier);
+    return { receipt: updated || receipt, payment: paymentRecord };
+  }
+
+  /**
+   * Edit an existing payment transaction on a receipt
+   */
+  async editInvoicePayment(
+    receiptIdentifier: string,
+    paymentId: string,
+    data: {
+      amount?: number;
+      paymentMethod?: string;
+      paymentDate?: string;
+      paymentTime?: string;
+      recordedBy?: string;
+      notes?: string;
+      reason?: string;
+    },
+    adminUser: string = 'Admin'
+  ): Promise<Receipt> {
+    const receipt = await this.getReceiptByNumberOrId(receiptIdentifier);
+    if (!receipt) {
+      throw new Error(`Invoice #${receiptIdentifier} not found.`);
+    }
+
+    const payments = Array.isArray(receipt.payments) ? [...receipt.payments] : [];
+    const targetIdx = payments.findIndex(
+      (p) => String(p.id) === String(paymentId) || String(p._id) === String(paymentId)
+    );
+    if (targetIdx === -1) {
+      throw new Error(`Payment transaction #${paymentId} not found on invoice #${receiptIdentifier}.`);
+    }
+
+    const targetPay = { ...payments[targetIdx] };
+    if (targetPay.status === 'reversed' || targetPay.status === 'voided') {
+      throw new Error('Cannot edit a reversed or voided payment transaction.');
+    }
+
+    const newAmount = data.amount !== undefined ? Math.max(0, Number(data.amount)) : targetPay.amount;
+    const auditEntry = {
+      action: 'edited' as const,
+      changedBy: adminUser,
+      changedAt: new Date().toISOString(),
+      oldAmount: targetPay.amount,
+      newAmount,
+      oldPaymentMethod: targetPay.paymentMethod,
+      newPaymentMethod: data.paymentMethod || targetPay.paymentMethod,
+      oldPaymentDate: targetPay.paymentDate,
+      newPaymentDate: data.paymentDate || targetPay.paymentDate,
+      oldPaymentTime: targetPay.paymentTime,
+      newPaymentTime: data.paymentTime || targetPay.paymentTime,
+      reason: data.reason || 'Payment corrected by admin'
+    };
+
+    targetPay.amount = newAmount;
+    if (data.paymentMethod) targetPay.paymentMethod = data.paymentMethod;
+    if (data.paymentDate) targetPay.paymentDate = data.paymentDate;
+    if (data.paymentTime !== undefined) targetPay.paymentTime = data.paymentTime;
+    if (data.recordedBy) targetPay.recordedBy = data.recordedBy;
+    if (data.notes !== undefined) targetPay.notes = data.notes;
+    targetPay.auditTrail = [...(targetPay.auditTrail || []), auditEntry];
+    targetPay.updatedAt = new Date().toISOString();
+
+    payments[targetIdx] = targetPay;
+
+    // Recalculate balances from active payments only
+    const activePayments = payments.filter((p) => p.status !== 'reversed' && p.status !== 'voided');
+    const newPaid = activePayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const newDue = Math.max(0, receipt.totalAmount - newPaid);
+    const totalPayable = receipt.totalPayable !== undefined ? receipt.totalPayable : receipt.totalAmount + (receipt.previousDueSnapshot || 0);
+    const newResulting = Math.max(0, totalPayable - newPaid);
+    const newStatus: PaymentStatus = newDue === 0 ? 'paid' : newPaid > 0 ? 'partial' : 'pending';
+
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    if (isDbConnected) {
+      await MongoReceipt.findOneAndUpdate(
+        { 
+          receiptNumber: String(receipt.receiptNumber),
+          'payments._id': targetPay._id || targetPay.id 
+        },
+        {
+          $set: {
+            'payments.$.amount': targetPay.amount,
+            'payments.$.paymentMethod': targetPay.paymentMethod,
+            'payments.$.paymentDate': targetPay.paymentDate,
+            'payments.$.paymentTime': targetPay.paymentTime,
+            'payments.$.recordedBy': targetPay.recordedBy,
+            'payments.$.notes': targetPay.notes,
+            'payments.$.updatedAt': new Date(),
+            paidAmount: newPaid,
+            dueAmount: newDue,
+            resultingDue: newResulting,
+            paymentStatus: newStatus,
+            status: newStatus === 'paid' ? 'paid' : newStatus === 'partial' ? 'partial' : receipt.status
+          },
+          $push: {
+            'payments.$.auditTrail': auditEntry
+          }
+        }
+      );
+    }
+
+    const idx = inMemoryReceipts.findIndex((r) => String(r.receiptNumber) === String(receipt.receiptNumber));
+    if (idx !== -1) {
+      inMemoryReceipts[idx].payments = payments;
+      inMemoryReceipts[idx].paidAmount = newPaid;
+      inMemoryReceipts[idx].dueAmount = newDue;
+      inMemoryReceipts[idx].resultingDue = newResulting;
+      inMemoryReceipts[idx].paymentStatus = newStatus;
+    }
+
+    const updated = await this.getReceiptByNumberOrId(receiptIdentifier);
+    return updated || receipt;
+  }
+
+  /**
+   * Reverse/void an existing payment transaction safely with audit reason
+   */
+  async reverseInvoicePayment(
+    receiptIdentifier: string,
+    paymentId: string,
+    reason: string,
+    adminUser: string = 'Admin'
+  ): Promise<Receipt> {
+    if (!reason || !reason.trim()) {
+      throw new Error('A reason is required to reverse a payment.');
+    }
+
+    const receipt = await this.getReceiptByNumberOrId(receiptIdentifier);
+    if (!receipt) {
+      throw new Error(`Invoice #${receiptIdentifier} not found.`);
+    }
+
+    const payments = Array.isArray(receipt.payments) ? [...receipt.payments] : [];
+    const targetIdx = payments.findIndex(
+      (p) => String(p.id) === String(paymentId) || String(p._id) === String(paymentId)
+    );
+    if (targetIdx === -1) {
+      throw new Error(`Payment transaction #${paymentId} not found on invoice #${receiptIdentifier}.`);
+    }
+
+    const targetPay = { ...payments[targetIdx] };
+    if (targetPay.status === 'reversed' || targetPay.status === 'voided') {
+      throw new Error('This payment transaction has already been reversed.');
+    }
+
+    const auditEntry = {
+      action: 'reversed' as const,
+      changedBy: adminUser,
+      changedAt: new Date().toISOString(),
+      oldAmount: targetPay.amount,
+      reason: reason.trim()
+    };
+
+    targetPay.status = 'reversed';
+    targetPay.reversedAt = new Date().toISOString();
+    targetPay.reversedBy = adminUser;
+    targetPay.reversalReason = reason.trim();
+    targetPay.auditTrail = [...(targetPay.auditTrail || []), auditEntry];
+    targetPay.updatedAt = new Date().toISOString();
+
+    payments[targetIdx] = targetPay;
+
+    // Recalculate balances excluding the reversed payment
+    const activePayments = payments.filter((p) => p.status !== 'reversed' && p.status !== 'voided');
+    const newPaid = activePayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+    const newDue = Math.max(0, receipt.totalAmount - newPaid);
+    const totalPayable = receipt.totalPayable !== undefined ? receipt.totalPayable : receipt.totalAmount + (receipt.previousDueSnapshot || 0);
+    const newResulting = Math.max(0, totalPayable - newPaid);
+    const newStatus: PaymentStatus = newDue === 0 ? 'paid' : newPaid > 0 ? 'partial' : 'pending';
+
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    if (isDbConnected) {
+      await MongoReceipt.findOneAndUpdate(
+        { 
+          receiptNumber: String(receipt.receiptNumber),
+          'payments._id': targetPay._id || targetPay.id 
+        },
+        {
+          $set: {
+            'payments.$.status': 'reversed',
+            'payments.$.reversedAt': new Date(),
+            'payments.$.reversedBy': adminUser,
+            'payments.$.reversalReason': reason.trim(),
+            'payments.$.updatedAt': new Date(),
+            paidAmount: newPaid,
+            dueAmount: newDue,
+            resultingDue: newResulting,
+            paymentStatus: newStatus,
+            status: newStatus === 'paid' ? 'paid' : newStatus === 'partial' ? 'partial' : receipt.status
+          },
+          $push: {
+            'payments.$.auditTrail': auditEntry
+          }
+        }
+      );
+    }
+
+    const idx = inMemoryReceipts.findIndex((r) => String(r.receiptNumber) === String(receipt.receiptNumber));
+    if (idx !== -1) {
+      inMemoryReceipts[idx].payments = payments;
+      inMemoryReceipts[idx].paidAmount = newPaid;
+      inMemoryReceipts[idx].dueAmount = newDue;
+      inMemoryReceipts[idx].resultingDue = newResulting;
+      inMemoryReceipts[idx].paymentStatus = newStatus;
+    }
+
+    const updated = await this.getReceiptByNumberOrId(receiptIdentifier);
+    return updated || receipt;
+  }
+
+  /**
+   * Generate sequential 4-digit Entry Serial (e.g. 0001, 0002)
+   */
+  async getNextEntrySerial(): Promise<string> {
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    let seqNum = 1;
+    if (isDbConnected) {
+      seqNum = await getNextSequenceValue('entrySerial', 0);
+    } else {
+      inMemoryEntrySerialSeq++;
+      seqNum = inMemoryEntrySerialSeq;
+    }
+    return String(seqNum).padStart(4, '0');
+  }
+
+  /**
+   * Create an All Patients Ledger entry with validation and persistence
+   */
+  async createAllPatientEntry(data: {
+    patientName: string;
+    age: number;
+    phone: string;
+    location: string;
+    amount: number;
+    date: string;
+    time: string;
+    service?: string;
+    notes?: string;
+  }): Promise<{ entry: AllPatientEntry; receipt: Receipt }> {
+    if (!data.patientName || !data.patientName.trim()) {
+      throw new Error('Patient Name is required.');
+    }
+    if (data.age === undefined || isNaN(Number(data.age)) || Number(data.age) < 0) {
+      throw new Error('Valid Age is required.');
+    }
+    if (!data.phone || !data.phone.trim()) {
+      throw new Error('Mobile Number is required.');
+    }
+    if (!data.location || !data.location.trim()) {
+      throw new Error('Location is required.');
+    }
+    if (data.amount === undefined || isNaN(Number(data.amount)) || Number(data.amount) < 0) {
+      throw new Error('Amount is required.');
+    }
+    if (!data.date || !data.date.trim()) {
+      throw new Error('Date is required.');
+    }
+    if (!data.time || !data.time.trim()) {
+      throw new Error('Time is required.');
+    }
+
+    // 1. Locate or create Patient record
+    let patient = await patientService.findDuplicateByPhone(data.phone.trim());
+    if (!patient) {
+      patient = await patientService.createPatient({
+        fullName: data.patientName.trim(),
+        age: Number(data.age),
+        phone: data.phone.trim(),
+        patientProblem: data.service?.trim() || 'Dental Visit / Clinical Treatment',
+        address: data.location.trim(),
+        district: data.location.trim()
+      });
+    }
+
+    // 2. Generate atomic server-side Entry Serial
+    const serial = await this.getNextEntrySerial();
+
+    // 3. Create associated invoice/receipt
+    const receipt = await this.createReceipt({
+      patientNumber: patient.patientNumber,
+      items: [
+        {
+          name: data.service?.trim() || 'Dental Visit / Clinical Treatment',
+          description: data.notes?.trim() || `Visit Entry #${serial}`,
+          price: Number(data.amount),
+          quantity: 1,
+          teeth: []
+        }
+      ],
+      paidAmount: Number(data.amount),
+      paymentMethod: 'cash',
+      appointmentDate: data.date.trim(),
+      appointmentTime: data.time.trim(),
+      notes: data.notes?.trim() || `All Patients Entry #${serial}`,
+      entrySerial: serial
+    });
+
+    // 4. Save AllPatientEntry
+    const entryPayload: AllPatientEntry = {
+      id: `entry-${serial}`,
+      _id: `entry-${serial}`,
+      serial,
+      patientNumber: patient.patientNumber,
+      patientName: data.patientName.trim(),
+      age: Number(data.age),
+      phone: data.phone.trim(),
+      location: data.location.trim(),
+      amount: Number(data.amount),
+      date: data.date.trim(),
+      time: data.time.trim(),
+      receiptNumber: String(receipt.receiptNumber),
+      service: data.service?.trim() || 'Dental Visit / Clinical Treatment',
+      notes: data.notes?.trim(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    if (isDbConnected) {
+      try {
+        const mongoEntry = new MongoAllPatientEntry({
+          serial,
+          patientNumber: patient.patientNumber,
+          patientName: data.patientName.trim(),
+          age: Number(data.age),
+          phone: data.phone.trim(),
+          location: data.location.trim(),
+          amount: Number(data.amount),
+          date: data.date.trim(),
+          time: data.time.trim(),
+          receiptNumber: String(receipt.receiptNumber),
+          service: data.service?.trim() || 'Dental Visit / Clinical Treatment',
+          notes: data.notes?.trim()
+        });
+        await mongoEntry.save();
+      } catch (err) {
+        logger.warn('Failed to save to MongoAllPatientEntry model, using memory store', { err });
+      }
+    }
+
+    inMemoryAllPatientEntries.unshift(entryPayload);
+    return { entry: entryPayload, receipt };
+  }
+
+  /**
+   * List All Patients Ledger entries with search and exact sorting options
+   */
+  async listAllPatientEntries(query: {
+    search?: string;
+    sortBy?: 'date' | 'time' | 'serial';
+    sortOrder?: 'asc' | 'desc';
+    page?: number;
+    limit?: number;
+  }) {
+    const page = Math.max(1, Number(query.page) || 1);
+    const limit = Math.max(1, Math.min(100, Number(query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    if (isDbConnected) {
+      try {
+        let filter: any = {};
+        if (query.search && query.search.trim()) {
+          const s = query.search.trim();
+          const num = Number(s.replace('#', ''));
+          const orCond: any[] = [
+            { patientName: { $regex: s, $options: 'i' } },
+            { phone: { $regex: s, $options: 'i' } },
+            { serial: { $regex: s, $options: 'i' } }
+          ];
+          if (!isNaN(num)) {
+            orCond.push({ patientNumber: num });
+          }
+          filter.$or = orCond;
+        }
+
+        let sortObj: any = { date: -1, serial: -1 };
+        const orderVal = query.sortOrder === 'asc' ? 1 : -1;
+        if (query.sortBy === 'date') {
+          sortObj = { date: orderVal, time: orderVal };
+        } else if (query.sortBy === 'time') {
+          sortObj = { time: orderVal };
+        } else if (query.sortBy === 'serial') {
+          sortObj = { serial: orderVal };
+        }
+
+        const [docs, total] = await Promise.all([
+          MongoAllPatientEntry.find(filter).sort(sortObj).skip(skip).limit(limit).lean(),
+          MongoAllPatientEntry.countDocuments(filter)
+        ]);
+
+        return {
+          entries: docs.map((d: any) => ({
+            id: d._id?.toString() || d.id,
+            serial: d.serial,
+            patientNumber: d.patientNumber,
+            patientName: d.patientName,
+            age: d.age,
+            phone: d.phone,
+            location: d.location,
+            amount: d.amount,
+            date: d.date,
+            time: d.time,
+            receiptNumber: d.receiptNumber,
+            service: d.service,
+            notes: d.notes,
+            createdAt: d.createdAt ? new Date(d.createdAt).toISOString() : new Date().toISOString(),
+            updatedAt: d.updatedAt ? new Date(d.updatedAt).toISOString() : new Date().toISOString()
+          })),
+          pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit) || 1
+          }
+        };
+      } catch (err) {
+        logger.warn('MongoDB listAllPatientEntries failed, falling back', { err });
+      }
+    }
+
+    let all = [...inMemoryAllPatientEntries];
+    if (query.search && query.search.trim()) {
+      const s = query.search.trim().toLowerCase();
+      all = all.filter(
+        (e) =>
+          e.patientName.toLowerCase().includes(s) ||
+          e.phone.includes(s) ||
+          e.serial.includes(s) ||
+          String(e.patientNumber) === s.replace('#', '')
+      );
+    }
+
+    const orderMultiplier = query.sortOrder === 'asc' ? 1 : -1;
+    if (query.sortBy === 'date') {
+      all.sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime()) * orderMultiplier);
+    } else if (query.sortBy === 'time') {
+      all.sort((a, b) => a.time.localeCompare(b.time) * orderMultiplier);
+    } else if (query.sortBy === 'serial') {
+      all.sort((a, b) => a.serial.localeCompare(b.serial) * orderMultiplier);
+    } else {
+      all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
+
+    const total = all.length;
+    const paginated = all.slice(skip, skip + limit);
+
+    return {
+      entries: paginated,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit) || 1
+      }
+    };
+  }
+
+  /**
+   * Get all historical visits and entries for a patient across dates
+   */
+  async getPatientHistoryEntries(patientNumber: number): Promise<{
+    patient: any;
+    entries: AllPatientEntry[];
+    receipts: Receipt[];
+  }> {
+    const patient = await patientService.getPatientByNumberOrId(String(patientNumber));
+    const [entriesRes, patientReceipts] = await Promise.all([
+      this.listAllPatientEntries({ search: String(patientNumber), limit: 100 }),
+      this.getPatientReceipts(String(patientNumber))
+    ]);
+
+    const matchingEntries = entriesRes.entries.filter((e) => e.patientNumber === patientNumber);
+
+    return {
+      patient,
+      entries: matchingEntries,
+      receipts: patientReceipts
+    };
+  }
+
   private mapMongoToReceipt(doc: any): Receipt {
     const patientObj = doc.patientId && typeof doc.patientId === 'object' ? doc.patientId : null;
     return {
       id: doc._id?.toString() || doc.id,
       _id: doc._id?.toString() || doc._id,
       receiptNumber: doc.receiptNumber,
+      entrySerial: doc.entrySerial,
       patientId: patientObj ? patientObj._id?.toString() : doc.patientId?.toString(),
       patientNumber: doc.patientNumber || patientObj?.patientNumber,
       patientName: patientObj?.fullName || doc.patientName || 'Patient',
@@ -886,7 +1534,8 @@ export class ReceiptService {
         packageId: i.packageId?.toString(),
         price: i.amount || i.price || 0,
         quantity: i.quantity || 1,
-        total: (i.amount || i.price || 0) * (i.quantity || 1)
+        total: (i.amount || i.price || 0) * (i.quantity || 1),
+        teeth: Array.isArray(i.teeth) ? i.teeth : []
       })),
       subtotal: doc.subtotal || 0,
       discount: doc.discount || 0,
@@ -901,7 +1550,8 @@ export class ReceiptService {
       paymentStatus: doc.paymentStatus || 'pending',
       status: doc.status || 'finalized',
       payments: (doc.payments || []).map((p: any) => ({
-        id: p._id?.toString(),
+        id: p._id?.toString() || p.id,
+        _id: p._id?.toString() || p._id,
         receiptNumber: p.receiptNumber,
         patientId: p.patientId?.toString(),
         patientNumber: p.patientNumber,
@@ -910,7 +1560,14 @@ export class ReceiptService {
         notes: p.notes,
         recordedBy: p.recordedBy,
         paymentDate: p.paymentDate,
-        createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString()
+        paymentTime: p.paymentTime,
+        status: p.status || 'active',
+        reversedAt: p.reversedAt ? new Date(p.reversedAt).toISOString() : undefined,
+        reversedBy: p.reversedBy,
+        reversalReason: p.reversalReason,
+        auditTrail: p.auditTrail || [],
+        createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString(),
+        updatedAt: p.updatedAt ? new Date(p.updatedAt).toISOString() : undefined
       })),
       notes: doc.notes,
       version: doc.version || 1,

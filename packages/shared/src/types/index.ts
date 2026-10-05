@@ -93,6 +93,7 @@ export interface ReceiptItem {
   price: number;
   quantity: number;
   total: number;
+  teeth?: string[];
 }
 
 export type PaymentMethod = 'cash' | 'bkash' | 'nagad' | 'card' | 'bank_transfer';
@@ -114,6 +115,21 @@ export interface ReceiptHistoryEntry {
   updatedAt: string;
 }
 
+export interface InvoicePaymentAudit {
+  action: 'created' | 'edited' | 'reversed';
+  changedBy?: string;
+  changedAt: string;
+  oldAmount?: number;
+  newAmount?: number;
+  oldPaymentMethod?: string;
+  newPaymentMethod?: string;
+  oldPaymentDate?: string;
+  newPaymentDate?: string;
+  oldPaymentTime?: string;
+  newPaymentTime?: string;
+  reason?: string;
+}
+
 export interface InvoicePayment {
   id?: string;
   _id?: string;
@@ -128,7 +144,14 @@ export interface InvoicePayment {
   notes?: string;
   recordedBy?: string;
   paymentDate?: string;
+  paymentTime?: string;
+  status?: 'active' | 'reversed' | 'voided';
+  reversedAt?: string;
+  reversedBy?: string;
+  reversalReason?: string;
+  auditTrail?: InvoicePaymentAudit[];
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface PatientAccountBalance {
@@ -136,6 +159,7 @@ export interface PatientAccountBalance {
   totalPaid: number;
   totalOutstanding: number;
   outstandingDue?: number;
+  remainingDue?: number;
   invoiceCount: number;
 }
 
@@ -143,6 +167,7 @@ export interface Receipt {
   id: string;
   _id?: string;
   receiptNumber: number | string;
+  entrySerial?: string;
   patientId: string;
   patientNumber: number;
   patientName: string;
@@ -170,6 +195,26 @@ export interface Receipt {
   notes?: string;
   version?: number;
   history?: ReceiptHistoryEntry[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AllPatientEntry {
+  id: string;
+  _id?: string;
+  serial: string; // e.g. "0001"
+  patientNumber: number;
+  patientName: string;
+  age: number;
+  phone: string;
+  mobileNumber?: string;
+  location: string;
+  amount: number;
+  date: string; // YYYY-MM-DD
+  time: string; // e.g. "07:30 PM"
+  receiptNumber?: string | number;
+  service?: string;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
 }

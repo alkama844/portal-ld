@@ -5,9 +5,11 @@ export interface IReceiptItem {
   packageId?: Schema.Types.ObjectId;
   amount: number;
   quantity: number;
+  teeth?: string[];
 }
 
 export interface IInvoicePayment {
+  _id?: any;
   receiptNumber: string;
   patientId: Schema.Types.ObjectId;
   patientNumber: number;
@@ -16,11 +18,19 @@ export interface IInvoicePayment {
   notes?: string;
   recordedBy?: string;
   paymentDate?: string;
+  paymentTime?: string;
+  status?: 'active' | 'reversed' | 'voided';
+  reversedAt?: Date;
+  reversedBy?: string;
+  reversalReason?: string;
+  auditTrail?: any[];
   createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface IReceipt extends Document {
   receiptNumber: string;
+  entrySerial?: string;
   patientId: Schema.Types.ObjectId;
   patientNumber: number;
   patientName?: string;
@@ -60,7 +70,14 @@ const invoicePaymentSubSchema = new Schema<IInvoicePayment>(
     notes: { type: String },
     recordedBy: { type: String, default: 'Admin' },
     paymentDate: { type: String },
-    createdAt: { type: Date, default: Date.now }
+    paymentTime: { type: String },
+    status: { type: String, enum: ['active', 'reversed', 'voided'], default: 'active' },
+    reversedAt: { type: Date },
+    reversedBy: { type: String },
+    reversalReason: { type: String },
+    auditTrail: [Schema.Types.Mixed],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
   },
   { _id: true }
 );
@@ -68,6 +85,7 @@ const invoicePaymentSubSchema = new Schema<IInvoicePayment>(
 const receiptSchema = new Schema<IReceipt>(
   {
     receiptNumber: { type: String, required: true, unique: true, index: true },
+    entrySerial: { type: String, index: true },
     patientId: { type: Schema.Types.ObjectId, ref: 'Patient', required: true, index: true },
     patientNumber: { type: Number, required: true, index: true },
     patientName: { type: String },
@@ -77,7 +95,8 @@ const receiptSchema = new Schema<IReceipt>(
         description: { type: String, required: true },
         packageId: { type: Schema.Types.ObjectId, ref: 'Package' },
         amount: { type: Number, required: true, min: 0 },
-        quantity: { type: Number, required: true, min: 1, default: 1 }
+        quantity: { type: Number, required: true, min: 1, default: 1 },
+        teeth: { type: [String], default: [] }
       }
     ],
     subtotal: { type: Number, required: true, min: 0 },

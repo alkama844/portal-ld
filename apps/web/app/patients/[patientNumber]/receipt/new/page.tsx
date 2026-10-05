@@ -30,6 +30,7 @@ import { Modal } from '@/components/ui/modal';
 import { DatePicker } from '@/components/ui/date-picker';
 import { TimePicker } from '@/components/ui/time-picker';
 import { ReceiptDocument } from '@/components/receipt/receipt-document';
+import { ToothSelectorModal } from '@/components/dental/tooth-selector-modal';
 import { useToast } from '@/components/ui/toast';
 import { apiFetch } from '@/lib/api/client';
 import { Patient, ServicePackage, ReceiptItem, PaymentMethod, Receipt, PatientAccountBalance } from '@patient-portal/shared';
@@ -56,6 +57,11 @@ function ReceiptFormContent() {
   // Line Items State
   const [items, setItems] = useState<ReceiptItem[]>([]);
   const [selectedPackageId, setSelectedPackageId] = useState('');
+
+  // Tooth Odontogram State
+  const [activeToothItemIndex, setActiveToothItemIndex] = useState<number | null>(null);
+  const [customItemTeeth, setCustomItemTeeth] = useState<string[]>([]);
+  const [showToothSelectorForCustom, setShowToothSelectorForCustom] = useState(false);
 
   // Custom Item Modal State
   const [showCustomItemModal, setShowCustomItemModal] = useState(false);
@@ -203,7 +209,8 @@ function ReceiptFormContent() {
         packageId: pkg.id || (pkg as any)._id,
         price: pkg.price,
         quantity: 1,
-        total: pkg.price
+        total: pkg.price,
+        teeth: []
       };
       setItems([...items, newItem]);
       showToast(`Added ${pkg.name} to bill`, 'success');
@@ -228,7 +235,8 @@ function ReceiptFormContent() {
       name: customItemName.trim(),
       price: priceNum,
       quantity: qtyNum,
-      total: priceNum * qtyNum
+      total: priceNum * qtyNum,
+      teeth: [...customItemTeeth]
     };
 
     setItems([...items, newItem]);
@@ -236,6 +244,7 @@ function ReceiptFormContent() {
     setCustomItemName('');
     setCustomItemPrice('');
     setCustomItemQty('1');
+    setCustomItemTeeth([]);
     setShowCustomItemModal(false);
     showToast('Custom item added to bill', 'success');
   };
@@ -257,6 +266,7 @@ function ReceiptFormContent() {
 
   // Reset Draft
   const handleResetDraft = () => {
+    setCustomItemTeeth([]);
     if (isEditMode && editReceipt) {
       setItems(editReceipt.items || []);
       setDiscount(String(editReceipt.discount || 0));
@@ -396,7 +406,8 @@ function ReceiptFormContent() {
           description: i.description,
           packageId: i.packageId,
           price: i.price,
-          quantity: i.quantity
+          quantity: i.quantity,
+          teeth: i.teeth || []
         })),
         discount: Number(discount) || 0,
         discountType,
@@ -774,6 +785,38 @@ function ReceiptFormContent() {
                                 {item.description && (
                                   <p className="text-[10px] text-slate-500 dark:text-gray-400 truncate max-w-xs">{item.description}</p>
                                 )}
+                                <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                                  {item.teeth && item.teeth.length > 0 ? (
+                                    <>
+                                      <span className="text-[10px] text-slate-400 dark:text-gray-400 font-bold uppercase">Teeth:</span>
+                                      {item.teeth.map((t) => (
+                                        <span
+                                          key={t}
+                                          className="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/80 border border-red-300 dark:border-red-800 text-[10px] font-mono font-bold text-red-700 dark:text-red-300"
+                                        >
+                                          #{t}
+                                        </span>
+                                      ))}
+                                      <button
+                                        type="button"
+                                        onClick={() => setActiveToothItemIndex(idx)}
+                                        className="text-[10px] text-red-600 dark:text-red-400 hover:underline font-semibold ml-1"
+                                      >
+                                        Edit
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      onClick={() => setActiveToothItemIndex(idx)}
+                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border border-dashed border-slate-300 dark:border-white/20 hover:border-red-500 dark:hover:border-red-500 text-[11px] text-slate-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                      title="Assign teeth to procedure"
+                                    >
+                                      <span className="font-bold text-xs leading-none">+</span>
+                                      <span>Select Tooth</span>
+                                    </button>
+                                  )}
+                                </div>
                               </td>
                               <td className="py-3 text-right font-mono font-medium text-slate-700 dark:text-gray-300">
                                 ৳{item.price.toLocaleString('en-BD')}
@@ -1082,12 +1125,55 @@ function ReceiptFormContent() {
             />
           </div>
 
+          <div className="space-y-1.5 pt-1">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300">
+              Associated Teeth (Optional)
+            </label>
+            <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/30">
+              {customItemTeeth.length > 0 ? (
+                <>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {customItemTeeth.map((t) => (
+                      <span
+                        key={t}
+                        className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-950/80 border border-red-300 dark:border-red-800 text-xs font-mono font-bold text-red-700 dark:text-red-300"
+                      >
+                        Tooth #{t}
+                      </span>
+                    ))}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowToothSelectorForCustom(true)}
+                    className="text-xs h-7 ml-auto"
+                  >
+                    Edit Teeth
+                  </Button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowToothSelectorForCustom(true)}
+                  className="w-full flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium text-slate-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Select Teeth on Odontogram</span>
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="flex justify-end gap-2.5 pt-2">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => setShowCustomItemModal(false)}
+              onClick={() => {
+                setShowCustomItemModal(false);
+                setCustomItemTeeth([]);
+              }}
             >
               Cancel
             </Button>
@@ -1097,6 +1183,39 @@ function ReceiptFormContent() {
           </div>
         </form>
       </Modal>
+
+      {/* Portaled FDI Adult 32-Tooth Odontogram Modal for Line Item */}
+      <ToothSelectorModal
+        isOpen={activeToothItemIndex !== null}
+        selectedTeeth={activeToothItemIndex !== null ? (items[activeToothItemIndex]?.teeth || []) : []}
+        onClose={() => setActiveToothItemIndex(null)}
+        onSave={(teeth: string[]) => {
+          if (activeToothItemIndex !== null) {
+            const updated = [...items];
+            updated[activeToothItemIndex] = {
+              ...updated[activeToothItemIndex],
+              teeth
+            };
+            setItems(updated);
+            setActiveToothItemIndex(null);
+            showToast(`Assigned ${teeth.length} teeth to ${updated[activeToothItemIndex].name}`, 'success');
+          }
+        }}
+        procedureName={activeToothItemIndex !== null ? items[activeToothItemIndex]?.name : undefined}
+      />
+
+      {/* Portaled FDI Adult 32-Tooth Odontogram Modal for Custom Item */}
+      <ToothSelectorModal
+        isOpen={showToothSelectorForCustom}
+        selectedTeeth={customItemTeeth}
+        onClose={() => setShowToothSelectorForCustom(false)}
+        onSave={(teeth: string[]) => {
+          setCustomItemTeeth(teeth);
+          setShowToothSelectorForCustom(false);
+          showToast(`Selected ${teeth.length} teeth for custom procedure`, 'info');
+        }}
+        procedureName={customItemName || 'Custom Procedure'}
+      />
 
       {/* Printable Receipt Modal with Canonical ReceiptDocument */}
       <Modal
