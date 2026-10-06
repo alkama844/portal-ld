@@ -199,7 +199,7 @@ export const getPublicPatientProfile = async (req: Request, res: Response) => {
     if (!patient || !patient.isPublic) {
       return res.status(403).json({
         success: false,
-        message: 'Access Denied. This patient profile is private.'
+        message: 'এই লিঙ্কটি প্রাইভেট বা আর বৈধ নয়। অনুগ্রহ করে ফিরে যান।'
       });
     }
 
@@ -238,6 +238,59 @@ export const getPublicPatientProfile = async (req: Request, res: Response) => {
     return res.status(500).json({ success: false, message: 'Failed to retrieve public profile' });
   }
 };
+
+export const getPublicPatientByNumber = async (req: Request, res: Response) => {
+  try {
+    const { patientNumber } = req.params;
+    const num = Number(patientNumber);
+    if (isNaN(num)) {
+      return res.status(400).json({ success: false, message: 'Invalid patient number.' });
+    }
+
+    const patient = await patientService.getPublicPatientByNumber(num);
+    if (!patient || !patient.isPublic) {
+      return res.status(403).json({
+        success: false,
+        message: 'এই লিঙ্কটি প্রাইভেট বা আর বৈধ নয়। অনুগ্রহ করে ফিরে যান।'
+      });
+    }
+
+    // Securely retrieve receipts ONLY for this specific patient
+    const receipts = await receiptService.getPatientReceipts(String(patient.patientNumber));
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        fullName: patient.fullName,
+        patientNumber: patient.patientNumber,
+        age: patient.age,
+        patientProblem: patient.patientProblem,
+        profileImage: patient.profileImage,
+        createdAt: patient.createdAt,
+        isPublic: true,
+        receipts: receipts.map((r) => ({
+          receiptNumber: r.receiptNumber,
+          createdAt: r.createdAt,
+          appointmentDate: r.appointmentDate,
+          appointmentTime: r.appointmentTime,
+          items: r.items,
+          subtotal: r.subtotal,
+          discount: r.discount,
+          totalAmount: r.totalAmount,
+          paidAmount: r.paidAmount,
+          dueAmount: r.dueAmount,
+          paymentMethod: r.paymentMethod,
+          paymentStatus: r.paymentStatus,
+          notes: r.notes
+        }))
+      }
+    });
+  } catch (error: any) {
+    logger.error('Error retrieving public patient by number', { error });
+    return res.status(500).json({ success: false, message: 'Failed to retrieve public profile' });
+  }
+};
+
 
 export const getPublicPatientReceipt = async (req: Request, res: Response) => {
   try {

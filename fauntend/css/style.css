@@ -6,19 +6,19 @@
    ========================================================================== */
 
 :root {
-  /* Lucky Dental Care — Burnt-Orange Brand System (Main Accent) */
-  --brand-primary: #c2410c;
-  --brand-primary-rgb: 194, 65, 12;
-  --brand-primary-dark: #9a3412;
-  --brand-primary-deep: #7c2d12;
-  --brand-primary-light: #ea580c;
-  --brand-primary-soft: #fff7ed;
-  --brand-primary-subtle: rgba(194, 65, 12, 0.08);
-  --brand-primary-border: rgba(194, 65, 12, 0.25);
-  --brand-primary-shadow: 0 10px 25px rgba(194, 65, 12, 0.20);
-  --brand-primary-glow: rgba(194, 65, 12, 0.18);
-  --bs-primary: #c2410c;
-  --bs-primary-rgb: 194, 65, 12;
+  /* Lucky Dental Care — Crimson Classic Brand System (Main Accent) */
+  --brand-primary: #941324;
+  --brand-primary-rgb: 148, 19, 36;
+  --brand-primary-dark: #770f1d;
+  --brand-primary-deep: #5a0b16;
+  --brand-primary-light: #b8182c;
+  --brand-primary-soft: #fdf2f4;
+  --brand-primary-subtle: rgba(148, 19, 36, 0.08);
+  --brand-primary-border: rgba(148, 19, 36, 0.25);
+  --brand-primary-shadow: 0 10px 25px rgba(148, 19, 36, 0.20);
+  --brand-primary-glow: rgba(148, 19, 36, 0.18);
+  --bs-primary: #941324;
+  --bs-primary-rgb: 148, 19, 36;
 
   /* Brand Accent Colors (Dynamically Synchronized with Settings) */
   --brand-red: var(--brand-primary);

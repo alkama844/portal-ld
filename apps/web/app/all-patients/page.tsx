@@ -168,6 +168,7 @@ export default function AllPatientsPage() {
         body: JSON.stringify({
           patientName: formName.trim(),
           age: Number(formAge),
+          phone: formMobile.trim(),
           mobileNumber: formMobile.trim(),
           location: formLocation.trim(),
           amount: Number(formAmount),

@@ -28,7 +28,9 @@ import {
   Eye,
   Undo2,
   History,
-  RotateCcw
+  RotateCcw,
+  Globe,
+  Lock
 } from 'lucide-react';
 import DashboardLayout from '@/app/dashboard/layout';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -106,10 +108,10 @@ export default function PatientProfilePage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Share modal state
-  const [showShareModal, setShowShareModal] = useState(false);
+  // Share state
   const [isTogglingShare, setIsTogglingShare] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedPublicLink, setCopiedPublicLink] = useState(false);
+  const [showMakePrivateConfirm, setShowMakePrivateConfirm] = useState(false);
 
   // New Appointment modal state
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
@@ -450,39 +452,7 @@ export default function PatientProfilePage() {
     }
   };
 
-  // Toggle Public / Private Profile
-  const handleToggleShare = async (newStatus: boolean) => {
-    if (!patient) return;
-    setIsTogglingShare(true);
-    try {
-      const res = await apiFetch<Patient>(`/patients/${patient.patientNumber}/share`, {
-        method: 'POST',
-        body: JSON.stringify({ isPublic: newStatus })
-      });
-      if (res.success && res.data) {
-        setPatient(res.data);
-        showToast(
-          newStatus ? 'Public profile link generated' : 'Patient profile is now private',
-          'success'
-        );
-      } else {
-        showToast(res.error || 'Failed to update visibility', 'error');
-      }
-    } catch {
-      showToast('Network error updating visibility', 'error');
-    } finally {
-      setIsTogglingShare(false);
-    }
-  };
 
-  const handleCopyPublicLink = () => {
-    if (!patient?.publicToken) return;
-    const url = `${window.location.origin}/public/patient/${patient.publicToken}`;
-    navigator.clipboard.writeText(url);
-    setCopiedLink(true);
-    showToast('Public link copied to clipboard', 'success');
-    setTimeout(() => setCopiedLink(false), 2500);
-  };
 
   // Create Appointment
   const handleAddAppointment = async (e: React.FormEvent) => {
@@ -583,6 +553,52 @@ export default function PatientProfilePage() {
     }
   };
 
+  // Toggle Public / Private Sharing
+  const handleTogglePublic = async (makePublic: boolean) => {
+    if (!patient) return;
+    setIsTogglingShare(true);
+    try {
+      const res = await apiFetch<Patient>(`/patients/${patient.patientNumber}/share`, {
+        method: 'POST',
+        body: JSON.stringify({ isPublic: makePublic })
+      });
+      if (res.success && res.data) {
+        setPatient(res.data);
+        showToast(makePublic ? 'Patient profile is now public!' : 'Patient profile is now private!', 'success');
+        if (!makePublic) setShowMakePrivateConfirm(false);
+      } else {
+        showToast(res.error || 'Failed to update visibility', 'error');
+      }
+    } catch {
+      showToast('Network error updating sharing status', 'error');
+    } finally {
+      setIsTogglingShare(false);
+    }
+  };
+
+  const handleCopyPublicLink = async () => {
+    if (!patient) return;
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://portal.luckydentalcare.com';
+    const publicUrl = `${origin}/patient/${patient.patientNumber}`;
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(publicUrl);
+      } else {
+        const el = document.createElement('textarea');
+        el.value = publicUrl;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+      }
+      setCopiedPublicLink(true);
+      setTimeout(() => setCopiedPublicLink(false), 2500);
+      showToast('লিংক কপি হয়েছে', 'success');
+    } catch {
+      showToast('লিংক কপি করা যায়নি', 'error');
+    }
+  };
+
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -657,7 +673,7 @@ export default function PatientProfilePage() {
                 </span>
                 {patient.isPublic && (
                   <span className="px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/50 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
-                    Public Share Active
+                    Public
                   </span>
                 )}
               </div>
@@ -666,15 +682,42 @@ export default function PatientProfilePage() {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowShareModal(true)}
-              className="text-xs gap-1.5 border-white/10 hover:border-red-500/40"
-            >
-              <Share2 className="w-3.5 h-3.5 text-red-400" />
-              Share
-            </Button>
+            {patient.isPublic ? (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyPublicLink}
+                  className="text-xs gap-1.5 border-emerald-700/50 text-emerald-400 hover:text-emerald-300 hover:border-emerald-500"
+                >
+                  {copiedPublicLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copiedPublicLink ? 'Copied' : 'Copy Link'}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowMakePrivateConfirm(true)}
+                  disabled={isTogglingShare}
+                  className="text-xs gap-1.5 border-red-800/40 text-red-400 hover:text-red-300"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  Make Private
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleTogglePublic(true)}
+                disabled={isTogglingShare}
+                isLoading={isTogglingShare}
+                className="text-xs gap-1.5 border-white/10 hover:border-emerald-500/50 text-gray-300 hover:text-white"
+              >
+                <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                Make Public
+              </Button>
+            )}
+
             <Button
               variant="secondary"
               size="sm"
@@ -1212,57 +1255,36 @@ export default function PatientProfilePage() {
         </div>
       </div>
 
-      {/* Share Modal */}
+      {/* Make Private Confirmation Modal */}
       <Modal
-        isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
-        title="Public / Private Profile Sharing"
-        description="Generate a secure public link for the patient or their guardian"
+        isOpen={showMakePrivateConfirm}
+        onClose={() => setShowMakePrivateConfirm(false)}
+        title="Make Profile Private"
+        description="Are you sure you want to make this patient profile private? The public link will become immediately inaccessible to anyone outside the clinic."
       >
         <div className="space-y-4 text-xs">
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-bold text-gray-100">Profile Visibility</p>
-                <p className="text-gray-400 text-[11px]">
-                  {patient.isPublic 
-                    ? 'Anyone with the secure token link can view verified dental records and receipts.' 
-                    : 'Profile is private. Only authenticated administrators can view.'}
-                </p>
-              </div>
-              <Button
-                variant={patient.isPublic ? 'primary' : 'outline'}
-                size="sm"
-                onClick={() => handleToggleShare(!patient.isPublic)}
-                isLoading={isTogglingShare}
-                className="text-xs shrink-0"
-              >
-                {patient.isPublic ? 'Make Private' : 'Make Public'}
-              </Button>
-            </div>
-
-            {patient.isPublic && patient.publicToken && (
-              <div className="pt-3 border-t border-white/10 space-y-2">
-                <label className="block text-gray-300 font-semibold">Secure Public URL</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    readOnly
-                    value={typeof window !== 'undefined' ? `${window.location.origin}/public/patient/${patient.publicToken}` : ''}
-                    className="w-full glass-input rounded-xl px-3 py-2 text-xs font-mono text-gray-300"
-                  />
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleCopyPublicLink}
-                    className="shrink-0 gap-1 text-xs"
-                  >
-                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    {copiedLink ? 'Copied' : 'Copy'}
-                  </Button>
-                </div>
-              </div>
-            )}
+          <div className="p-4 rounded-xl bg-red-950/20 border border-red-800/40 text-gray-300">
+            <p>
+              When private, visiting <span className="font-mono text-red-400">/patient/{patient.patientNumber}</span> will immediately show a private error screen. You can make it public again anytime.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowMakePrivateConfirm(false)}
+              disabled={isTogglingShare}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => handleTogglePublic(false)}
+              isLoading={isTogglingShare}
+            >
+              Make Private
+            </Button>
           </div>
         </div>
       </Modal>
@@ -1997,6 +2019,50 @@ export default function PatientProfilePage() {
           </form>
         )}
       </Modal>
+
+      {/* Make Private Confirmation Modal */}
+      <Modal
+        isOpen={showMakePrivateConfirm}
+        onClose={() => setShowMakePrivateConfirm(false)}
+        title="Make Patient Profile Private?"
+        description="Public link will immediately stop working for visitors"
+      >
+        <div className="space-y-4">
+          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2 text-xs">
+            <div className="flex items-center gap-2 text-amber-300 font-bold">
+              <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Confirm Privacy Change</span>
+            </div>
+            <p className="text-amber-200/90 leading-relaxed">
+              When set to private, the public link <strong>/patient/{patient.patientNumber}</strong> will immediately return a private message. Visitors and patients without admin credentials will no longer be able to view this profile online.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-2.5 pt-2 border-t border-white/10">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowMakePrivateConfirm(false)}
+              disabled={isTogglingShare}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              isLoading={isTogglingShare}
+              onClick={() => handleTogglePublic(false)}
+              className="bg-red-700 hover:bg-red-600 border-red-600 gap-1.5"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              Confirm Make Private
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </DashboardLayout>
   );
 }
+

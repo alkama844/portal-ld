@@ -295,6 +295,27 @@ export class PatientService {
     return inMemoryPatients.find((p) => p.publicToken === token && p.isPublic === true) || null;
   }
 
+  async getPublicPatientByNumber(patientNumber: number): Promise<any | null> {
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    if (isDbConnected) {
+      return await Patient.findOne({ patientNumber, isPublic: true }).lean();
+    }
+
+    const nafijDb = getNafijDB();
+    if (nafijDb) {
+      try {
+        const result = await nafijDb.collection<any>('patients').find({ limit: 100 });
+        const list = extractDocs(result);
+        const found = list.find((p) => Number(p.patientNumber) === patientNumber && (p.isPublic === true || p.isPublic === 'true'));
+        if (found) return found;
+      } catch (err) {
+        logger.warn('NafijDB getPublicPatientByNumber lookup failed', { err });
+      }
+    }
+
+    return inMemoryPatients.find((p) => Number(p.patientNumber) === patientNumber && p.isPublic === true) || null;
+  }
+
   async updatePatient(identifier: string, updates: Partial<CreatePatientDTO>): Promise<any | null> {
     const patient = await this.getPatientByNumberOrId(identifier);
     if (!patient) return null;

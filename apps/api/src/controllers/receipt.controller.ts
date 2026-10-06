@@ -340,7 +340,8 @@ export const reverseInvoicePayment = async (req: Request, res: Response) => {
 
 export const createAllPatientEntry = async (req: Request, res: Response) => {
   try {
-    const { patientName, age, phone, location, amount, date, time, service, notes } = req.body;
+    const { patientName, age, phone, mobileNumber, mobile, location, amount, date, time, service, notes } = req.body;
+    const rawPhone = (phone || mobileNumber || mobile || req.body.number || '').toString();
 
     if (!patientName || !patientName.trim()) {
       return res.status(400).json({ success: false, message: 'Patient Name is required.', field: 'patientName' });
@@ -348,7 +349,7 @@ export const createAllPatientEntry = async (req: Request, res: Response) => {
     if (age === undefined || age === '' || isNaN(Number(age)) || Number(age) < 0) {
       return res.status(400).json({ success: false, message: 'Valid Age is required.', field: 'age' });
     }
-    if (!phone || !phone.trim()) {
+    if (!rawPhone || !rawPhone.trim()) {
       return res.status(400).json({ success: false, message: 'Mobile Number is required.', field: 'phone' });
     }
     if (!location || !location.trim()) {
@@ -367,7 +368,7 @@ export const createAllPatientEntry = async (req: Request, res: Response) => {
     const result = await receiptService.createAllPatientEntry({
       patientName: patientName.trim(),
       age: Number(age),
-      phone: phone.trim(),
+      phone: rawPhone.trim(),
       location: location.trim(),
       amount: Number(amount),
       date: date.trim(),
@@ -378,11 +379,12 @@ export const createAllPatientEntry = async (req: Request, res: Response) => {
 
     return res.status(201).json({
       success: true,
-      message: `Patient entry #${result.entry.serial} created successfully`,
-      data: result
+      message: `Entry #${result.entry.serial} created successfully`,
+      data: result.entry,
+      receipt: result.receipt
     });
   } catch (error: any) {
-    logger.error('Error creating All Patient entry', { error });
+    logger.error('Error creating AllPatientEntry', { error });
     return res.status(400).json({
       success: false,
       message: error.message || 'Failed to create patient entry'

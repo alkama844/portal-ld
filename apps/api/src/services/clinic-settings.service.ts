@@ -22,7 +22,7 @@ const DEFAULT_SETTINGS: ClinicSettingsDTO = {
   address: 'Kushtia, Bangladesh',
   website: 'https://luckydentalcare.com',
   receiptFooter: 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh',
-  frontendColor: '#c2410c'
+  frontendColor: '#941324'
 };
 
 class ClinicSettingsService {

@@ -788,32 +788,28 @@ function ReceiptFormContent() {
                                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                                   {item.teeth && item.teeth.length > 0 ? (
                                     <>
-                                      <span className="text-[10px] text-slate-400 dark:text-gray-400 font-bold uppercase">Teeth:</span>
-                                      {item.teeth.map((t) => (
-                                        <span
-                                          key={t}
-                                          className="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/80 border border-red-300 dark:border-red-800 text-[10px] font-mono font-bold text-red-700 dark:text-red-300"
-                                        >
-                                          #{t}
-                                        </span>
-                                      ))}
+                                      <span className="text-[10px] text-slate-500 dark:text-gray-400 font-bold">
+                                        {item.teeth.length === 1 ? 'Tooth:' : 'Teeth:'}
+                                      </span>
+                                      <span className="font-mono font-bold text-xs text-red-600 dark:text-red-400">
+                                        {item.teeth.join(', ')}
+                                      </span>
                                       <button
                                         type="button"
                                         onClick={() => setActiveToothItemIndex(idx)}
-                                        className="text-[10px] text-red-600 dark:text-red-400 hover:underline font-semibold ml-1"
+                                        className="text-[10px] text-red-600 dark:text-red-400 hover:underline font-bold ml-1"
                                       >
-                                        Edit
+                                        [Edit]
                                       </button>
                                     </>
                                   ) : (
                                     <button
                                       type="button"
                                       onClick={() => setActiveToothItemIndex(idx)}
-                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg border border-dashed border-slate-300 dark:border-white/20 hover:border-red-500 dark:hover:border-red-500 text-[11px] text-slate-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                                      title="Assign teeth to procedure"
+                                      className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-md border border-dashed border-slate-300 dark:border-white/20 hover:border-red-500 text-xs font-bold text-slate-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all"
+                                      title="Select target tooth for this treatment"
                                     >
-                                      <span className="font-bold text-xs leading-none">+</span>
-                                      <span>Select Tooth</span>
+                                      [ + ]
                                     </button>
                                   )}
                                 </div>

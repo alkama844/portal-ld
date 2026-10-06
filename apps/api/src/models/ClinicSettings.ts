@@ -27,7 +27,7 @@ const clinicSettingsSchema = new Schema<IClinicSettings>(
       default: 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh'
     },
     logoUrl: { type: String },
-    frontendColor: { type: String, default: '#c2410c' }
+    frontendColor: { type: String, default: '#941324' }
   },
   { timestamps: true }
 );

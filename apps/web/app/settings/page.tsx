@@ -48,15 +48,15 @@ export default function SettingsPage() {
   const [isLoadingClinic, setIsLoadingClinic] = useState(true);
 
   // Frontend Theme Color State (Sections 25-34)
-  const [frontendColor, setFrontendColor] = useState('#c2410c');
+  const [frontendColor, setFrontendColor] = useState('#941324');
   const [isSavingFrontendColor, setIsSavingFrontendColor] = useState(false);
   const [colorSaveStatus, setColorSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
   const THEME_PRESETS = [
+    { name: 'Crimson Classic', color: '#941324' },
     { name: 'Lucky Orange', color: '#c2410c' },
     { name: 'Orion Deep Blue', color: '#1e3a8a' },
     { name: 'Dark Obsidian', color: '#0f172a' },
-    { name: 'Classic Crimson', color: '#941324' },
     { name: 'Emerald Forest', color: '#059669' },
     { name: 'Amber Gold', color: '#d97706' }
   ];
@@ -108,14 +108,14 @@ export default function SettingsPage() {
 
   const handleSaveFrontendColor = async () => {
     if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(frontendColor)) {
-      showToast('Please enter a valid hex color code (e.g. #c2410c)', 'error');
+      showToast('Please enter a valid hex color code (e.g. #941324)', 'error');
       return;
     }
 
     setIsSavingFrontendColor(true);
     setColorSaveStatus('saving');
     try {
-      const res = await apiFetch<ClinicSettings>('/settings/clinic', {
+      const res = await apiFetch<ClinicSettings>('/settings/theme', {
         method: 'PUT',
         body: JSON.stringify({ frontendColor })
       });

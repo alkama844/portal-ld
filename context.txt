@@ -1,424 +1,140 @@
+I checked the MaintainDoc repository and its documentation before preparing this. The repository provides `maintain.js`, `maintain.config.js`, an installer, and an API pattern based on a unique site ID; its documented status endpoint is `/api/status/:site`, and the live `luckydental` endpoint currently reports `active: true`. ([GitHub][1])
+
+Use this **single implementation prompt** for Antigravity:
+
+```text
 # ============================================================
-# LUCKY DENTAL CARE — RECEIPT V2 + TOOTH SELECTOR + ALL PATIENTS
-# + MULTIPLE PAYMENT HISTORY + PAYMENT EDIT/REVERT
+# LUCKY DENTAL CARE — FINAL BUG FIX + TOOTH SELECTOR +
+# ALL PATIENTS FIX + PUBLIC PATIENT SHARING + MAINTENANCE MODE +
+# THEME SYSTEM FIX
 # ============================================================
 
-PROJECT:
+PROJECT ROOT:
+
 C:\Users\Rc\Downloads\Compressed\patient-portal
 
-TARGET:
-Existing Luckydental backend/frontend receipt center and admin web app.
+MAIN WEB APP:
+
+C:\Users\Rc\Downloads\Compressed\patient-portal\apps\web
+
+PUBLIC FRONTEND:
+
+C:\Users\Rc\Downloads\Compressed\patient-portal\fauntend
 
 IMPORTANT:
-This is an enhancement of the EXISTING billing system.
 
-Do NOT rebuild billing from scratch.
-Do NOT destroy existing patient/invoice/payment data.
-Do NOT create duplicate parallel billing systems.
+This is an EXISTING production-style application.
 
-First inspect:
-- current Patient model
-- Invoice/Receipt model
-- Payment model or payment arrays
-- Appointment model
-- current receipt renderer
-- print CSS
-- billing page
-- patient profile
-- existing invoice history
-- existing payment history
-- current patient numbering
-- current service/package data
+Do not rebuild the entire project.
 
-Then implement the following requirements.
+Do not create parallel versions of the same feature.
 
-# ============================================================
-# 1. RECEIPT FORMAT MUST CHANGE
-# ============================================================
+Do not delete existing patient/invoice/payment data.
 
-The previous requirement was:
+Audit the current implementation first, then fix the actual root causes.
 
-210mm × 99mm
+============================================================
+PART 1 — INVOICE GENERATOR TOOTH SELECTOR
+============================================================
 
-That is NO LONGER the desired print format.
+CURRENT BUG:
 
-New requirement:
+The tooth selector is missing from the invoice generator.
 
-THERMAL / SUPERSHOP STYLE RECEIPT
+I explicitly need a tooth selector INSIDE THE INVOICE GENERATOR / TREATMENT
+ENTRY AREA.
 
-Target width:
+Purpose:
 
-80mm
+Admin selects which tooth/teeth require treatment.
 
-Height:
+============================================================
+1. TOOTH BUTTON WHEN NOTHING IS SELECTED
+============================================================
 
-CONTENT-DRIVEN / AUTO
+When a treatment has no selected tooth:
 
-Do NOT force a fixed receipt height.
-
-The receipt may become:
-
-80 × 120mm
-80 × 160mm
-80 × 220mm
-etc.
-
-depending on how much content exists.
-
-The important rule:
-
-WIDTH = 80mm
-HEIGHT = AUTO
-
-The receipt must grow naturally with content.
-
-Do NOT create a second printed page unnecessarily.
-
-Do NOT force the receipt into A4.
-
-# ============================================================
-# 2. THERMAL RECEIPT PRINT CSS
-# ============================================================
-
-Redesign print CSS specifically for an 80mm receipt.
-
-Concept:
-
-@page {
-    size: 80mm auto;
-    margin: 0;
-}
-
-Receipt:
-
-width: 80mm;
-max-width: 80mm;
-height: auto;
-box-sizing: border-box;
-
-No:
-
-height: 99mm
-height: 210mm
-height: 297mm
-
-Do not force a fixed height.
-
-Use compact but readable typography.
-
-The print layout should behave like a professional POS/super-shop receipt.
-
-# ============================================================
-# 3. RECEIPT CONTENT MUST GROW NATURALLY
-# ============================================================
-
-If the patient has:
-
-1 treatment
-+
-1 payment
-
-receipt is short.
-
-If patient has:
-
-5 treatments
-+
-4 payments
-+
-notes
-
-receipt becomes taller.
-
-Do NOT crop content.
-
-Do NOT hide content simply because the receipt gets longer.
-
-Do NOT create an arbitrary maximum height.
-
-# ============================================================
-# 4. RECEIPT BRAND HEADER ALWAYS EXISTS
-# ============================================================
-
-Every receipt MUST ALWAYS show:
-
-Lucky Dental Care logo
-
-LUCKY DENTAL CARE
-
-SMILE FOR LIFE
-
-ESTD 1982
-
-Official clinic location
-
-Official phone/contact information where configured.
-
-This information must appear on EVERY receipt.
-
-Do not depend on individual invoice fields for the clinic identity.
-
-Do not allow a receipt to print without the clinic branding.
-
-# ============================================================
-# 5. BRAND LOGO
-# ============================================================
-
-Use the official Lucky Dental Care logo already present in the project.
-
-Maintain aspect ratio.
-
-Do not distort.
-
-Keep it centered or visually balanced for 80mm thermal width.
-
-Recommended:
-
-logo width approximately 32–48mm depending on actual logo dimensions.
-
-Do not make the logo so large that it wastes the receipt.
-
-# ============================================================
-# 6. CLINIC LOCATION
-# ============================================================
-
-Do NOT use:
-
-Dhaka, Bangladesh
-
-The clinic is:
-
-Kushtia, Bangladesh
-
-Use the actual configured Lucky Dental Care location from the application.
-
-If a more complete official address exists in settings, use that.
-
-Do not invent a new address.
-
-# ============================================================
-# 7. RECEIPT CONTENT PRIORITY
-# ============================================================
-
-For an 80mm thermal receipt, use this hierarchy:
-
-LOGO
-LUCKY DENTAL CARE
-SMILE FOR LIFE
-LOCATION / CONTACT
---------------------------------
-INVOICE NUMBER + DATE/TIME
-PAYMENT STATUS
---------------------------------
-PATIENT INFORMATION
-PATIENT NUMBER
-PATIENT NAME
-PHONE
---------------------------------
-SERVICE / TREATMENT
---------------------------------
-TOTALS
---------------------------------
-PAYMENT HISTORY / CURRENT PAYMENT
---------------------------------
-BALANCE
---------------------------------
-MANUAL SIGNATURE / RECORDED BY
---------------------------------
-
-Keep it compact.
-
-# ============================================================
-# 8. PATIENT NAME MUST ALWAYS APPEAR
-# ============================================================
-
-Current problem:
-
-Patient Identification sometimes shows the patient number but not the name.
-
-Fix it.
-
-Receipt must show:
-
-Patient:
-[Full Patient Name]
-
-Patient ID:
-#1011
-
-Mobile:
-017XXXXXXXX
-
-Do not allow the name to disappear because a receipt was opened from another
-route.
-
-Use the canonical Patient record from the database.
-
-# ============================================================
-# 9. KEEP SERVICE/TREATMENT
-# ============================================================
-
-Every receipt must clearly show:
-
-Service / Treatment taken
-
-Example:
-
-Root Canal Treatment
-৳6,000
-
-Do not display duplicate treatment text unless it is actually in the stored
-data.
-
-# ============================================================
-# 10. REMOVE QUANTITY FROM RECEIPT
-# ============================================================
-
-Do NOT display:
-
-QTY
-
-Do NOT display:
-
-Quantity = 1
-
-Do NOT reserve a quantity column.
-
-Receipt treatment line should be:
-
-Treatment | Price | Amount
-
-or another compact thermal-friendly structure.
-
-# ============================================================
-# 11. APPOINTMENT SCHEDULE MUST NOT PRINT
-# ============================================================
-
-Do NOT show:
-
-Appointment Schedule
-Appointment Date
-Appointment Time
-
-on the receipt.
-
-Appointment information can continue to exist elsewhere in the application.
-
-It must simply be excluded from the printed receipt.
-
-# ============================================================
-# 12. RECORDED BY MUST REMAIN BLANK
-# ============================================================
-
-At the end of receipt:
-
-Recorded By: __________________
-
-Leave it blank.
-
-Do NOT automatically print:
-
-Admin
-Doctor Name
-Logged-in username
-
-The client wants to manually sign/write on the printed receipt.
-
-# ============================================================
-# 13. RECEIPT FOOTER
-# ============================================================
-
-Use a compact:
-
-LUCKY DENTAL CARE
-SMILE FOR LIFE
-
-and optionally:
-
-Kushtia, Bangladesh
-
-Do not include technical information.
-
-# ============================================================
-# 14. TOOTH SELECTOR — NEW FEATURE
-# ============================================================
-
-Add a tooth-selection feature to the receipt/treatment entry area.
-
-It should be positioned near the treatment/service information and visually
-close to the receipt branding/treatment selector as appropriate.
-
-If NO tooth is selected:
-
-show a compact:
+show a compact button:
 
 +
-
-button/icon.
 
 Example:
 
 [ + ]
 
-When admin taps it:
+Do not show an empty giant selector.
 
-open a tooth-selection popup.
+Place it naturally beside the relevant treatment/service entry.
 
-# ============================================================
-# 15. TOOTH POPUP BEHAVIOR
-# ============================================================
+============================================================
+2. OPEN TOOTH SELECTOR
+============================================================
 
-The tooth selector popup must:
+When admin taps:
 
-- open centered on screen
-- appear above other UI
-- use a very high but controlled z-index
-- not be clipped by cards/modals
++
+
+open a proper tooth selector overlay/modal.
+
+It must:
+
+- appear above everything
+- be centered
+- have high z-index
+- never be clipped
+- work inside invoice modals
 - work on mobile
-- support outside click to close
-- support Escape key to close
+- support outside-click close
+- support Escape key
+- preserve current invoice form state
 
-Do NOT allow:
+If necessary, use a portal to document.body.
 
-overflow-hidden
+Do not allow modal/container overflow to clip it.
 
-ancestors to clip the selector.
+============================================================
+3. TOOTH SELECTOR DESIGN
+============================================================
 
-If necessary, render it using a portal to document.body.
+Use a professional odontogram-style selector.
 
-# ============================================================
-# 16. TOOTH SELECTOR VISUAL DESIGN
-# ============================================================
+The user wants a layout conceptually like:
 
-Use the uploaded/reference image concept as inspiration.
+UPPER TEETH
 
-The user wants a clear dental tooth chooser.
+1 2 3 4 5 6 7 8 | 1 2 3 4 5 6 7 8
 
-Do NOT simply show a plain dropdown with:
+LOWER TEETH
 
-1,2,3,4...
+1 2 3 4 5 6 7 8 | 1 2 3 4 5 6 7 8
 
-Build a proper visual odontogram/selection interface.
+Do not make a plain select dropdown.
 
-Support the standard adult tooth arrangement.
+Make it visually clear which teeth are:
 
-Prefer FDI numbering where compatible with the application's data model:
+Upper
+Lower
+Left/right side
 
-11 12 13 14 15 16 17 18
-21 22 23 24 25 26 27 28
-31 32 33 34 35 36 37 38
-41 42 43 44 45 46 47 48
+Use a standard 32-adult-tooth representation.
 
-But inspect the current data model first.
+Prefer FDI numbering if compatible with the existing project:
 
-If the current application already uses another tooth numbering system,
-preserve it consistently.
+18 17 16 15 14 13 12 11 | 21 22 23 24 25 26 27 28
 
-# ============================================================
-# 17. TOOTH SELECTION
-# ============================================================
+48 47 46 45 44 43 42 41 | 31 32 33 34 35 36 37 38
 
-Admin can select:
+IMPORTANT:
+
+Inspect existing tooth data conventions before choosing the final numbering.
+
+Do not create a numbering conflict with existing records.
+
+============================================================
+4. SINGLE + MULTIPLE TOOTH SELECTION
+============================================================
+
+Admin must be able to select:
 
 one tooth
 
@@ -426,1205 +142,1027 @@ or:
 
 multiple teeth
 
-Selected teeth must be visually highlighted.
-
 Example:
 
-Tooth 16
-Tooth 17
+Root Canal
+Selected teeth:
+16, 17
 
-Selected state:
+Selected teeth must visually highlight.
 
-brand-colored highlight.
+Click again:
 
-Unselected:
+deselect.
 
-neutral.
+============================================================
+5. TOOTH POPUP CONTROLS
+============================================================
 
-Provide:
+Bottom of selector:
 
-Clear Selection
+[ Clear ]
+[ Cancel ]
+[ Done ]
 
-and:
+Done returns to invoice form.
 
-Done
+============================================================
+6. SHOW SELECTED TEETH IN INVOICE FORM
+============================================================
 
-buttons.
+After selection, replace:
 
-# ============================================================
-# 18. TOOTH DATA STORAGE
-# ============================================================
++
 
-Store tooth selection with the treatment line / invoice item.
+with a compact display such as:
+
+Tooth: 16
+
+or:
+
+Teeth: 16, 17
+
+Also provide:
+
+[Edit]
+
+to reopen selector.
+
+============================================================
+7. STORE TEETH IN DATABASE
+============================================================
+
+Tooth selection MUST persist in MongoDB/database with the invoice/treatment
+item.
 
 Example:
 
 {
-  service: "Root Canal",
+  service: "...",
   price: 6000,
-  teeth: ["16"]
+  teeth: ["16", "17"]
 }
 
-Do NOT store it only in frontend state.
+Do not keep it only in React state/localStorage.
 
 It must survive:
 
 save
 refresh
-edit
-print
+edit invoice
 view invoice
+print receipt
 
-# ============================================================
-# 19. RECEIPT TOOTH DISPLAY
-# ============================================================
+============================================================
+8. PRINT RECEIPT TOOTH DISPLAY
+============================================================
 
-On the printed receipt:
+If teeth are selected:
 
-if teeth were selected:
+show compactly:
 
 Root Canal
-Tooth: 16
+Tooth: 16, 17
 
-or:
+If none selected:
 
-Root Canal — Tooth 16, 17
+do not show an empty Tooth field.
 
-Keep it compact.
-
-If no tooth was selected:
-
-do not print an empty tooth field.
-
-# ============================================================
-# 20. NEW "ALL PATIENTS" SECTION
-# ============================================================
-
-Create a new admin section:
-
-ALL PATIENTS
-
-Suggested route:
-
-/all-patients
-
-or whatever route fits the existing navigation.
-
-This is NOT merely the existing patient directory.
-
-It is a clean historical patient/visit entry ledger.
-
-# ============================================================
-# 21. ALL PATIENTS TABLE
-# ============================================================
-
-Create an Excel-like but modern web interface.
-
-Columns:
-
-Serial
-Patient Name
-Age
-Mobile Number
-Location
-Amount (৳)
-Date
-Time
-
-Example:
-
-001 | Rahim | 28 | 017... | Kushtia | ৳2000 | 05 Oct 2026 | 07:30 PM
-
-Do NOT literally embed Excel.
-
-Build a native responsive table.
-
-# ============================================================
-# 22. ALL PATIENTS MOBILE VIEW
-# ============================================================
-
-On mobile, convert rows into clean cards.
-
-Do NOT force a huge horizontal table on a small screen.
+============================================================
+9. TOOTH SELECTOR RESPONSIVENESS
+============================================================
 
 Desktop:
-table
+
+centered professional selector.
 
 Mobile:
-patient entry cards
 
-# ============================================================
-# 23. ADD PATIENT ENTRY
-# ============================================================
+fit screen width.
 
-Add a prominent:
+No horizontal scroll.
 
-+ Add
+No clipping.
 
-button.
+No giant popup extending outside viewport.
 
-When clicked:
+============================================================
+PART 2 — ALL PATIENTS NUMBER REQUIRED BUG
+============================================================
 
-open a clean form/modal/page.
+CURRENT BUG:
 
-Required fields:
+On the All Patients page, admin enters a number but the system still says:
 
-Patient Name *
-Age *
-Mobile Number *
-Location *
-Amount *
-Date *
-Time *
+"number is required"
 
-Do not save until every required field is valid.
+Fix this properly.
 
-# ============================================================
-# 24. REQUIRED VALIDATION
-# ============================================================
+Do NOT simply remove the validation.
 
-Every marked required field must be validated.
+============================================================
+10. TRACE THE NUMBER FIELD
+============================================================
 
-If anything is missing:
+Inspect:
 
-DO NOT save.
+frontend input
+→ form state
+→ validation
+→ request body
+→ API schema
+→ backend validation
+→ database
 
-Automatically move/focus the cursor to the FIRST missing/invalid field.
+Determine whether the problem is caused by:
 
-Example:
+wrong field name
+phone/mobile mismatch
+value not included in payload
+empty-string conversion
+numeric/string conversion
+schema mismatch
+validation library issue
 
-Patient Name missing
+Fix the actual mismatch.
 
-→ focus Patient Name
+============================================================
+11. PHONE NUMBER FIELD
+============================================================
 
-Age missing
+If the field is intended to store mobile number:
 
-→ focus Age
-
-etc.
-
-Show a clear inline validation message.
-
-Do not merely show a toast at the top of the page.
-
-# ============================================================
-# 25. DATE PICKER
-# ============================================================
-
-Date must use the application's proper date picker.
-
-Do not use a broken custom dropdown.
-
-Admin can choose any date.
-
-Store correctly using the application's established timezone/date convention.
-
-# ============================================================
-# 26. TIME PICKER
-# ============================================================
-
-Time must have a proper time selector/input.
-
-Admin can:
-
-select time
-
-and where appropriate edit manually.
-
-Store exact time.
-
-# ============================================================
-# 27. SAVE PATIENT ENTRY
-# ============================================================
-
-After all required information is valid:
-
-Save
-
-Show:
-
-Saving...
-
-then success.
-
-Do not claim saved before backend confirmation.
-
-# ============================================================
-# 28. PATIENT ENTRY SERIAL NUMBER
-# ============================================================
-
-Every entry must receive a sequential serial number.
+use one canonical field name throughout the flow.
 
 Example:
 
-0001
-0002
-0003
-
-This is an ENTRY serial number, not the patient's permanent patient number.
-
-It must be generated server-side.
-
-Do NOT generate:
-
-Math.random()
-
-or browser timestamps.
-
-No duplicate serials under concurrent saves.
-
-# ============================================================
-# 29. SEARCH
-# ============================================================
-
-Add a search field.
-
-Search by:
-
-Patient Name
-Mobile Number
-Patient Number if available
-
-Search should return matching historical entries.
-
-Typing should not require page reload for every character if the existing
-architecture supports efficient filtering.
-
-# ============================================================
-# 30. DATE HISTORY
-# ============================================================
-
-The All Patients section must allow an admin to see all entries for a
-patient across dates.
-
-Example:
-
-Rahim
-
-05 Sep 2026
-08 Sep 2026
-15 Sep 2026
-05 Oct 2026
-
-Do NOT only show the latest visit.
-
-# ============================================================
-# 31. PATIENT HISTORY VIEW
-# ============================================================
-
-Clicking a patient/entry should show:
-
-Patient name
-Patient number
-Age
-Mobile
-Location
-
-Visit/entry history:
-
-Date
-Time
-Service/treatment
-Amount
-Payments
-
-Use the existing patient/invoice relationships where possible.
-
-# ============================================================
-# 32. SORT OPTIONS
-# ============================================================
-
-Add a Sort By control with EXACTLY:
-
-Sort by Date
-Sort by Time
-Sort by Serial
-
-Date:
-
-newest/oldest
-
-Time:
-
-latest/earliest
-
-Serial:
-
-ascending/descending
-
-Default can be:
-
-latest date first.
-
-# ============================================================
-# 33. SORT MUST NOT DUPLICATE DATA
-# ============================================================
-
-Sort should only change display order.
-
-Do not create duplicate entries.
-
-Do not mutate stored serial numbers.
-
-# ============================================================
-# 34. MULTIPLE PAYMENTS — CRITICAL
-# ============================================================
-
-A patient may pay money many times.
-
-Example:
-
-Invoice total:
-
-৳6,000
-
-First payment:
-
-৳2,000
-
-Remaining due:
-
-৳4,000
-
-Seven days later:
-
-Additional payment:
-
-৳4,000
-
-Remaining:
-
-৳0
-
-The system must preserve BOTH payments.
-
-Do not overwrite:
-
-paidAmount
-
-with the latest payment.
-
-# ============================================================
-# 35. PAYMENT TRANSACTION MODEL
-# ============================================================
-
-Use a transaction/history model.
-
-Example concept:
-
-payments: [
-  {
-    amount: 2000,
-    method: "CASH",
-    paidAt: "...",
-    recordedBy: "...",
-    notes: "..."
-  },
-  {
-    amount: 4000,
-    method: "CASH",
-    paidAt: "...",
-    recordedBy: "...",
-    notes: "..."
-  }
-]
-
-Adapt this to the current model rather than creating duplicate systems.
-
-# ============================================================
-# 36. CALCULATE TOTAL PAID
-# ============================================================
-
-Total paid:
-
-sum(all valid payment transactions)
-
-Outstanding:
-
-invoice total
--
-sum(valid payments)
-
-Do NOT use only the latest payment.
-
-# ============================================================
-# 37. PAYMENT ON RECEIPT PAGE
-# ============================================================
-
-On the receipt/billing page add:
-
-+ Add Payment
+phone
 
 or:
 
-Additional Payment
+mobile
 
-Admin can record another payment against an existing outstanding balance.
+Do not have frontend using:
 
-# ============================================================
-# 38. ADDITIONAL PAYMENT FORM
-# ============================================================
+mobileNumber
 
-Fields:
+while backend expects:
 
-Amount *
-Payment Method
-Payment Date *
-Payment Time *
-Recorded By
-Notes
+phone
 
-Amount must be:
+unless there is a deliberate mapping.
 
-> 0
+============================================================
+12. VALIDATION
+============================================================
 
-and should not exceed outstanding balance unless the existing financial
-rules explicitly support overpayment.
+Required:
 
-# ============================================================
-# 39. ADD PAYMENT AFTER DAYS
-# ============================================================
-
-The admin must be able to open an old patient/invoice and add a payment
-days or weeks later.
-
-Example:
-
-Invoice created:
-01 Oct
-
-Payment:
-01 Oct = ৳2000
-
-New payment:
-08 Oct = ৳4000
-
-Both remain permanently recorded.
-
-# ============================================================
-# 40. EDIT PAYMENT
-# ============================================================
-
-IMPORTANT:
-
-There is currently no way to correct an accidentally entered payment.
-
-Add:
-
-Edit
-
-to every payment transaction available to authorized admin users.
-
-Admin can correct:
-
+Patient Name
+Age
+Mobile Number
+Location
 Amount
-Method
 Date
 Time
-Recorded By
-Notes
 
-# ============================================================
-# 41. PAYMENT EDIT SAFETY
-# ============================================================
+If number/mobile is missing:
 
-When editing a payment:
+focus the number field.
+
+If number exists:
+
+it MUST pass validation and reach backend.
+
+Do not falsely display "number is required."
+
+============================================================
+13. ALL PATIENT SAVE
+============================================================
+
+After valid submission:
+
+save to backend.
+
+Then refresh/requery.
+
+The entry must remain after:
+
+page refresh
+logout/login
+new browser tab
+
+Do NOT use localStorage as permanent storage.
+
+============================================================
+PART 3 — PUBLIC PATIENT PROFILE SHARING
+============================================================
+
+CURRENT BUGS:
+
+Public toggle does not persist.
+
+Copy Link button is missing.
+
+Private/Public state does not update correctly.
+
+Fix the entire feature end-to-end.
+
+============================================================
+14. PUBLIC/PRIVATE DATABASE FIELD
+============================================================
+
+Patient model must have a persistent public state.
+
+For example:
+
+isPublic
+
+or the existing equivalent.
+
+When admin selects:
+
+Public
+
+backend MUST update the database.
+
+Do not store only in React state.
+
+============================================================
+15. PUBLIC BUTTON
+============================================================
+
+On patient profile:
+
+show clear control:
+
+Make Public
+
+or:
+
+Public
+
+when currently private.
+
+When currently public:
 
 show:
 
-Edit Payment
+Public
+[Copy Link]
+[Make Private]
 
-Old:
-৳2000
+Use the actual current state from backend.
 
-New:
-৳2500
+============================================================
+16. MAKE PUBLIC
+============================================================
 
-After Save:
+Flow:
 
-recalculate:
+Admin clicks:
 
-Total Paid
-Remaining Due
-Payment Status
+Make Public
 
-Do NOT create a duplicate transaction.
+↓
 
-Update the existing transaction OR implement a proper adjustment/reversal
-model consistent with the project's financial architecture.
+backend update
 
-# ============================================================
-# 42. PAYMENT REVERT / VOID
-# ============================================================
+↓
 
-Add a safe way to reverse an incorrect payment.
+database saves:
 
-Example:
+isPublic = true
 
-payment:
-৳2000
+↓
 
-Admin chooses:
+frontend refetches
 
-Reverse Payment
+↓
 
-Require confirmation and reason.
+UI changes immediately
 
-Do NOT silently hard-delete financial history.
+↓
 
-Prefer:
+Copy Link button appears
 
-status: voided/reversed
+The state must remain public after refresh.
 
-with:
+============================================================
+17. COPY PUBLIC LINK
+============================================================
 
-reversedAt
-reversedBy
-reversalReason
+When public, generate/show:
 
-Then exclude the reversed payment from active balance calculations.
+https://portal.luckydentalcare.com/patient/1000
 
-This preserves auditability.
-
-# ============================================================
-# 43. PAYMENT EDIT AUDIT
-# ============================================================
-
-For financial integrity, log:
-
-old amount
-new amount
-old date
-new date
-who changed it
-when changed
-reason if required
-
-Do not expose technical audit data on public patient pages.
-
-# ============================================================
-# 44. PAYMENT BALANCE CALCULATION
-# ============================================================
+using the canonical patient number.
 
 Example:
 
-Invoice:
-৳6000
+/patient/1000
 
-Payments:
+NOT the internal MongoDB ObjectId unless the existing architecture explicitly
+requires it.
 
-৳2000
-৳1500
-৳2500
+The displayed/copyable link must use the patient number.
 
-Total paid:
-৳6000
+============================================================
+18. SHARE LINK
+============================================================
 
-Due:
-৳0
+Add:
 
-Status:
-PAID
+Copy Link
 
-Example 2:
+button.
 
-Invoice:
-৳6000
+Use:
 
-Payments:
+navigator.clipboard.writeText()
 
-৳2000
-৳1000
+with fallback if required.
 
-Total paid:
-৳3000
+After copying:
 
-Due:
-৳3000
-
-Status:
-PARTIALLY PAID
-
-# ============================================================
-# 45. PATIENT PROFILE PAYMENT HISTORY
-# ============================================================
-
-Patient profile must show:
-
-Total Invoice Amount
-Total Paid
-Total Due
-
-Payment history:
-
-Date
-Time
-Amount
-Method
-Recorded By
-Status
-
-Every payment must be visible.
-
-# ============================================================
-# 46. BILLING PAGE — PAYMENT EDIT
-# ============================================================
-
-On billing/invoice page:
-
-Each payment row should have:
-
-View
-Edit
-Reverse
-
-where appropriate.
-
-Do not only provide Delete.
-
-Financial records should be recoverable/auditable.
-
-# ============================================================
-# 47. RECEIPT PRINT — PAYMENT HISTORY
-# ============================================================
-
-Since receipt width is 80mm:
-
-Show the relevant payments compactly.
-
-Example:
-
-Payments
-05 Oct — Cash — ৳2,000
-12 Oct — Cash — ৳4,000
-
-Total Paid: ৳6,000
-Due: ৳0
-
-If many transactions exist, keep the receipt readable.
-
-# ============================================================
-# 48. ALL PATIENTS + PAYMENTS
-# ============================================================
-
-All Patients should allow an admin to understand:
-
-patient
-visits
-dates
-amounts
-payments
-
-Do NOT treat the "Amount" column as the sum of every historical payment
-unless explicitly labeled.
-
-Use clear labels:
-
-Visit Amount
+Copied
 
 or:
 
-Invoice Amount
+লিংক কপি হয়েছে
 
-Do not confuse:
+Do not show technical details.
 
-Invoice Total
-Paid
-Due
+============================================================
+19. PUBLIC PATIENT ROUTE
+============================================================
 
-# ============================================================
-# 49. DATA RELATIONSHIP
-# ============================================================
+Create/repair:
 
-Preferred relationship:
+/patient/:patientNumber
 
-Patient
- ├── Invoice 1
- │    ├── Treatments
- │    └── Payments
- │
- ├── Invoice 2
- │    ├── Treatments
- │    └── Payments
- │
- └── Invoice 3
-      ├── Treatments
-      └── Payments
+or the frontend equivalent:
 
-The All Patients/ledger page can aggregate these records.
+/patient/1000
 
-Do not create a completely separate patient system just for the table.
+The page must request patient data from the backend.
 
-# ============================================================
-# 50. ALL PATIENTS DATA PERSISTENCE
-# ============================================================
+Only public patients can be returned.
 
-Everything added through All Patients must persist in the backend.
+============================================================
+20. IMPORTANT PRIVACY RULE
+============================================================
 
-Refresh:
+Backend MUST enforce:
 
-still present.
+if patient.isPublic !== true
 
-Logout/login:
+return private/not-found response.
 
-still present.
+Never rely only on frontend hiding.
 
-New browser:
+A user must not be able to manually change:
 
-still present.
+/patient/1000
 
-Do NOT store permanent patient records only in:
+to:
 
-localStorage
-sessionStorage
-frontend arrays
+/patient/1001
 
-# ============================================================
-# 51. CONCURRENCY / DOUBLE SUBMISSION
-# ============================================================
+and see a private record.
 
-Protect:
+Only patients explicitly marked public can be returned.
 
-Add patient entry
-Create invoice
-Add payment
-Edit payment
-Reverse payment
+============================================================
+21. PRIVATE LINK EXPERIENCE
+============================================================
 
-from rapid double-clicks.
+If a visitor opens a private/nonexistent/broken patient link:
 
-Use:
+show a clean popup/page:
 
-frontend loading lock
-+
-backend protection/idempotency where appropriate.
+"এই লিঙ্কটি প্রাইভেট বা আর বৈধ নয়। অনুগ্রহ করে ফিরে যান।"
 
-No duplicate payment transactions from double-click.
+Add:
 
-# ============================================================
-# 52. RECEIPT HEADER CONSISTENCY
-# ============================================================
+[ ফিরে যান ]
 
-Every printed receipt must always use:
+Do not expose:
 
-Lucky Dental Care logo
-LUCKY DENTAL CARE
-SMILE FOR LIFE
-Kushtia, Bangladesh
+database ID
+server error
+MongoDB
+backend
+hosting provider
+stack trace
 
-Do not allow one invoice to show one clinic identity and another invoice to
-show different identity because of stale cached settings.
+============================================================
+22. PUBLIC PATIENT DATA
+============================================================
 
-Use the current clinic branding source consistently.
+Only return data intended for sharing.
 
-# ============================================================
-# 53. RECEIPT SERVICE CONTENT
-# ============================================================
+At minimum, follow the project's current public-patient data policy.
 
-Receipt should contain only the services/treatments actually included in
-that invoice.
+Do NOT expose:
+
+admin information
+private notes
+internal logs
+credentials
+private billing data unless explicitly intended
+internal object IDs
+
+============================================================
+23. MAKE PRIVATE
+============================================================
+
+When public:
+
+[Make Private]
+
+click:
+
+confirmation
+
+↓
+
+backend sets:
+
+isPublic = false
+
+↓
+
+frontend refetches
+
+↓
+
+Copy Link disappears/disabled
+
+Public URL immediately becomes inaccessible.
+
+============================================================
+24. PUBLIC LINK PERSISTENCE TEST
+============================================================
+
+Test:
+
+Make Public
+Refresh profile
+Copy link
+Open incognito/private window
+Open:
+
+https://portal.luckydentalcare.com/patient/1000
+
+Expected:
+
+public profile loads.
+
+Then:
+
+Make Private
+Open same link again.
+
+Expected:
+
+private/broken message.
+
+============================================================
+PART 4 — MAINTAINDOC MAINTENANCE SYSTEM
+============================================================
+
+IMPORTANT:
+
+Use the official public repository:
+
+https://github.com/nafijrahaman/maintain-doc.git
+
+The repository contains:
+
+maintain.js
+maintain.config.js
+install.js
+AI_INSTRUCTIONS.md
+llms.txt
+openapi.json
+
+Its documented integration supports a per-site status endpoint and can inject
+the SDK into HTML pages. :contentReference[oaicite:1]{index=1}
+
+The specific site endpoint is:
+
+https://maintain-doc.vercel.app/api/status/luckydental
+
+The current live response exists and currently reports the site as active. :contentReference[oaicite:2]{index=2}
+
+============================================================
+25. DOWNLOAD / INSPECT THE REPOSITORY
+============================================================
+
+Download/clone:
+
+https://github.com/nafijrahaman/maintain-doc.git
+
+into a temporary working location.
+
+Read:
+
+README.md
+AI_INSTRUCTIONS.md
+llms.txt
+maintain.config.js
+maintain.js
+openapi.json
+
+DO NOT blindly copy the public repository into the final frontend.
+
+First understand its architecture.
+
+========INTEGRATION
+note : the key to decrypt was "nafijthepro" add this to code
+=========================================
+26. MAINTAINDOC INTEGRATION
+============================================================
+
+Integrate the actual MaintainDoc SDK according to its documentation.
+
+The repository documents:
+
+maintain.config.js
+maintain.js
+
+and supports a site identifier that determines the status endpoint. :contentReference[oaicite:3]{index=3}
+
+Use site:
+
+luckydental
+
+The resulting status endpoint is:
+
+https://maintain-doc.vercel.app/api/status/luckydental
+
+Do not hardcode an unrelated site ID.
+
+============================================================
+27. KEEP CREDENTIALS OUT OF PUBLIC FRONTEND
+============================================================
+
+VERY IMPORTANT:
+
+The public repository documents placeholder encryption/passcode material.
+Do not blindly ship repository placeholder credentials into production.
+The repository itself instructs projects to configure their own secret values.
+:contentReference[oaicite:4]{index=4}
+
+Inspect the repository's current instructions and configure MaintainDoc
+according to the actual project requirements.
+
+Do not expose an administrator credential unnecessarily in:
+
+HTML
+public JS
+Git
+frontend source
+
+Use the SDK's intended configuration model.
+
+============================================================
+28. MAINTENANCE BEHAVIOR
+============================================================
+
+When MaintainDoc reports:
+
+active = true
+
+the website operates normally.
+
+When:
+
+active = false
+
+show the maintenance screen according to MaintainDoc's intended behavior.
+
+Do not break the existing Lucky Dental Care website during normal operation.
+
+============================================================
+29. MAINTENANCE DESIGN
+============================================================
+
+If maintenance mode is activated:
+
+use a Lucky Dental Care branded screen.
+
+Keep:
+
+logo
+Lucky Dental Care
+professional typography
+current theme color
+responsive design
 
 Do not show:
 
-all services
-all packages
-all patient history
+hosting provider
+database technology
+internal API details
 
-Only current invoice treatments.
+============================================================
+30. MAINTENANCE SCRIPT PLACEMENT
+============================================================
 
-# ============================================================
-# 54. TOOTH SELECTOR + TREATMENT
-# ============================================================
+Integrate:
 
-When a treatment supports tooth selection:
+maintain.config.js
+maintain.js
 
-Admin can select teeth.
+into the public frontend correctly.
 
-When editing the treatment later:
+Make sure every active public page is covered:
 
-previously selected teeth must appear selected.
+index
+about
+service
+contact
+appointment
+service detail pages
+404 where appropriate
 
-Printing:
+Do not inject it into unrelated backend/admin application pages unless the
+architecture explicitly requires it.
 
-show selected tooth number(s).
+============================================================
+PART 5 — REVERT SITE THEME
+============================================================
 
-When no tooth selected:
+The site was recently changed to burnt orange.
 
-show no tooth information.
+We now want to REVERT to the previous:
 
-# ============================================================
-# 55. TOOTH SELECTOR UX
-# ============================================================
+CRIMSON CLASSIC
 
-Popup should resemble a professional dental selection control.
+theme.
 
-Use:
+============================================================
+31. DEFAULT THEME
+============================================================
 
-Upper teeth
-Lower teeth
+Set:
 
-and clear numbering.
+Crimson Classic
+
+as the default frontend theme.
+
+Restore the previous crimson/red visual identity.
+
+Do not keep burnt orange as the default.
+
+============================================================
+32. THEME COLOR SYSTEM
+============================================================
+
+The site's theme system must have one central source of truth.
+
+Example:
+
+--brand-primary
+--brand-primary-dark
+--brand-primary-soft
+--brand-primary-border
+--brand-primary-rgb
+
+Do not hardcode different accent colors throughout the site.
+
+============================================================
+33. BACKEND COLOR PICKER
+============================================================
+
+The existing backend/frontend theme color selector is currently broken.
+
+Current error:
+
+"clinic name, contact phone and address are required"
+
+when attempting to change/save frontend color.
+
+FIX THIS.
+
+This means the theme update operation is probably incorrectly validating
+Clinic Identity fields together with the theme setting.
+
+Find the actual API/schema/form causing this.
+
+============================================================
+34. THEME SAVE MUST BE INDEPENDENT
+============================================================
+
+Saving:
+
+Frontend Theme Color
+
+must NOT require:
+
+Clinic Name
+Contact Phone
+Address
+
+unless those fields are genuinely being changed in the same operation.
+
+Theme settings must have their own validation.
+
+Example conceptual endpoint:
+
+PATCH /settings/theme
+
+or integrate cleanly into existing settings architecture.
+
+Do not force unrelated required fields.
+
+============================================================
+35. THEME PICKER
+============================================================
 
 Provide:
 
-selected state
-hover state
-clear
-done
+Crimson Classic
+Custom
 
-Mobile:
+and any existing legitimate themes already supported.
 
-fit screen.
+Selecting:
 
-Desktop:
+Crimson Classic
 
-centered modal/popover.
+must immediately apply the crimson visual system.
 
-Never clip off-screen.
+============================================================
+36. REAL-TIME THEME PREVIEW
+============================================================
 
-# ============================================================
-# 56. DATABASE MIGRATION SAFETY
-# ============================================================
+When admin changes color:
 
-Before changing payment schema:
+the frontend preview should update immediately.
 
-inspect current data.
+Update:
 
-Do NOT drop payment records.
+navbar accents
+buttons
+badges
+service cards
+section accents
+CTA
+footer accents
+links
+icons
+active states
+form focus states
 
-Do NOT run:
+Do not update only one component.
 
-deleteMany({})
-dropCollection({})
-dropDatabase()
+============================================================
+37. THEME PERSISTENCE
+============================================================
 
-Do not destroy production data.
+After Save:
 
-If migration is required:
+reload page.
 
-write a safe backward-compatible migration.
+The selected theme must remain.
 
-# ============================================================
-# 57. EXISTING INVOICES
-# ============================================================
+Open a new page.
 
-Existing invoice data must continue opening.
+It must remain.
 
-Existing payment information must remain intact.
+Open:
 
-Do not require manually recreating every old invoice.
+service detail
+contact
+appointment
+about
 
-If old invoices have only a single paidAmount field:
+All must use the same theme.
 
-design a migration/compatibility layer carefully.
+============================================================
+38. THEME DEFAULT
+============================================================
 
-Do not silently invent payment dates for old historical records.
+Default:
 
-# ============================================================
-# 58. EXISTING SERIAL/PATIENT NUMBERS
-# ============================================================
+Crimson Classic.
 
-Do not change the existing patient numbering system.
+Do not default to:
 
-All Patients ENTRY SERIAL is separate if needed.
+#c2410c
 
-Patient Number remains the canonical patient identifier.
+The burnt-orange theme can remain available only if the current theme system
+supports custom presets.
 
-# ============================================================
-# 59. RESPONSIVE ALL PATIENTS
-# ============================================================
+============================================================
+39. THEME VALIDATION BUG TEST
+============================================================
 
-Desktop:
+Test ONLY changing color.
 
-Excel-style professional table.
+Leave:
 
-Tablet:
+Clinic Name
+Phone
+Address
 
-responsive table.
-
-Mobile:
-
-patient cards with:
-
-Serial
-Name
-Mobile
-Amount
-Date
-Time
-
-Tap:
-
-View Details
-
-# ============================================================
-# 60. FINAL UI
-# ============================================================
-
-All new UI should match Luckydental's existing theme.
-
-No generic admin template.
-
-Use:
-
-white
-burnt orange/current configured brand color
-soft neutral background
-clean borders
-subtle shadows
-
-Use SVG/Lucide/vector icons.
-
-No emojis.
-
-# ============================================================
-# 61. TEST SCENARIO — PATIENT + PAYMENT
-# ============================================================
-
-Create/test:
-
-Patient:
-Rahim
-
-Invoice:
-৳6000
-
-Payment 1:
-৳2000
-
-Expected:
-Paid ৳2000
-Due ৳4000
-
-After 7 days:
-
-Payment 2:
-৳4000
-
-Expected:
-Paid ৳6000
-Due ৳0
-Status PAID
-
-Then edit Payment 2:
-
-৳3000
-
-Expected:
-Paid ৳5000
-Due ৳1000
-
-Then reverse Payment 2.
-
-Expected:
-
-active paid:
-৳2000
-
-due:
-৳4000
-
-Historical reversal remains auditable.
-
-# ============================================================
-# 62. TEST SCENARIO — ALL PATIENTS
-# ============================================================
-
-Add entries:
-
-Rahim
-28
-017...
-Kushtia
-৳2000
-05 Oct
-10:30 AM
-
-Karim
-35
-018...
-Kushtia
-৳3500
-04 Oct
-05:00 PM
-
-Verify:
-
-serial order
-
-date sort
-
-time sort
-
-serial sort
-
-search "Rahim"
-
-search phone number
-
-patient history
-
-# ============================================================
-# 63. VALIDATION TEST
-# ============================================================
-
-Click:
-
-+ Add
-
-Leave all fields blank.
+untouched.
 
 Click Save.
 
 Expected:
 
-nothing saved.
+theme saves successfully.
 
-Focus first missing required field.
+No:
 
-Then fill one field at a time.
+"clinic name, contact phone and address are required"
 
-The cursor should move to the first missing field only after an attempted
-submission/validation.
+error.
 
-# ============================================================
-# 64. TOOTH TEST
-# ============================================================
+============================================================
+PART 6 — INTEGRATION / DATA SAFETY
+============================================================
 
-Create treatment:
+Do not create parallel patient/public-link/payment systems.
 
-Root Canal
+Reuse existing models/routes where possible.
 
-Tap +.
+============================================================
+40. PUBLIC PROFILE + PATIENT DATA
+============================================================
 
-Popup appears centered above all content.
+Use the existing Patient model.
 
-Choose:
+Add/repair:
 
-16
+isPublic
 
-Done.
+and public-link behavior.
 
-Save invoice.
+Do not create:
 
-Refresh.
+PublicPatient model
 
-Open invoice.
+unless the existing architecture makes it necessary.
 
-16 remains selected.
+============================================================
+41. ALL PATIENTS + PATIENT PROFILE
+============================================================
 
-Print.
+The All Patients bug and public-profile bug should use the same canonical
+Patient record.
 
-Receipt shows:
+Do not create duplicate records.
 
-Root Canal
-Tooth: 16
+============================================================
+42. TOOTH SELECTOR + INVOICE
+============================================================
 
-# ============================================================
-# 65. THERMAL PRINT TEST
-# ============================================================
+Tooth selections must remain attached to invoice treatment items and should
+not modify patient demographics.
 
-Print on simulated:
+============================================================
+PART 7 — ERROR MESSAGE CLEANUP
+============================================================
 
-80mm
+No public frontend should expose:
 
-Verify:
+MongoDB
+Vercel
+Render
+Netlify
+DigitalOcean
+database connection
+stack traces
+internal API details
 
-width stays 80mm
+Generic edit-engine network error must be exactly:
 
-height expands naturally
+unable to connect edit engine
 
-no forced 99mm height
+Only use that message for genuine connection/network failure.
 
-no A4 output
+============================================================
+43. FINAL TEST MATRIX
+============================================================
 
-no horizontal clipping
+TOOTH:
 
-no second unnecessary page
+[ ] + button visible in invoice generator
+[ ] popup opens
+[ ] centered
+[ ] high z-index
+[ ] 32 teeth visible
+[ ] upper teeth
+[ ] lower teeth
+[ ] single selection
+[ ] multiple selection
+[ ] clear
+[ ] done
+[ ] persists
+[ ] edit persists
+[ ] receipt displays selected teeth
 
-logo visible
+ALL PATIENTS:
 
-clinic identity visible
+[ ] number/mobile field accepts valid number
+[ ] no false "number required"
+[ ] validation works
+[ ] focus moves to missing field
+[ ] save persists
+[ ] serial generated
+[ ] search works
+[ ] sort by date
+[ ] sort by time
+[ ] sort by serial
 
-patient name visible
+PUBLIC PROFILE:
 
-service visible
+[ ] Make Public updates database
+[ ] state survives refresh
+[ ] Copy Link appears
+[ ] correct /patient/:patientNumber URL
+[ ] public page works
+[ ] private page blocked
+[ ] Make Private works
+[ ] copied link stops working after private
 
-amount visible
+MAINTAINDOC:
 
-payment visible
+[ ] repository inspected
+[ ] documentation read
+[ ] maintain.js integrated
+[ ] maintain.config.js configured
+[ ] site = luckydental
+[ ] status endpoint works
+[ ] normal state works
+[ ] maintenance state works
+[ ] responsive maintenance screen
+[ ] no credentials leaked
 
-balance visible
+THEME:
 
-signature blank
+[ ] default = Crimson Classic
+[ ] burnt orange removed as default
+[ ] custom color works
+[ ] live preview works
+[ ] save works
+[ ] no clinic-info validation error
+[ ] refresh preserves theme
+[ ] all pages use same theme
 
-# ============================================================
-# 66. ALL PAYMENT EDIT TESTS
-# ============================================================
+============================================================
+44. FINAL BUILD / TYPECHECK
+============================================================
 
-Test:
+Run the actual project commands from package.json.
 
-add payment
-edit payment
-reverse payment
-refresh
-logout/login
-reopen invoice
-print receipt
-
-All data must remain correct.
-
-# ============================================================
-# 67. FINAL QA
-# ============================================================
-
-Run actual:
+At minimum:
 
 typecheck
-lint if available
 build
-backend tests if available
+lint if available
 
 Then manually test:
 
-receipt
-patient profile
-billing
+invoice generator
 all patients
-payment edit
-payment reverse
-tooth selector
+patient profile
+public patient link
+settings/theme
+maintenance mode
 
-Do not claim success without testing actual persistence.
-
-# ============================================================
-# 68. FINAL REPORT
-# ============================================================
+============================================================
+45. FINAL REPORT
+============================================================
 
 Report:
 
-1. New 80mm auto-height receipt format
-2. Receipt print CSS
-3. Logo/clinic identity
-4. Patient-name fix
-5. Removed appointment schedule
-6. Removed quantity
-7. Tooth selector
-8. All Patients section
-9. Add patient validation
-10. Search
-11. Sorting
-12. Multiple payment support
-13. Payment edit
-14. Payment reversal
-15. Payment audit
-16. Balance recalculation
-17. Database migration/compatibility
-18. Responsive behavior
-19. Tests performed
-20. Remaining issues
+1. Tooth selector root cause/fix
+2. 32-tooth UX implemented
+3. All Patients "number required" root cause/fix
+4. Public/private profile root cause/fix
+5. Public patient URL implementation
+6. Copy Link implementation
+7. MaintainDoc integration
+8. Site ID configuration
+9. Crimson Classic restoration
+10. Theme picker validation fix
+11. Theme persistence
+12. Tests/build/typecheck
+13. Remaining issues
 
-IMPORTANT:
-Do not say "complete" if any of the above is only UI mock data.
+DO NOT CLAIM ANY FEATURE IS COMPLETE WITHOUT ACTUAL PERSISTENCE TESTING.
 
-Everything must persist through the backend.
+START WITH AN AUDIT, THEN FIX EACH ISSUE END-TO-END.
+```
+
+One important implementation detail: the MaintainDoc repository explicitly documents that its public status endpoint is based on a site ID and that `active: true` means normal operation while `active: false` means maintenance mode; it also recommends reading `AI_INSTRUCTIONS.md`/`llms.txt` for agent-specific integration details. ([GitHub][1]) The live `luckydental` status endpoint is currently returning `active: true`. 
+
+For your theme bug, the agent should **separate theme settings validation from clinic identity validation**. The current `"clinic name, contact phone and address are required"` message strongly suggests one settings save operation is incorrectly validating unrelated required fields. The theme color should be independently saveable.
+
+[1]: https://github.com/nafijrahaman/maintain-doc "GitHub - nafijrahaman/maintain-doc · GitHub"
