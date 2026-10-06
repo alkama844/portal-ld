@@ -162,6 +162,32 @@ function ReceiptFormContent() {
               if (parsed.notes) setNotes(parsed.notes);
             }
           } catch {}
+
+          // Check if teeth were passed from new patient registration or route query
+          const teethParam = searchParams?.get('teeth');
+          if (teethParam) {
+            const teethList = teethParam.split(',').map((t) => t.trim()).filter(Boolean);
+            if (teethList.length > 0) {
+              setCustomItemTeeth(teethList);
+              setItems((prev) => {
+                if (prev.length === 0) {
+                  const cleanedProblem = patientRes.data?.patientProblem
+                    ? patientRes.data.patientProblem.replace(/\s*\(Teeth:.*?\)\s*/gi, '').trim()
+                    : 'Dental Consultation / Treatment';
+                  return [{
+                    id: 'init-tooth-item',
+                    name: cleanedProblem || 'Dental Consultation / Treatment',
+                    price: 0,
+                    quantity: 1,
+                    total: 0,
+                    teeth: teethList
+                  }];
+                } else {
+                  return prev.map((it, idx) => idx === 0 ? { ...it, teeth: Array.from(new Set([...(it.teeth || []), ...teethList])) } : it);
+                }
+              });
+            }
+          }
         }
       } catch {
         showToast('Network error loading billing information.', 'error');

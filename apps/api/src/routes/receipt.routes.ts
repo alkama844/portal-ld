@@ -14,7 +14,9 @@ import {
   deleteReceipt,
   createAllPatientEntry,
   listAllPatientEntries,
-  getPatientHistory
+  getPatientHistory,
+  updateAllPatientEntry,
+  deleteAllPatientEntry
 } from '../controllers/receipt.controller';
 import { authenticateAdmin } from '../middleware/auth.middleware';
 
@@ -43,6 +45,9 @@ router.delete('/receipts/:identifier', deleteReceipt);
 router.get('/all-patients', listAllPatientEntries);
 router.post('/all-patients', createAllPatientEntry);
 router.get('/all-patients/patient/:patientNumber', getPatientHistory);
+router.put('/all-patients/:identifier', updateAllPatientEntry);
+router.patch('/all-patients/:identifier', updateAllPatientEntry);
+router.delete('/all-patients/:identifier', deleteAllPatientEntry);
 
 export default router;
 

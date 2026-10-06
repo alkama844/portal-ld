@@ -19,7 +19,9 @@ import {
   FileSpreadsheet,
   AlertCircle,
   X,
-  User
+  User,
+  Edit3,
+  Trash2
 } from 'lucide-react';
 import DashboardLayout from '@/app/dashboard/layout';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -67,6 +69,35 @@ export default function AllPatientsPage() {
   const amountInputRef = useRef<HTMLInputElement>(null);
   const dateInputRef = useRef<HTMLDivElement>(null);
   const timeInputRef = useRef<HTMLDivElement>(null);
+
+  // Edit Patient Modal State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTarget, setEditTarget] = useState<AllPatientEntry | null>(null);
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const savingEditRef = useRef(false);
+
+  const [editFormName, setEditFormName] = useState('');
+  const [editFormAge, setEditFormAge] = useState('');
+  const [editFormMobile, setEditFormMobile] = useState('');
+  const [editFormLocation, setEditFormLocation] = useState('');
+  const [editFormAmount, setEditFormAmount] = useState('');
+  const [editFormDate, setEditFormDate] = useState('');
+  const [editFormTime, setEditFormTime] = useState('');
+  const [editFieldErrors, setEditFieldErrors] = useState<Record<string, string>>({});
+
+  const editNameInputRef = useRef<HTMLInputElement>(null);
+  const editAgeInputRef = useRef<HTMLInputElement>(null);
+  const editMobileInputRef = useRef<HTMLInputElement>(null);
+  const editLocationInputRef = useRef<HTMLInputElement>(null);
+  const editAmountInputRef = useRef<HTMLInputElement>(null);
+  const editDateInputRef = useRef<HTMLDivElement>(null);
+  const editTimeInputRef = useRef<HTMLDivElement>(null);
+
+  // Delete Patient Modal State
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AllPatientEntry | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const deletingRef = useRef(false);
 
   // Patient Visit History Modal State
   const [selectedPatientHistory, setSelectedPatientHistory] = useState<AllPatientEntry[] | null>(null);
@@ -227,6 +258,145 @@ export default function AllPatientsPage() {
     }
   };
 
+  // Open Edit Patient Modal
+  const handleOpenEdit = (entry: AllPatientEntry) => {
+    setEditTarget(entry);
+    setEditFormName(entry.patientName);
+    setEditFormAge(String(entry.age));
+    setEditFormMobile(entry.mobileNumber || entry.phone || '');
+    setEditFormLocation(entry.location);
+    setEditFormAmount(String(entry.amount));
+    setEditFormDate(entry.date);
+    setEditFormTime(entry.time);
+    setEditFieldErrors({});
+    setShowEditModal(true);
+  };
+
+  // Handle Update Patient Entry with strict validation
+  const handleUpdatePatient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editTarget || savingEditRef.current || isSavingEdit) return;
+
+    const errors: Record<string, string> = {};
+
+    if (!editFormName.trim()) {
+      errors.patientName = 'Patient Name is required';
+    }
+    if (!editFormAge.trim() || isNaN(Number(editFormAge)) || Number(editFormAge) <= 0) {
+      errors.age = 'A valid positive Age is required';
+    }
+    if (!editFormMobile.trim()) {
+      errors.mobileNumber = 'Mobile Number is required';
+    }
+    if (!editFormLocation.trim()) {
+      errors.location = 'Location is required';
+    }
+    if (!editFormAmount.trim() || isNaN(Number(editFormAmount)) || Number(editFormAmount) < 0) {
+      errors.amount = 'Valid Amount (৳) is required';
+    }
+    if (!editFormDate.trim()) {
+      errors.date = 'Date is required';
+    }
+    if (!editFormTime.trim()) {
+      errors.time = 'Time is required';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setEditFieldErrors(errors);
+      showToast('Please fill in all strictly required fields', 'error');
+
+      // Auto focus on the first missing field
+      if (errors.patientName) {
+        editNameInputRef.current?.focus();
+      } else if (errors.age) {
+        editAgeInputRef.current?.focus();
+      } else if (errors.mobileNumber) {
+        editMobileInputRef.current?.focus();
+      } else if (errors.location) {
+        editLocationInputRef.current?.focus();
+      } else if (errors.amount) {
+        editAmountInputRef.current?.focus();
+      } else if (errors.date) {
+        editDateInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (errors.time) {
+        editTimeInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    setEditFieldErrors({});
+    savingEditRef.current = true;
+    setIsSavingEdit(true);
+
+    try {
+      const identifier = editTarget.id || editTarget._id || editTarget.serial;
+      const res = await apiFetch<AllPatientEntry>(`/all-patients/${identifier}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          patientName: editFormName.trim(),
+          age: Number(editFormAge),
+          phone: editFormMobile.trim(),
+          mobileNumber: editFormMobile.trim(),
+          location: editFormLocation.trim(),
+          amount: Number(editFormAmount),
+          date: editFormDate.trim(),
+          time: editFormTime.trim()
+        })
+      });
+
+      if (res.success && res.data) {
+        showToast(`Patient #${res.data.serial} updated successfully!`, 'success');
+        setShowEditModal(false);
+        const updatedEntry = res.data;
+        setEntries((prev) =>
+          prev.map((item) => (item.serial === editTarget.serial ? updatedEntry : item))
+        );
+      } else {
+        showToast(res.error || 'Failed to update patient entry', 'error');
+      }
+    } catch {
+      showToast('Network error updating patient entry', 'error');
+    } finally {
+      savingEditRef.current = false;
+      setIsSavingEdit(false);
+    }
+  };
+
+  // Open Delete Patient Modal
+  const handleOpenDelete = (entry: AllPatientEntry) => {
+    setDeleteTarget(entry);
+    setShowDeleteModal(true);
+  };
+
+  // Confirm Delete Patient Entry
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget || deletingRef.current || isDeleting) return;
+
+    deletingRef.current = true;
+    setIsDeleting(true);
+
+    try {
+      const identifier = deleteTarget.id || deleteTarget._id || deleteTarget.serial;
+      const res = await apiFetch<any>(`/all-patients/${identifier}`, {
+        method: 'DELETE'
+      });
+
+      if (res.success) {
+        showToast(`Patient entry #${deleteTarget.serial} deleted successfully`, 'success');
+        setShowDeleteModal(false);
+        setEntries((prev) => prev.filter((item) => item.serial !== deleteTarget.serial));
+        setDeleteTarget(null);
+      } else {
+        showToast(res.error || 'Failed to delete patient entry', 'error');
+      }
+    } catch {
+      showToast('Network error deleting patient entry', 'error');
+    } finally {
+      deletingRef.current = false;
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -325,7 +495,7 @@ export default function AllPatientsPage() {
                     <th className="py-3 px-4 text-right">Amount (৳)</th>
                     <th className="py-3 px-4">Date</th>
                     <th className="py-3 px-4">Time</th>
-                    <th className="py-3 px-4 text-center w-24">History</th>
+                    <th className="py-3 px-4 text-center w-52">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-medium">
@@ -388,16 +558,38 @@ export default function AllPatientsPage() {
                           {entry.time}
                         </td>
                         <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleOpenHistory(entry)}
-                            className="h-7 px-2 text-[11px] text-slate-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 gap-1"
-                            title="View visit history across dates"
-                          >
-                            <History className="w-3.5 h-3.5" />
-                            History
-                          </Button>
+                          <div className="flex items-center justify-center gap-1.5">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleOpenEdit(entry)}
+                              className="h-7 px-2 text-[11px] border-slate-300 dark:border-white/10 hover:border-red-500 text-slate-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 gap-1"
+                              title="Edit patient entry details"
+                            >
+                              <Edit3 className="w-3 h-3" />
+                              Edit
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleOpenHistory(entry)}
+                              className="h-7 px-2 text-[11px] text-slate-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 gap-1"
+                              title="View visit history across dates"
+                            >
+                              <History className="w-3.5 h-3.5" />
+                              History
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleOpenDelete(entry)}
+                              className="h-7 px-2 text-[11px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 gap-1"
+                              title="Delete patient entry from ledger"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              Delete
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -466,20 +658,49 @@ export default function AllPatientsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-white/5 text-[11px]">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-white/5 text-[11px]">
                   <span className="flex items-center gap-1 text-slate-500 dark:text-gray-400">
                     <Clock className="w-3 h-3" />
                     {entry.time}
                   </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleOpenHistory(entry)}
-                    className="h-7 px-2 text-xs text-red-600 dark:text-red-400 gap-1"
-                  >
-                    <History className="w-3.5 h-3.5" />
-                    View History
-                  </Button>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEdit(entry);
+                      }}
+                      className="h-7 px-2 text-xs border-slate-300 dark:border-white/10 text-slate-700 dark:text-gray-300 hover:text-red-600 gap-1"
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenHistory(entry);
+                      }}
+                      className="h-7 px-2 text-xs text-slate-600 dark:text-gray-400 hover:text-red-600 gap-1"
+                    >
+                      <History className="w-3.5 h-3.5" />
+                      History
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenDelete(entry);
+                      }}
+                      className="h-7 px-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 gap-1"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Delete
+                    </Button>
+                  </div>
                 </div>
               </GlassCard>
             ))
@@ -786,6 +1007,306 @@ export default function AllPatientsPage() {
                 onClick={() => setSelectedPatientHistory(null)}
               >
                 Close History
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Edit Patient Entry Modal */}
+      <Modal
+        isOpen={showEditModal}
+        onClose={() => {
+          if (!isSavingEdit) {
+            setShowEditModal(false);
+            setEditFieldErrors({});
+          }
+        }}
+        title={`Edit Patient Entry — #${editTarget?.serial}`}
+        description="Update patient details or visit fees recorded in the ledger."
+      >
+        <form onSubmit={handleUpdatePatient} className="space-y-4">
+          {/* Patient Name */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">
+              Patient Name *
+            </label>
+            <input
+              ref={editNameInputRef}
+              type="text"
+              value={editFormName}
+              onChange={(e) => {
+                setEditFormName(e.target.value);
+                if (editFieldErrors.patientName) setEditFieldErrors({ ...editFieldErrors, patientName: '' });
+              }}
+              placeholder="e.g. Mohammad Rahim"
+              className={`w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-gray-100 bg-white dark:bg-[#0e0e0e] border ${
+                editFieldErrors.patientName ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-white/10'
+              }`}
+            />
+            {editFieldErrors.patientName && (
+              <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {editFieldErrors.patientName}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Age */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">
+                Age *
+              </label>
+              <input
+                ref={editAgeInputRef}
+                type="number"
+                min="1"
+                max="120"
+                value={editFormAge}
+                onChange={(e) => {
+                  setEditFormAge(e.target.value);
+                  if (editFieldErrors.age) setEditFieldErrors({ ...editFieldErrors, age: '' });
+                }}
+                placeholder="e.g. 35"
+                className={`w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-gray-100 bg-white dark:bg-[#0e0e0e] border ${
+                  editFieldErrors.age ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-white/10'
+                }`}
+              />
+              {editFieldErrors.age && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {editFieldErrors.age}
+                </p>
+              )}
+            </div>
+
+            {/* Mobile Number */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">
+                Mobile Number *
+              </label>
+              <input
+                ref={editMobileInputRef}
+                type="tel"
+                value={editFormMobile}
+                onChange={(e) => {
+                  setEditFormMobile(e.target.value);
+                  if (editFieldErrors.mobileNumber) setEditFieldErrors({ ...editFieldErrors, mobileNumber: '' });
+                }}
+                placeholder="e.g. 01712345678"
+                className={`w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-gray-100 bg-white dark:bg-[#0e0e0e] border font-mono ${
+                  editFieldErrors.mobileNumber ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-white/10'
+                }`}
+              />
+              {editFieldErrors.mobileNumber && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {editFieldErrors.mobileNumber}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Location */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">
+                Location *
+              </label>
+              <input
+                ref={editLocationInputRef}
+                type="text"
+                value={editFormLocation}
+                onChange={(e) => {
+                  setEditFormLocation(e.target.value);
+                  if (editFieldErrors.location) setEditFieldErrors({ ...editFieldErrors, location: '' });
+                }}
+                placeholder="e.g. Kushtia Sadar, Mirpur"
+                className={`w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-gray-100 bg-white dark:bg-[#0e0e0e] border ${
+                  editFieldErrors.location ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-white/10'
+                }`}
+              />
+              {editFieldErrors.location && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {editFieldErrors.location}
+                </p>
+              )}
+            </div>
+
+            {/* Amount */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">
+                Amount (৳) *
+              </label>
+              <input
+                ref={editAmountInputRef}
+                type="number"
+                min="0"
+                value={editFormAmount}
+                onChange={(e) => {
+                  setEditFormAmount(e.target.value);
+                  if (editFieldErrors.amount) setEditFieldErrors({ ...editFieldErrors, amount: '' });
+                }}
+                placeholder="e.g. 1500"
+                className={`w-full glass-input rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-gray-100 bg-white dark:bg-[#0e0e0e] border font-mono ${
+                  editFieldErrors.amount ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-white/10'
+                }`}
+              />
+              {editFieldErrors.amount && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {editFieldErrors.amount}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Date */}
+            <div ref={editDateInputRef}>
+              <DatePicker
+                label="Date *"
+                value={editFormDate}
+                onChange={(val) => {
+                  setEditFormDate(val);
+                  if (editFieldErrors.date) setEditFieldErrors({ ...editFieldErrors, date: '' });
+                }}
+                hasError={Boolean(editFieldErrors.date)}
+              />
+              {editFieldErrors.date && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {editFieldErrors.date}
+                </p>
+              )}
+            </div>
+
+            {/* Time */}
+            <div ref={editTimeInputRef}>
+              <TimePicker
+                label="Time *"
+                value={editFormTime}
+                onChange={(val) => {
+                  setEditFormTime(val);
+                  if (editFieldErrors.time) setEditFieldErrors({ ...editFieldErrors, time: '' });
+                }}
+                hasError={Boolean(editFieldErrors.time)}
+              />
+              {editFieldErrors.time && (
+                <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {editFieldErrors.time}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-white/10">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowEditModal(false)}
+              disabled={isSavingEdit}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="sm"
+              isLoading={isSavingEdit}
+              className="gap-1.5 shadow-glow-red-sm"
+            >
+              {isSavingEdit ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  Saving Changes...
+                </>
+              ) : (
+                <>
+                  <Edit3 className="w-3.5 h-3.5" />
+                  Update Entry
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Patient Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          if (!isDeleting) {
+            setShowDeleteModal(false);
+            setDeleteTarget(null);
+          }
+        }}
+        title="Delete Patient Entry"
+        description="This action cannot be undone. The record will be permanently deleted from the ledger."
+      >
+        {deleteTarget && (
+          <div className="space-y-4">
+            <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 space-y-2">
+              <div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-bold text-xs uppercase tracking-wider">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                Permanent Deletion Confirmation
+              </div>
+              <div className="text-xs text-slate-700 dark:text-gray-300 space-y-1">
+                <p>
+                  Entry Serial: <span className="font-mono font-bold text-red-600 dark:text-red-400">#{deleteTarget.serial}</span>
+                </p>
+                <p>
+                  Patient Name: <span className="font-bold text-slate-900 dark:text-white">{deleteTarget.patientName}</span> ({deleteTarget.age}y)
+                </p>
+                <p>
+                  Mobile: <span className="font-mono text-slate-800 dark:text-gray-200">{deleteTarget.mobileNumber || deleteTarget.phone}</span>
+                </p>
+                <p>
+                  Visit Date & Fee: <span className="font-medium text-slate-800 dark:text-gray-200">{deleteTarget.date} ({deleteTarget.time})</span> &bull; <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">৳{deleteTarget.amount.toLocaleString('en-BD')}</span>
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-500 dark:text-gray-400">
+              Are you sure you want to delete this patient record? Please confirm to proceed.
+            </p>
+
+            <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-200 dark:border-white/10">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteTarget(null);
+                }}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                onClick={handleConfirmDelete}
+                isLoading={isDeleting}
+                className="bg-red-600 hover:bg-red-700 text-white gap-1.5 shadow-glow-red-sm"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Confirm Delete
+                  </>
+                )}
               </Button>
             </div>
           </div>

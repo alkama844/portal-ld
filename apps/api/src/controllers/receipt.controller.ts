@@ -439,3 +439,84 @@ export const getPatientHistory = async (req: Request, res: Response) => {
   }
 };
 
+export const updateAllPatientEntry = async (req: Request, res: Response) => {
+  try {
+    const { identifier } = req.params;
+    const { patientName, age, phone, mobileNumber, location, amount, date, time, service, notes } = req.body;
+
+    if (!identifier) {
+      return res.status(400).json({ success: false, message: 'Entry identifier is required.' });
+    }
+
+    if (patientName !== undefined && !patientName.trim()) {
+      return res.status(400).json({ success: false, message: 'Patient Name cannot be empty.', field: 'patientName' });
+    }
+    if (age !== undefined && (isNaN(Number(age)) || Number(age) < 0)) {
+      return res.status(400).json({ success: false, message: 'Valid Age is required.', field: 'age' });
+    }
+    if ((phone !== undefined || mobileNumber !== undefined) && !(phone || mobileNumber)?.trim()) {
+      return res.status(400).json({ success: false, message: 'Mobile Number cannot be empty.', field: 'phone' });
+    }
+    if (location !== undefined && !location.trim()) {
+      return res.status(400).json({ success: false, message: 'Location cannot be empty.', field: 'location' });
+    }
+    if (amount !== undefined && (isNaN(Number(amount)) || Number(amount) < 0)) {
+      return res.status(400).json({ success: false, message: 'Valid Amount is required.', field: 'amount' });
+    }
+    if (date !== undefined && !date.trim()) {
+      return res.status(400).json({ success: false, message: 'Date cannot be empty.', field: 'date' });
+    }
+    if (time !== undefined && !time.trim()) {
+      return res.status(400).json({ success: false, message: 'Time cannot be empty.', field: 'time' });
+    }
+
+    const updated = await receiptService.updateAllPatientEntry(identifier, {
+      patientName: patientName ? patientName.trim() : undefined,
+      age: age !== undefined ? Number(age) : undefined,
+      phone: (phone || mobileNumber) ? (phone || mobileNumber).trim() : undefined,
+      mobileNumber: (mobileNumber || phone) ? (mobileNumber || phone).trim() : undefined,
+      location: location ? location.trim() : undefined,
+      amount: amount !== undefined ? Number(amount) : undefined,
+      date: date ? date.trim() : undefined,
+      time: time ? time.trim() : undefined,
+      service: service ? service.trim() : undefined,
+      notes: notes ? notes.trim() : undefined
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Patient entry #${updated.serial} updated successfully`,
+      data: updated
+    });
+  } catch (error: any) {
+    logger.error('Error updating AllPatientEntry', { error });
+    return res.status(400).json({
+      success: false,
+      message: error.message || 'Failed to update patient entry'
+    });
+  }
+};
+
+export const deleteAllPatientEntry = async (req: Request, res: Response) => {
+  try {
+    const { identifier } = req.params;
+    if (!identifier) {
+      return res.status(400).json({ success: false, message: 'Entry identifier is required.' });
+    }
+
+    await receiptService.deleteAllPatientEntry(identifier);
+
+    return res.status(200).json({
+      success: true,
+      message: `Patient entry #${identifier} deleted successfully`
+    });
+  } catch (error: any) {
+    logger.error('Error deleting AllPatientEntry', { error });
+    return res.status(400).json({
+      success: false,
+      message: error.message || 'Failed to delete patient entry'
+    });
+  }
+};
+
+

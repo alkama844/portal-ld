@@ -1510,6 +1510,160 @@ export class ReceiptService {
     };
   }
 
+  /**
+   * Update an All Patients Ledger entry
+   */
+  async updateAllPatientEntry(
+    identifier: string,
+    data: {
+      patientName?: string;
+      age?: number;
+      phone?: string;
+      mobileNumber?: string;
+      location?: string;
+      amount?: number;
+      date?: string;
+      time?: string;
+      service?: string;
+      notes?: string;
+    }
+  ): Promise<AllPatientEntry> {
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    const targetPhone = data.phone || data.mobileNumber;
+
+    if (isDbConnected) {
+      try {
+        const query: any = {
+          $or: [
+            { serial: identifier },
+            ...(identifier.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: identifier }] : [])
+          ]
+        };
+
+        const existing = await MongoAllPatientEntry.findOne(query);
+        if (existing) {
+          if (data.patientName !== undefined) existing.patientName = data.patientName.trim();
+          if (data.age !== undefined) existing.age = Number(data.age);
+          if (targetPhone !== undefined) {
+            existing.phone = targetPhone.trim();
+            existing.mobileNumber = targetPhone.trim();
+          }
+          if (data.location !== undefined) existing.location = data.location.trim();
+          if (data.amount !== undefined) existing.amount = Number(data.amount);
+          if (data.date !== undefined) existing.date = data.date.trim();
+          if (data.time !== undefined) existing.time = data.time.trim();
+          if (data.service !== undefined) existing.service = data.service.trim();
+          if (data.notes !== undefined) existing.notes = data.notes.trim();
+
+          await existing.save();
+
+          // Sync inMemory
+          const memIdx = inMemoryAllPatientEntries.findIndex(
+            (e) => e.id === identifier || e._id === identifier || e.serial === identifier
+          );
+          if (memIdx !== -1) {
+            inMemoryAllPatientEntries[memIdx] = {
+              ...inMemoryAllPatientEntries[memIdx],
+              patientName: existing.patientName,
+              age: existing.age,
+              phone: existing.phone,
+              mobileNumber: existing.phone,
+              location: existing.location,
+              amount: existing.amount,
+              date: existing.date,
+              time: existing.time,
+              service: existing.service,
+              notes: existing.notes,
+              updatedAt: new Date().toISOString()
+            };
+          }
+
+          return {
+            id: existing._id?.toString() || existing.id,
+            _id: existing._id?.toString(),
+            serial: existing.serial,
+            patientNumber: existing.patientNumber,
+            patientName: existing.patientName,
+            age: existing.age,
+            phone: existing.phone,
+            mobileNumber: existing.phone,
+            location: existing.location,
+            amount: existing.amount,
+            date: existing.date,
+            time: existing.time,
+            receiptNumber: existing.receiptNumber,
+            service: existing.service,
+            notes: existing.notes,
+            createdAt: existing.createdAt ? new Date(existing.createdAt).toISOString() : new Date().toISOString(),
+            updatedAt: existing.updatedAt ? new Date(existing.updatedAt).toISOString() : new Date().toISOString()
+          };
+        }
+      } catch (err) {
+        logger.warn('Failed to update MongoAllPatientEntry, falling back to memory', { err });
+      }
+    }
+
+    const memIdx = inMemoryAllPatientEntries.findIndex(
+      (e) => e.id === identifier || e._id === identifier || e.serial === identifier
+    );
+    if (memIdx === -1) {
+      throw new Error(`Patient entry #${identifier} not found`);
+    }
+
+    const current = inMemoryAllPatientEntries[memIdx];
+    const updated: AllPatientEntry = {
+      ...current,
+      patientName: data.patientName !== undefined ? data.patientName.trim() : current.patientName,
+      age: data.age !== undefined ? Number(data.age) : current.age,
+      phone: targetPhone !== undefined ? targetPhone.trim() : current.phone,
+      mobileNumber: targetPhone !== undefined ? targetPhone.trim() : current.mobileNumber,
+      location: data.location !== undefined ? data.location.trim() : current.location,
+      amount: data.amount !== undefined ? Number(data.amount) : current.amount,
+      date: data.date !== undefined ? data.date.trim() : current.date,
+      time: data.time !== undefined ? data.time.trim() : current.time,
+      service: data.service !== undefined ? data.service.trim() : current.service,
+      notes: data.notes !== undefined ? data.notes.trim() : current.notes,
+      updatedAt: new Date().toISOString()
+    };
+    inMemoryAllPatientEntries[memIdx] = updated;
+    return updated;
+  }
+
+  /**
+   * Delete an All Patients Ledger entry
+   */
+  async deleteAllPatientEntry(identifier: string): Promise<boolean> {
+    const isDbConnected = getDatabaseStatus() === 'connected';
+    let deleted = false;
+
+    if (isDbConnected) {
+      try {
+        const query: any = {
+          $or: [
+            { serial: identifier },
+            ...(identifier.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: identifier }] : [])
+          ]
+        };
+        const res = await MongoAllPatientEntry.deleteOne(query);
+        if (res.deletedCount && res.deletedCount > 0) {
+          deleted = true;
+        }
+      } catch (err) {
+        logger.warn('Failed to delete MongoAllPatientEntry', { err });
+      }
+    }
+
+    const memIdx = inMemoryAllPatientEntries.findIndex(
+      (e) => e.id === identifier || e._id === identifier || e.serial === identifier
+    );
+    if (memIdx !== -1) {
+      inMemoryAllPatientEntries.splice(memIdx, 1);
+      deleted = true;
+    }
+
+    return deleted;
+  }
+
   private mapMongoToReceipt(doc: any): Receipt {
     const patientObj = doc.patientId && typeof doc.patientId === 'object' ? doc.patientId : null;
     return {

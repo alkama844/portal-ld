@@ -19,7 +19,8 @@ import {
   Receipt,
   Eye,
   Info,
-  ListPlus
+  ListPlus,
+  Plus
 } from 'lucide-react';
 import DashboardLayout from '@/app/dashboard/layout';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -27,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/toast';
+import { ToothSelectorModal } from '@/components/dental/tooth-selector-modal';
 import { apiFetch } from '@/lib/api/client';
 import { ImageMetadata } from '@patient-portal/shared';
 
@@ -53,6 +55,10 @@ export default function NewPatientPage() {
   const [village, setVillage] = useState('');
   const [district, setDistrict] = useState('');
   const [patientProblem, setPatientProblem] = useState('');
+
+  // Target Tooth / Odontogram Selection State
+  const [selectedTeeth, setSelectedTeeth] = useState<string[]>([]);
+  const [showToothModal, setShowToothModal] = useState(false);
 
   // Image Upload State
   const [profileImage, setProfileImage] = useState<ImageMetadata | string | null>(null);
@@ -210,6 +216,10 @@ export default function NewPatientPage() {
     submittingRef.current = true;
     setIsSubmitting(true);
     try {
+      const finalProblem = selectedTeeth.length > 0
+        ? `${patientProblem.trim()} (Teeth: ${selectedTeeth.join(', ')})`
+        : patientProblem.trim();
+
       const res = await apiFetch<any>('/patients', {
         method: 'POST',
         body: JSON.stringify({
@@ -220,7 +230,8 @@ export default function NewPatientPage() {
           address: address.trim() || undefined,
           village: village.trim() || undefined,
           district: district.trim() || undefined,
-          patientProblem: patientProblem.trim(),
+          patientProblem: finalProblem,
+          selectedTeeth: selectedTeeth.length > 0 ? selectedTeeth : undefined,
           profileImage: profileImage || undefined,
           customFields: customFieldsPayload.length > 0 ? customFieldsPayload : undefined
         })
@@ -232,7 +243,8 @@ export default function NewPatientPage() {
         showToast(`Patient #${patientNumber} registered successfully`, 'success');
 
         if (continueToReceipt) {
-          router.push(`/patients/${patientNumber}/receipt/new`);
+          const teethQuery = selectedTeeth.length > 0 ? `?teeth=${selectedTeeth.join(',')}` : '';
+          router.push(`/patients/${patientNumber}/receipt/new${teethQuery}`);
         } else {
           router.push(`/patients/${patientNumber}`);
         }
@@ -489,6 +501,72 @@ export default function NewPatientPage() {
               <p className="text-xs text-red-400 font-medium">{errors.patientProblem}</p>
             )}
           </div>
+
+          {/* Target Tooth / Teeth Selector (FDI Odontogram) */}
+          <div className="pt-3 border-t border-white/10 space-y-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-xs font-bold text-gray-200 uppercase tracking-wide">
+                  Target Tooth / Teeth (FDI Odontogram)
+                </label>
+                <p className="text-[11px] text-gray-400">
+                  Optionally select affected or targeted teeth for this patient's procedure
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowToothModal(true)}
+                className="text-xs h-7 px-2.5 gap-1.5 border-red-800/40 text-red-400 hover:text-white hover:border-red-600"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {selectedTeeth.length === 0 ? 'Select Tooth' : 'Edit Teeth'}
+              </Button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5 min-h-[38px] p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
+              {selectedTeeth.length === 0 ? (
+                <div className="flex items-center gap-2 text-xs text-gray-500 italic">
+                  <span>No specific tooth selected (General / Whole Mouth)</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowToothModal(true)}
+                    className="inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-dashed border-white/20 hover:border-red-500 text-red-400 text-[11px] font-bold not-italic hover:bg-red-950/30 transition-colors"
+                    title="Open Dental Tooth Selector"
+                  >
+                    [ + ]
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {selectedTeeth.map((tooth) => (
+                    <span
+                      key={tooth}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600 text-white font-mono font-bold text-xs shadow-glow-red-sm"
+                    >
+                      Tooth #{tooth}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTeeth((prev) => prev.filter((t) => t !== tooth))}
+                        className="hover:text-red-200"
+                        title="Remove tooth"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTeeth([])}
+                    className="text-[11px] text-gray-400 hover:text-white ml-2 underline"
+                  >
+                    Clear All
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </GlassCard>
 
         {/* Section 5: Additional Custom Fields (Dynamic from Settings) */}
@@ -686,6 +764,15 @@ export default function NewPatientPage() {
           </div>
         )}
       </Modal>
+
+      {/* Portaled FDI Adult 32-Tooth Odontogram Modal */}
+      <ToothSelectorModal
+        isOpen={showToothModal}
+        selectedTeeth={selectedTeeth}
+        onClose={() => setShowToothModal(false)}
+        onConfirm={(teeth) => setSelectedTeeth(teeth)}
+        treatmentName={patientProblem || 'Clinical Examination'}
+      />
     </DashboardLayout>
   );
 }

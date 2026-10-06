@@ -6,6 +6,7 @@ export interface IAllPatientEntry extends Document {
   patientName: string;
   age: number;
   phone: string;
+  mobileNumber?: string;
   location: string;
   amount: number;
   date: string;
@@ -24,6 +25,7 @@ const allPatientEntrySchema = new Schema<IAllPatientEntry>(
     patientName: { type: String, required: true, trim: true },
     age: { type: Number, required: true, min: 0 },
     phone: { type: String, required: true, trim: true, index: true },
+    mobileNumber: { type: String, trim: true },
     location: { type: String, required: true, trim: true },
     amount: { type: Number, required: true, min: 0 },
     date: { type: String, required: true, index: true },

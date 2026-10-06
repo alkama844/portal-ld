@@ -1023,7 +1023,12 @@ export default function PatientProfilePage() {
                           {new Date(rec.createdAt).toLocaleDateString('en-GB')}
                         </td>
                         <td className="py-3 text-gray-300">
-                          {rec.items?.length || 0} procedure(s)
+                          <div>{rec.items?.length || 0} procedure(s)</div>
+                          {rec.items?.some((i) => i.teeth && i.teeth.length > 0) && (
+                            <div className="text-[10px] text-red-400 font-mono mt-0.5">
+                              Tooth: {Array.from(new Set(rec.items.flatMap((i) => i.teeth || []))).join(', ')}
+                            </div>
+                          )}
                         </td>
                         <td className="py-3 text-right font-mono text-amber-400/90">
                           ৳{prevDue.toLocaleString('en-BD')}
