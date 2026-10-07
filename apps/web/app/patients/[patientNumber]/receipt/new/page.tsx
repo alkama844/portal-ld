@@ -30,7 +30,7 @@ import { Modal } from '@/components/ui/modal';
 import { DatePicker } from '@/components/ui/date-picker';
 import { TimePicker } from '@/components/ui/time-picker';
 import { ReceiptDocument } from '@/components/receipt/receipt-document';
-import { ToothSelectorModal } from '@/components/dental/tooth-selector-modal';
+import { ToothSelector, ToothSelectorModal } from '@/components/dental/tooth-selector-modal';
 import { useToast } from '@/components/ui/toast';
 import { apiFetch } from '@/lib/api/client';
 import { Patient, ServicePackage, ReceiptItem, PaymentMethod, Receipt, PatientAccountBalance } from '@patient-portal/shared';
@@ -1147,43 +1147,21 @@ function ReceiptFormContent() {
             />
           </div>
 
-          <div className="space-y-1.5 pt-1">
-            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300">
-              Associated Teeth (Optional)
-            </label>
-            <div className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/30">
-              {customItemTeeth.length > 0 ? (
-                <>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {customItemTeeth.map((t) => (
-                      <span
-                        key={t}
-                        className="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-950/80 border border-red-300 dark:border-red-800 text-xs font-mono font-bold text-red-700 dark:text-red-300"
-                      >
-                        Tooth #{t}
-                      </span>
-                    ))}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowToothSelectorForCustom(true)}
-                    className="text-xs h-7 ml-auto"
-                  >
-                    Edit Teeth
-                  </Button>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowToothSelectorForCustom(true)}
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium text-slate-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Select Teeth on Odontogram</span>
-                </button>
-              )}
+          <div className="space-y-2 pt-1 border-t border-slate-200 dark:border-white/10">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wide">
+                Target Teeth (Dental Odontogram)
+              </label>
+              <span className="text-[10px] text-gray-400 font-mono">
+                {customItemTeeth.length} Selected
+              </span>
+            </div>
+            <div className="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/30">
+              <ToothSelector
+                selectedTeeth={customItemTeeth}
+                onChange={setCustomItemTeeth}
+                compact
+              />
             </div>
           </div>
 

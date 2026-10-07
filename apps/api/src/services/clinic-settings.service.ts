@@ -12,6 +12,7 @@ export interface ClinicSettingsDTO {
   receiptFooter?: string;
   logoUrl?: string;
   frontendColor?: string;
+  frontendHoverColor?: string;
 }
 
 const DEFAULT_SETTINGS: ClinicSettingsDTO = {
@@ -22,7 +23,8 @@ const DEFAULT_SETTINGS: ClinicSettingsDTO = {
   address: 'Kushtia, Bangladesh',
   website: 'https://luckydentalcare.com',
   receiptFooter: 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh',
-  frontendColor: '#941324'
+  frontendColor: '#941324',
+  frontendHoverColor: '#770f1d'
 };
 
 class ClinicSettingsService {
@@ -53,6 +55,7 @@ class ClinicSettingsService {
           receiptFooter: doc.receiptFooter || DEFAULT_SETTINGS.receiptFooter,
           logoUrl: doc.logoUrl,
           frontendColor: doc.frontendColor || DEFAULT_SETTINGS.frontendColor,
+          frontendHoverColor: doc.frontendHoverColor || DEFAULT_SETTINGS.frontendHoverColor,
           updatedAt: (doc as any).updatedAt ? new Date((doc as any).updatedAt).toISOString() : new Date().toISOString()
         };
       } catch (err) {
@@ -81,6 +84,12 @@ class ClinicSettingsService {
         cleanData.frontendColor = col;
       }
     }
+    if (data.frontendHoverColor !== undefined) {
+      const hCol = data.frontendHoverColor.trim();
+      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hCol)) {
+        cleanData.frontendHoverColor = hCol;
+      }
+    }
 
     if (isDbConnected) {
       try {
@@ -102,7 +111,8 @@ class ClinicSettingsService {
           website: doc.website,
           receiptFooter: doc.receiptFooter,
           logoUrl: doc.logoUrl,
-          frontendColor: doc.frontendColor
+          frontendColor: doc.frontendColor,
+          frontendHoverColor: doc.frontendHoverColor
         };
 
         return {

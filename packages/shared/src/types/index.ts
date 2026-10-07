@@ -66,6 +66,8 @@ export interface Patient {
   reference?: string;
   profileImage?: string | ImageMetadata;
   customFields?: PatientCustomFieldValue[];
+  teeth?: string[];
+  selectedTeeth?: string[];
   isPublic?: boolean;
   publicToken?: string;
   createdAt: string;
@@ -231,6 +233,7 @@ export interface ClinicSettings {
   receiptFooter: string;
   logoUrl?: string;
   frontendColor?: string;
+  frontendHoverColor?: string;
   updatedAt?: string;
 }
 

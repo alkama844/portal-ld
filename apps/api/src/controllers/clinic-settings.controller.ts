@@ -14,14 +14,18 @@ export const getClinicSettings = async (req: Request, res: Response) => {
 
 export const updateClinicSettings = async (req: Request, res: Response) => {
   try {
-    const { clinicName, tagline, phone, email, address, website, receiptFooter, logoUrl, frontendColor } = req.body;
+    const { clinicName, tagline, phone, email, address, website, receiptFooter, logoUrl, frontendColor, frontendHoverColor, hoverColor } = req.body;
+    const finalHover = frontendHoverColor || hoverColor;
 
-    // If only frontendColor is being updated via this endpoint
-    if (frontendColor && !clinicName && !phone && !address) {
-      const updated = await clinicSettingsService.updateSettings({ frontendColor });
+    // If only colors are being updated via this endpoint
+    if ((frontendColor || finalHover) && !clinicName && !phone && !address) {
+      const payload: any = {};
+      if (frontendColor) payload.frontendColor = frontendColor;
+      if (finalHover) payload.frontendHoverColor = finalHover;
+      const updated = await clinicSettingsService.updateSettings(payload);
       return res.status(200).json({
         success: true,
-        message: 'Theme color updated successfully',
+        message: 'Theme colors updated successfully',
         data: updated
       });
     }
@@ -42,7 +46,8 @@ export const updateClinicSettings = async (req: Request, res: Response) => {
       website,
       receiptFooter,
       logoUrl,
-      frontendColor
+      frontendColor,
+      frontendHoverColor: finalHover
     });
 
     return res.status(200).json({
@@ -61,23 +66,43 @@ export const updateClinicSettings = async (req: Request, res: Response) => {
 
 export const updateThemeColor = async (req: Request, res: Response) => {
   try {
-    const { frontendColor, themeColor, color } = req.body;
+    const { frontendColor, themeColor, color, frontendHoverColor, hoverColor } = req.body;
     const selectedColor = frontendColor || themeColor || color;
+    const selectedHover = frontendHoverColor || hoverColor;
 
-    if (!selectedColor || !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(selectedColor.trim())) {
+    if (!selectedColor && !selectedHover) {
       return res.status(400).json({
         success: false,
         message: 'A valid hex color code (e.g. #941324) is required.'
       });
     }
 
-    const updated = await clinicSettingsService.updateSettings({
-      frontendColor: selectedColor.trim()
-    });
+    const payload: any = {};
+    if (selectedColor) {
+      if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(selectedColor.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'A valid theme hex color code (e.g. #941324) is required.'
+        });
+      }
+      payload.frontendColor = selectedColor.trim();
+    }
+
+    if (selectedHover) {
+      if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(selectedHover.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'A valid hover hex color code (e.g. #770f1d) is required.'
+        });
+      }
+      payload.frontendHoverColor = selectedHover.trim();
+    }
+
+    const updated = await clinicSettingsService.updateSettings(payload);
 
     return res.status(200).json({
       success: true,
-      message: 'Frontend theme color updated successfully',
+      message: 'Frontend theme and hover colors updated successfully',
       data: updated
     });
   } catch (error: any) {

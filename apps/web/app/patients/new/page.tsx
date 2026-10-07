@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { useToast } from '@/components/ui/toast';
-import { ToothSelectorModal } from '@/components/dental/tooth-selector-modal';
+import { ToothSelector, ToothSelectorModal } from '@/components/dental/tooth-selector-modal';
 import { apiFetch } from '@/lib/api/client';
 import { ImageMetadata } from '@patient-portal/shared';
 
@@ -502,15 +502,15 @@ export default function NewPatientPage() {
             )}
           </div>
 
-          {/* Target Tooth / Teeth Selector (FDI Odontogram) */}
-          <div className="pt-3 border-t border-white/10 space-y-2">
+          {/* Target Tooth / Teeth Selector (Single 1..8 Dental System) */}
+          <div className="pt-3 border-t border-white/10 space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <label className="block text-xs font-bold text-gray-200 uppercase tracking-wide">
-                  Target Tooth / Teeth (FDI Odontogram)
+                  Target Tooth / Teeth (Dental Odontogram)
                 </label>
                 <p className="text-[11px] text-gray-400">
-                  Optionally select affected or targeted teeth for this patient's procedure
+                  Click teeth directly below while entering information or edit anytime
                 </p>
               </div>
               <Button
@@ -521,50 +521,16 @@ export default function NewPatientPage() {
                 className="text-xs h-7 px-2.5 gap-1.5 border-red-800/40 text-red-400 hover:text-white hover:border-red-600"
               >
                 <Plus className="w-3.5 h-3.5" />
-                {selectedTeeth.length === 0 ? 'Select Tooth' : 'Edit Teeth'}
+                {selectedTeeth.length === 0 ? 'Expand Chart' : `Edit (${selectedTeeth.length} Selected)`}
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-1.5 min-h-[38px] p-2.5 rounded-xl bg-white/[0.02] border border-white/10">
-              {selectedTeeth.length === 0 ? (
-                <div className="flex items-center gap-2 text-xs text-gray-500 italic">
-                  <span>No specific tooth selected (General / Whole Mouth)</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowToothModal(true)}
-                    className="inline-flex items-center justify-center px-1.5 py-0.5 rounded border border-dashed border-white/20 hover:border-red-500 text-red-400 text-[11px] font-bold not-italic hover:bg-red-950/30 transition-colors"
-                    title="Open Dental Tooth Selector"
-                  >
-                    [ + ]
-                  </button>
-                </div>
-              ) : (
-                <>
-                  {selectedTeeth.map((tooth) => (
-                    <span
-                      key={tooth}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600 text-white font-mono font-bold text-xs shadow-glow-red-sm"
-                    >
-                      Tooth #{tooth}
-                      <button
-                        type="button"
-                        onClick={() => setSelectedTeeth((prev) => prev.filter((t) => t !== tooth))}
-                        className="hover:text-red-200"
-                        title="Remove tooth"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTeeth([])}
-                    className="text-[11px] text-gray-400 hover:text-white ml-2 underline"
-                  >
-                    Clear All
-                  </button>
-                </>
-              )}
+            {/* Prominent Inline Interactive Tooth Selector Div */}
+            <div className="p-3 sm:p-4 rounded-xl bg-black/30 border border-white/10">
+              <ToothSelector
+                selectedTeeth={selectedTeeth}
+                onChange={setSelectedTeeth}
+              />
             </div>
           </div>
         </GlassCard>

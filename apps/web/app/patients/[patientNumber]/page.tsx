@@ -40,6 +40,7 @@ import { Modal } from '@/components/ui/modal';
 import { DatePicker } from '@/components/ui/date-picker';
 import { TimePicker } from '@/components/ui/time-picker';
 import { ReceiptDocument } from '@/components/receipt/receipt-document';
+import { ToothSelector, ToothVector } from '@/components/dental/tooth-selector-modal';
 import { useToast } from '@/components/ui/toast';
 import { apiFetch } from '@/lib/api/client';
 import { Patient, ImageMetadata, Receipt, Appointment, AppointmentStatus, PatientAccountBalance, PaymentMethod, InvoicePayment } from '@patient-portal/shared';
@@ -70,6 +71,7 @@ export default function PatientProfilePage() {
   const [editVillage, setEditVillage] = useState('');
   const [editDistrict, setEditDistrict] = useState('');
   const [editProblem, setEditProblem] = useState('');
+  const [editTeeth, setEditTeeth] = useState<string[]>([]);
   const [editProfileImage, setEditProfileImage] = useState<ImageMetadata | string | null>(null);
   const [editCustomFields, setEditCustomFields] = useState<Record<string, any>>({});
   const [customFieldDefs, setCustomFieldDefs] = useState<any[]>([]);
@@ -194,6 +196,15 @@ export default function PatientProfilePage() {
     setEditProblem(patient.patientProblem);
     setEditProfileImage(patient.profileImage || null);
 
+    let initialTeeth = (patient.teeth || patient.selectedTeeth || []) as string[];
+    if (initialTeeth.length === 0 && patient.patientProblem) {
+      const match = patient.patientProblem.match(/\(Teeth:\s*([^\)]+)\)/i);
+      if (match && match[1]) {
+        initialTeeth = match[1].split(',').map((t: string) => t.trim()).filter(Boolean);
+      }
+    }
+    setEditTeeth(initialTeeth);
+
     const initialCustom: Record<string, any> = {};
     if (patient.customFields && Array.isArray(patient.customFields)) {
       for (const cf of patient.customFields) {
@@ -263,6 +274,8 @@ export default function PatientProfilePage() {
           village: editVillage.trim() || undefined,
           district: editDistrict.trim() || undefined,
           patientProblem: editProblem.trim(),
+          teeth: editTeeth,
+          selectedTeeth: editTeeth,
           profileImage: editProfileImage,
           customFields: customFieldsPayload.length > 0 ? customFieldsPayload : undefined
         })
@@ -777,11 +790,33 @@ export default function PatientProfilePage() {
                 </div>
               )}
 
-              <div className="pt-2 border-t border-white/5 space-y-1">
-                <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Chief Dental Concern</p>
+              <div className="pt-2 border-t border-white/5 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Chief Dental Concern</p>
+                  {((patient.teeth && patient.teeth.length > 0) || (patient.selectedTeeth && patient.selectedTeeth.length > 0)) && (
+                    <span className="text-[10px] font-mono font-bold text-red-400 bg-red-950/50 px-2 py-0.5 rounded border border-red-800/40">
+                      {(patient.teeth || patient.selectedTeeth || []).length} Teeth Targeted
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-gray-200 italic font-medium">
                   &ldquo;{patient.patientProblem}&rdquo;
                 </p>
+
+                {/* Target Teeth Badges */}
+                {((patient.teeth && patient.teeth.length > 0) || (patient.selectedTeeth && patient.selectedTeeth.length > 0)) && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 mr-0.5">Teeth:</span>
+                    {(patient.teeth || patient.selectedTeeth || []).map((t) => (
+                      <span
+                        key={t}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-600 text-white font-mono font-bold text-[11px] shadow-glow-red-sm"
+                      >
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Dynamic Custom Fields Badges / Information */}
@@ -1554,6 +1589,25 @@ export default function PatientProfilePage() {
               className="w-full glass-input rounded-xl p-3 text-xs text-gray-100 placeholder:text-gray-500 resize-none"
               required
             />
+          </div>
+
+          {/* Interactive Tooth Selector in Edit Patient Modal */}
+          <div className="pt-2 border-t border-white/10 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-gray-200 uppercase tracking-wide">
+                Target Dental Teeth (1 2 3 4 5 6 7 8 | 8 7 6 5 4 3 2 1)
+              </label>
+              <span className="text-[10px] text-gray-400 font-mono">
+                {editTeeth.length} Selected
+              </span>
+            </div>
+            <div className="p-3 rounded-xl bg-black/40 border border-white/10">
+              <ToothSelector
+                selectedTeeth={editTeeth}
+                onChange={setEditTeeth}
+                compact
+              />
+            </div>
           </div>
 
           {/* Dynamic Custom Fields inside Edit Patient Modal */}

@@ -20,9 +20,13 @@
   --bs-primary: #941324;
   --bs-primary-rgb: 148, 19, 36;
 
+  /* Brand Hover & Interactive Accent Colors (Customizable from Settings) */
+  --brand-hover: #770f1d;
+  --brand-hover-rgb: 119, 15, 29;
+
   /* Brand Accent Colors (Dynamically Synchronized with Settings) */
   --brand-red: var(--brand-primary);
-  --brand-red-dark: var(--brand-primary-dark);
+  --brand-red-dark: var(--brand-hover);
   --brand-red-deep: var(--brand-primary-deep);
   --brand-red-light: var(--brand-primary-light);
   --brand-red-soft: var(--brand-primary-soft);
@@ -88,7 +92,6 @@ html {
   scroll-padding-top: 90px;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  overflow-x: clip;
 }
 
 body {
@@ -96,7 +99,6 @@ body {
   background-color: var(--brand-offwhite);
   color: var(--brand-charcoal);
   line-height: 1.7;
-  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -120,7 +122,7 @@ a {
 }
 
 a:hover {
-  color: var(--brand-red-dark);
+  color: var(--brand-hover);
 }
 
 img {
@@ -326,7 +328,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: linear-gradient(135deg, var(--brand-red) 0%, var(--brand-red-dark) 100%);
+  background: linear-gradient(135deg, var(--brand-red) 0%, var(--brand-hover) 100%);
   color: var(--brand-white);
   padding: 13px 28px;
   font-size: 1.02rem;
@@ -340,7 +342,7 @@ button, input, select, textarea {
 }
 
 .btn-primary-red:hover {
-  background: linear-gradient(135deg, var(--brand-red-light) 0%, var(--brand-red) 100%);
+  background: linear-gradient(135deg, var(--brand-hover) 0%, var(--brand-red) 100%);
   color: var(--brand-white);
   transform: translateY(-2px);
   box-shadow: var(--shadow-red-lg);
@@ -366,8 +368,8 @@ button, input, select, textarea {
 
 .btn-secondary-white:hover {
   background: var(--brand-surface);
-  color: var(--brand-red);
-  border-color: rgba(148, 19, 36, 0.2);
+  color: var(--brand-hover);
+  border-color: rgba(148, 19, 36, 0.25);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -390,7 +392,8 @@ button, input, select, textarea {
 }
 
 .btn-outline-red:hover {
-  background: var(--brand-red);
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
   color: var(--brand-white);
   transform: translateY(-2px);
   box-shadow: var(--shadow-red);
@@ -457,9 +460,13 @@ button, input, select, textarea {
    ========================================================================== */
 .navbar-wrapper {
   position: sticky;
+  position: -webkit-sticky;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--brand-border);
@@ -546,7 +553,7 @@ button, input, select, textarea {
 }
 
 .nav-link:hover, .nav-link.active {
-  color: var(--brand-red);
+  color: var(--brand-hover);
   font-weight: 600;
 }
 
@@ -564,6 +571,7 @@ button, input, select, textarea {
 
 .nav-link:hover::after, .nav-link.active::after {
   width: 100%;
+  background: var(--brand-hover);
 }
 
 .navbar-actions {
@@ -625,15 +633,17 @@ button, input, select, textarea {
 
 /* Mobile Drawer */
 .mobile-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 82%;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 85%;
   max-width: 360px;
-  height: 100vh;
+  height: 100vh !important;
+  height: 100dvh !important;
   background: var(--brand-white);
-  z-index: 2000;
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+  z-index: 99999 !important;
+  box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -642,12 +652,13 @@ button, input, select, textarea {
   pointer-events: none;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-drawer.active {
-  transform: translateX(0);
-  visibility: visible;
-  pointer-events: auto;
+  transform: translateX(0) !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 @media (min-width: 1025px) {
@@ -701,7 +712,7 @@ button, input, select, textarea {
 
 .drawer-link:hover, .drawer-link.active {
   background: var(--brand-red-soft);
-  color: var(--brand-red);
+  color: var(--brand-hover);
 }
 
 .drawer-footer {
@@ -714,22 +725,25 @@ button, input, select, textarea {
 }
 
 .drawer-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(4px);
-  z-index: 1999;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 99998 !important;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .drawer-overlay.active {
-  opacity: 1;
-  visibility: visible;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 @media (max-width: 1024px) {

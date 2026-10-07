@@ -29,6 +29,8 @@ export interface IPatient extends Document {
   district?: string;
   profileImage?: string | IPatientImageMetadata;
   customFields?: IPatientCustomFieldValue[];
+  teeth?: string[];
+  selectedTeeth?: string[];
   isPublic?: boolean;
   publicToken?: string;
   createdAt: Date;
@@ -48,6 +50,8 @@ const patientSchema = new Schema<IPatient>(
     area: { type: String, trim: true },
     district: { type: String, trim: true },
     profileImage: { type: Schema.Types.Mixed },
+    teeth: [{ type: String }],
+    selectedTeeth: [{ type: String }],
     isPublic: { type: Boolean, default: false, index: true },
     publicToken: { type: String, index: true },
     customFields: [

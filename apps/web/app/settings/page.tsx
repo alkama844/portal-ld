@@ -47,18 +47,28 @@ export default function SettingsPage() {
   const [isSavingClinic, setIsSavingClinic] = useState(false);
   const [isLoadingClinic, setIsLoadingClinic] = useState(true);
 
-  // Frontend Theme Color State (Sections 25-34)
+  // Frontend Theme Color & Hover Color State
   const [frontendColor, setFrontendColor] = useState('#941324');
+  const [frontendHoverColor, setFrontendHoverColor] = useState('#770f1d');
   const [isSavingFrontendColor, setIsSavingFrontendColor] = useState(false);
   const [colorSaveStatus, setColorSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
   const THEME_PRESETS = [
-    { name: 'Crimson Classic', color: '#941324' },
-    { name: 'Lucky Orange', color: '#c2410c' },
-    { name: 'Orion Deep Blue', color: '#1e3a8a' },
-    { name: 'Dark Obsidian', color: '#0f172a' },
-    { name: 'Emerald Forest', color: '#059669' },
-    { name: 'Amber Gold', color: '#d97706' }
+    { name: 'Crimson Classic', color: '#941324', hover: '#770f1d' },
+    { name: 'Lucky Orange', color: '#c2410c', hover: '#9a3412' },
+    { name: 'Orion Deep Blue', color: '#1e3a8a', hover: '#172554' },
+    { name: 'Dark Obsidian', color: '#0f172a', hover: '#020617' },
+    { name: 'Emerald Forest', color: '#059669', hover: '#064e3b' },
+    { name: 'Amber Gold', color: '#d97706', hover: '#92400e' }
+  ];
+
+  const HOVER_PRESETS = [
+    { name: 'Deep Crimson', color: '#770f1d' },
+    { name: 'Bright Crimson', color: '#b8182c' },
+    { name: 'Burnt Rust', color: '#9a3412' },
+    { name: 'Midnight Navy', color: '#172554' },
+    { name: 'Forest Dark', color: '#064e3b' },
+    { name: 'Deep Bronze', color: '#92400e' }
   ];
 
   const hexToRgb = (hex: string) => {
@@ -77,7 +87,7 @@ export default function SettingsPage() {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   };
 
-  const applyThemeColor = (hex: string) => {
+  const applyThemeColor = (hex: string, hoverHex?: string) => {
     if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) return;
     const rgb = hexToRgb(hex);
     if (!rgb) return;
@@ -85,10 +95,14 @@ export default function SettingsPage() {
     const deepHex = adjustColor(rgb, -0.38);
     const lightHex = adjustColor(rgb, 0.15);
     const softHex = adjustColor(rgb, 0.85);
+    const effectiveHover = hoverHex && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hoverHex) ? hoverHex : darkHex;
+    const hoverRgb = hexToRgb(effectiveHover) || rgb;
 
     const root = document.documentElement;
     root.style.setProperty('--brand-primary', hex);
     root.style.setProperty('--brand-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+    root.style.setProperty('--brand-hover', effectiveHover);
+    root.style.setProperty('--brand-hover-rgb', `${hoverRgb.r}, ${hoverRgb.g}, ${hoverRgb.b}`);
     root.style.setProperty('--brand-primary-dark', darkHex);
     root.style.setProperty('--brand-primary-deep', deepHex);
     root.style.setProperty('--brand-primary-light', lightHex);
@@ -98,17 +112,49 @@ export default function SettingsPage() {
     root.style.setProperty('--brand-primary-glow', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)`);
     root.style.setProperty('--bs-primary', hex);
     root.style.setProperty('--bs-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+
+    // Aliases
+    root.style.setProperty('--brand-red', hex);
+    root.style.setProperty('--brand-red-dark', effectiveHover);
   };
 
-  const handleColorChange = (newColor: string) => {
+  const handleThemeColorChange = (newColor: string) => {
     setFrontendColor(newColor);
     setColorSaveStatus('idle');
-    applyThemeColor(newColor);
+    applyThemeColor(newColor, frontendHoverColor);
+  };
+
+  const handleHoverColorChange = (newHoverColor: string) => {
+    setFrontendHoverColor(newHoverColor);
+    setColorSaveStatus('idle');
+    applyThemeColor(frontendColor, newHoverColor);
+  };
+
+  const handleSelectThemePreset = (preset: { name: string; color: string; hover: string }) => {
+    setFrontendColor(preset.color);
+    setFrontendHoverColor(preset.hover);
+    setColorSaveStatus('idle');
+    applyThemeColor(preset.color, preset.hover);
+  };
+
+  const handleAutoGenerateHover = () => {
+    const rgb = hexToRgb(frontendColor);
+    if (rgb) {
+      const generated = adjustColor(rgb, -0.22);
+      setFrontendHoverColor(generated);
+      setColorSaveStatus('idle');
+      applyThemeColor(frontendColor, generated);
+      showToast(`Generated optimal hover shade: ${generated}`, 'info');
+    }
   };
 
   const handleSaveFrontendColor = async () => {
     if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(frontendColor)) {
-      showToast('Please enter a valid hex color code (e.g. #941324)', 'error');
+      showToast('Please enter a valid hex theme color code (e.g. #941324)', 'error');
+      return;
+    }
+    if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(frontendHoverColor)) {
+      showToast('Please enter a valid hex hover color code (e.g. #770f1d)', 'error');
       return;
     }
 
@@ -117,14 +163,15 @@ export default function SettingsPage() {
     try {
       const res = await apiFetch<ClinicSettings>('/settings/theme', {
         method: 'PUT',
-        body: JSON.stringify({ frontendColor })
+        body: JSON.stringify({ frontendColor, frontendHoverColor })
       });
 
       if (res.success) {
         setColorSaveStatus('saved');
-        showToast('Frontend theme color saved and synchronized!', 'success');
+        showToast('Frontend default & hover colors saved and synchronized live!', 'success');
         try {
           localStorage.setItem('lucky_dental_frontend_color', frontendColor);
+          localStorage.setItem('lucky_dental_frontend_hover_color', frontendHoverColor);
         } catch {}
       } else {
         setColorSaveStatus('idle');
@@ -233,7 +280,11 @@ export default function SettingsPage() {
         setReceiptFooter(res.data.receiptFooter || 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh');
         if (res.data.frontendColor) {
           setFrontendColor(res.data.frontendColor);
-          applyThemeColor(res.data.frontendColor);
+          const hCol = res.data.frontendHoverColor || '#770f1d';
+          setFrontendHoverColor(hCol);
+          applyThemeColor(res.data.frontendColor, hCol);
+        } else if (res.data.frontendHoverColor) {
+          setFrontendHoverColor(res.data.frontendHoverColor);
         }
       }
     } catch {
@@ -493,13 +544,13 @@ export default function SettingsPage() {
           </div>
         </GlassCard>
 
-        {/* Section 2: Frontend Color Control (Sections 25-34) */}
+        {/* Section 2: Frontend Theme & Hover Color Control */}
         <GlassCard className="p-6 space-y-5">
           <div className="flex items-center justify-between border-b border-white/10 dark:border-white/10 pb-3">
             <div className="flex items-center gap-2.5">
               <Palette className="w-4 h-4 text-red-400" />
               <h2 className="text-sm font-bold uppercase tracking-wider">
-                2. Frontend Color
+                2. Frontend Theme & Hover Color Control
               </h2>
             </div>
             <span className="text-[10px] text-gray-400 font-mono">
@@ -508,89 +559,202 @@ export default function SettingsPage() {
           </div>
 
           <p className="text-xs text-gray-400">
-            Control the public brand accent color. Updates buttons, badges, links, section accents, and headers across all pages in real-time.
+            Control the public frontend colors. Set the default brand accent color (e.g. Crimson Red) and customize the hover color independently. Updates buttons, badges, links, cards, section accents, and headers across all public pages in real-time.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-1">
-            {/* Left: Color Picker & Hex Input */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div 
-                  className="w-12 h-12 rounded-xl border-2 border-white/20 shadow-md shrink-0 relative overflow-hidden cursor-pointer"
-                  style={{ backgroundColor: frontendColor }}
-                >
-                  <input
-                    type="color"
-                    value={frontendColor}
-                    onChange={(e) => handleColorChange(e.target.value)}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                    title="Choose custom brand color"
-                  />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-1">
+            {/* Left: Color Pickers & Presets (7 cols) */}
+            <div className="lg:col-span-7 space-y-5">
+              {/* 1. Primary Default Color */}
+              <div className="p-4 rounded-xl bg-black/20 border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-200 uppercase tracking-wide">
+                    A. Default Brand Theme Color (Primary)
+                  </span>
+                  <span className="text-[10px] font-mono text-gray-400">Default button & accent state</span>
                 </div>
-                <div className="flex-1">
-                  <label className="block text-[11px] font-bold uppercase tracking-wide text-gray-300 mb-1">
-                    Hex Color Code (#RRGGBB)
-                  </label>
-                  <div className="flex gap-2">
+
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-11 h-11 rounded-xl border-2 border-white/20 shadow-md shrink-0 relative overflow-hidden cursor-pointer transition-transform hover:scale-105"
+                    style={{ backgroundColor: frontendColor }}
+                  >
+                    <input
+                      type="color"
+                      value={frontendColor}
+                      onChange={(e) => handleThemeColorChange(e.target.value)}
+                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      title="Choose custom theme color"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-bold uppercase tracking-wide text-gray-400 mb-1">
+                      Hex Code (#RRGGBB)
+                    </label>
                     <Input
                       value={frontendColor}
-                      onChange={(e) => handleColorChange(e.target.value)}
-                      placeholder="#c2410c"
+                      onChange={(e) => handleThemeColorChange(e.target.value)}
+                      placeholder="#941324"
                       className="font-mono uppercase text-xs"
                     />
                   </div>
                 </div>
+
+                {/* Theme Presets */}
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 block">
+                    Curated Brand Theme Presets
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {THEME_PRESETS.map((preset) => (
+                      <button
+                        key={preset.color}
+                        type="button"
+                        onClick={() => handleSelectThemePreset(preset)}
+                        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition-all ${
+                          frontendColor.toLowerCase() === preset.color.toLowerCase()
+                            ? 'border-white bg-white/10 text-white font-bold shadow-sm'
+                            : 'border-white/10 bg-black/20 text-gray-400 hover:border-white/20'
+                        }`}
+                      >
+                        <span 
+                          className="w-3.5 h-3.5 rounded-full shrink-0 border border-white/30"
+                          style={{ backgroundColor: preset.color }}
+                        />
+                        <span className="truncate">{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              {/* Theme Presets */}
-              <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 block">
-                  Curated Brand Presets
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {THEME_PRESETS.map((preset) => (
-                    <button
-                      key={preset.color}
-                      type="button"
-                      onClick={() => handleColorChange(preset.color)}
-                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition-all ${
-                        frontendColor.toLowerCase() === preset.color.toLowerCase()
-                          ? 'border-white bg-white/10 text-white font-bold'
-                          : 'border-white/10 bg-black/20 text-gray-400 hover:border-white/20'
-                      }`}
-                    >
-                      <span 
-                        className="w-3.5 h-3.5 rounded-full shrink-0 border border-white/30"
-                        style={{ backgroundColor: preset.color }}
-                      />
-                      <span className="truncate">{preset.name}</span>
-                    </button>
-                  ))}
+              {/* 2. Hover Color */}
+              <div className="p-4 rounded-xl bg-black/20 border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-200 uppercase tracking-wide">
+                    B. Frontend Hover Color (Interactive State)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleAutoGenerateHover}
+                    className="text-[10px] text-red-400 hover:text-white underline font-medium"
+                  >
+                    Auto-Generate Matching Shade
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-11 h-11 rounded-xl border-2 border-white/20 shadow-md shrink-0 relative overflow-hidden cursor-pointer transition-transform hover:scale-105"
+                    style={{ backgroundColor: frontendHoverColor }}
+                  >
+                    <input
+                      type="color"
+                      value={frontendHoverColor}
+                      onChange={(e) => handleHoverColorChange(e.target.value)}
+                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      title="Choose custom hover color"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-bold uppercase tracking-wide text-gray-400 mb-1">
+                      Hover Hex Code (#RRGGBB)
+                    </label>
+                    <Input
+                      value={frontendHoverColor}
+                      onChange={(e) => handleHoverColorChange(e.target.value)}
+                      placeholder="#770f1d"
+                      className="font-mono uppercase text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Hover Presets */}
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 block">
+                    Curated Hover Shades
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {HOVER_PRESETS.map((preset) => (
+                      <button
+                        key={preset.color}
+                        type="button"
+                        onClick={() => handleHoverColorChange(preset.color)}
+                        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-left text-[11px] transition-all ${
+                          frontendHoverColor.toLowerCase() === preset.color.toLowerCase()
+                            ? 'border-white bg-white/10 text-white font-bold shadow-sm'
+                            : 'border-white/10 bg-black/20 text-gray-400 hover:border-white/20'
+                        }`}
+                      >
+                        <span 
+                          className="w-3.5 h-3.5 rounded-full shrink-0 border border-white/30"
+                          style={{ backgroundColor: preset.color }}
+                        />
+                        <span className="truncate">{preset.name}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Right: Real-time Live Preview Components */}
-            <div className="space-y-3 bg-black/20 p-4 rounded-xl border border-white/10 flex flex-col justify-between">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 block mb-3">
-                  Live Component Synchronization Preview
-                </span>
-                <div className="space-y-3">
-                  {/* Preview Button */}
-                  <div className="flex items-center gap-2">
+            {/* Right: Real-time Live Preview Components (5 cols) */}
+            <div className="lg:col-span-5 space-y-4 bg-black/30 p-4 rounded-xl border border-white/10 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-gray-300">
+                    Live Hover & Component Sync Preview
+                  </span>
+                  <span className="text-[9px] text-emerald-400 font-mono">● Active</span>
+                </div>
+
+                <p className="text-[11px] text-gray-400">
+                  Hover over the elements below to preview how your frontend buttons and links react:
+                </p>
+
+                <div className="space-y-3.5 p-3 rounded-lg bg-black/40 border border-white/5">
+                  {/* Primary CTA with Live Hover transition */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-gray-400 font-medium block">1. Primary Button (Hover Me):</span>
                     <button
                       type="button"
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = frontendHoverColor;
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = frontendColor;
+                      }}
                       style={{ backgroundColor: frontendColor }}
-                      className="text-white text-xs font-bold px-4 py-2 rounded-full shadow-md transition-all flex items-center gap-1.5"
+                      className="text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-md transition-all duration-200 flex items-center gap-1.5 cursor-pointer w-full justify-center"
                     >
-                      <span>অ্যাপয়েন্টমেন্ট নিন</span>
+                      <span>অ্যাপয়েন্টমেন্ট নিন (Theme → Hover)</span>
                     </button>
-                    <span className="text-[10px] text-gray-400">Primary CTA</span>
                   </div>
 
-                  {/* Preview Badge & Link */}
-                  <div className="flex items-center gap-3">
+                  {/* Outline CTA with Live Hover transition */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-gray-400 font-medium block">2. Outline Button (Hover Me):</span>
+                    <button
+                      type="button"
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = frontendHoverColor;
+                        (e.currentTarget as HTMLElement).style.borderColor = frontendHoverColor;
+                        (e.currentTarget as HTMLElement).style.color = '#ffffff';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                        (e.currentTarget as HTMLElement).style.borderColor = frontendColor;
+                        (e.currentTarget as HTMLElement).style.color = frontendColor;
+                      }}
+                      style={{ borderColor: frontendColor, color: frontendColor }}
+                      className="border-2 text-xs font-bold px-4 py-2 rounded-full transition-all duration-200 flex items-center gap-1.5 cursor-pointer w-full justify-center bg-transparent"
+                    >
+                      <span>আমাদের সেবাসমূহ দেখুন</span>
+                    </button>
+                  </div>
+
+                  {/* Badge & Link with Hover */}
+                  <div className="flex items-center justify-between pt-1">
                     <span 
                       style={{ 
                         color: frontendColor,
@@ -601,37 +765,49 @@ export default function SettingsPage() {
                     >
                       ★ ৪৪+ বছরের সমৃদ্ধ ঐতিহ্য
                     </span>
-                    <span 
+
+                    <a 
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = frontendHoverColor;
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.color = frontendColor;
+                      }}
                       style={{ color: frontendColor }} 
-                      className="text-xs font-semibold underline cursor-pointer"
+                      className="text-xs font-semibold underline cursor-pointer transition-colors duration-150"
                     >
                       বিস্তারিত দেখুন →
-                    </span>
+                    </a>
                   </div>
 
-                  {/* Preview Card Border */}
+                  {/* Card Border */}
                   <div 
                     style={{ borderLeftColor: frontendColor }}
                     className="border-l-4 bg-white/5 p-2 rounded-r-lg text-[11px] text-gray-300"
                   >
-                    লাইভ ইন্টারেক্টিভ প্রাইস এস্টিমেটর ও সার্ভিস কার্ড অ্যাকসেন্ট
+                    লাইভ প্রাইস এস্টিমেটর ও সার্ভিস কার্ড অ্যাকসেন্ট
                   </div>
                 </div>
               </div>
 
-              {/* Save Button for Frontend Color */}
-              <div className="flex justify-end pt-3 border-t border-white/10">
+              {/* Save Button for Theme & Hover Color */}
+              <div className="pt-3 border-t border-white/10 space-y-2">
                 <Button
                   type="button"
                   onClick={handleSaveFrontendColor}
                   isLoading={isSavingFrontendColor}
                   size="sm"
-                  className="gap-1.5 text-xs text-white"
+                  className="w-full gap-1.5 text-xs text-white font-bold py-2.5"
                   style={{ backgroundColor: frontendColor }}
                 >
                   <Save className="w-3.5 h-3.5" />
-                  {colorSaveStatus === 'saved' ? 'Saved ✓' : colorSaveStatus === 'saving' ? 'Saving...' : 'Save Frontend Color'}
+                  {colorSaveStatus === 'saved' ? 'Colors Saved & Synchronized ✓' : colorSaveStatus === 'saving' ? 'Saving Colors...' : 'Save Theme & Hover Colors'}
                 </Button>
+                <p className="text-[10px] text-center text-gray-400">
+                  Instantly synchronizes to public website across all visitors
+                </p>
               </div>
             </div>
           </div>

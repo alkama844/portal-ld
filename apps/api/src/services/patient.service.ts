@@ -23,6 +23,8 @@ export interface CreatePatientDTO {
   occupation?: string;
   reference?: string;
   profileImage?: string | IPatientImageMetadata;
+  teeth?: string[];
+  selectedTeeth?: string[];
   customFields?: Array<{
     fieldId?: any;
     key: string;

@@ -164,7 +164,7 @@
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
-  function applyBrandColor(hex) {
+  function applyBrandColor(hex, hoverHex) {
     if (!hex || !/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) return;
     const rgb = hexToRgb(hex);
     if (!rgb) return;
@@ -173,9 +173,14 @@
     const lightHex = adjustColor(rgb, 0.15);
     const softHex = adjustColor(rgb, 0.85);
 
+    const effectiveHover = hoverHex && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hoverHex) ? hoverHex : darkHex;
+    const hoverRgb = hexToRgb(effectiveHover) || rgb;
+
     const root = document.documentElement;
     root.style.setProperty('--brand-primary', hex);
     root.style.setProperty('--brand-primary-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+    root.style.setProperty('--brand-hover', effectiveHover);
+    root.style.setProperty('--brand-hover-rgb', `${hoverRgb.r}, ${hoverRgb.g}, ${hoverRgb.b}`);
     root.style.setProperty('--brand-primary-dark', darkHex);
     root.style.setProperty('--brand-primary-deep', deepHex);
     root.style.setProperty('--brand-primary-light', lightHex);
@@ -189,7 +194,7 @@
 
     // Dynamic aliases for legacy & component styles
     root.style.setProperty('--brand-red', hex);
-    root.style.setProperty('--brand-red-dark', darkHex);
+    root.style.setProperty('--brand-red-dark', effectiveHover);
     root.style.setProperty('--brand-red-deep', deepHex);
     root.style.setProperty('--brand-red-light', lightHex);
     root.style.setProperty('--brand-red-soft', softHex);
@@ -202,18 +207,24 @@
   function initThemeColor() {
     try {
       const saved = localStorage.getItem('lucky_dental_frontend_color');
-      if (saved) applyBrandColor(saved);
+      const savedHover = localStorage.getItem('lucky_dental_frontend_hover_color');
+      if (saved) applyBrandColor(saved, savedHover);
     } catch (e) {}
 
     const apiBase = (window.LUCKY_API_BASE_URL || 'https://api.luckydentalcare.com').replace(/\/+$/, '');
     fetch(`${apiBase}/api/settings/clinic`)
       .then(res => res.json())
       .then(json => {
-        if (json.success && json.data && json.data.frontendColor) {
-          applyBrandColor(json.data.frontendColor);
-          try {
-            localStorage.setItem('lucky_dental_frontend_color', json.data.frontendColor);
-          } catch (e) {}
+        if (json.success && json.data) {
+          const pCol = json.data.frontendColor;
+          const hCol = json.data.frontendHoverColor;
+          if (pCol) {
+            applyBrandColor(pCol, hCol);
+            try {
+              localStorage.setItem('lucky_dental_frontend_color', pCol);
+              if (hCol) localStorage.setItem('lucky_dental_frontend_hover_color', hCol);
+            } catch (e) {}
+          }
         }
       })
       .catch(() => {});

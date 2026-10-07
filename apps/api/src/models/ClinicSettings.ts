@@ -10,6 +10,7 @@ export interface IClinicSettings extends Document {
   receiptFooter: string;
   logoUrl?: string;
   frontendColor?: string;
+  frontendHoverColor?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,7 +28,8 @@ const clinicSettingsSchema = new Schema<IClinicSettings>(
       default: 'Lucky Dental Care • SMILE FOR LIFE • Kushtia, Bangladesh'
     },
     logoUrl: { type: String },
-    frontendColor: { type: String, default: '#941324' }
+    frontendColor: { type: String, default: '#941324' },
+    frontendHoverColor: { type: String, default: '#770f1d' }
   },
   { timestamps: true }
 );

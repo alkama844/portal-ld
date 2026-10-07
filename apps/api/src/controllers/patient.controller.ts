@@ -20,6 +20,8 @@ export const createPatient = async (req: Request, res: Response) => {
       occupation, 
       reference, 
       profileImage, 
+      teeth,
+      selectedTeeth,
       customFields 
     } = req.body;
 
@@ -44,6 +46,8 @@ export const createPatient = async (req: Request, res: Response) => {
       occupation,
       reference,
       profileImage,
+      teeth: teeth || selectedTeeth,
+      selectedTeeth: selectedTeeth || teeth,
       customFields
     });
 
