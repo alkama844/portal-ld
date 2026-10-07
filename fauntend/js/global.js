@@ -236,4 +236,33 @@
   };
 
   initThemeColor();
+
+  // Universal delegated fallback for mobile drawer across all pages
+  document.addEventListener('click', function (e) {
+    const toggle = e.target && e.target.closest ? e.target.closest('#mobileMenuToggle, .mobile-toggle-btn') : null;
+    if (toggle) {
+      e.preventDefault();
+      const drawer = document.getElementById('mobileDrawer');
+      const overlay = document.getElementById('drawerOverlay');
+      if (drawer && overlay) {
+        drawer.classList.add('active');
+        overlay.classList.add('active');
+        document.body.classList.add('drawer-open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    const close = e.target && e.target.closest ? e.target.closest('#drawerCloseBtn, .drawer-close-btn, #drawerOverlay') : null;
+    if (close) {
+      const drawer = document.getElementById('mobileDrawer');
+      const overlay = document.getElementById('drawerOverlay');
+      if (drawer && overlay) {
+        drawer.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.classList.remove('drawer-open');
+        document.body.style.overflow = '';
+      }
+    }
+  });
 })();
+

@@ -52,24 +52,30 @@ document.addEventListener('DOMContentLoaded', function () {
   const drawerCloseBtn = document.getElementById('drawerCloseBtn');
   const drawerLinks = document.querySelectorAll('.drawer-link');
 
-  function openDrawer() {
+  function openDrawer(e) {
+    if (e && e.preventDefault) e.preventDefault();
     if (mobileDrawer && drawerOverlay) {
       mobileDrawer.classList.add('active');
       drawerOverlay.classList.add('active');
+      document.body.classList.add('drawer-open');
       document.body.style.overflow = 'hidden';
     }
   }
 
-  function closeDrawer() {
+  function closeDrawer(e) {
     if (mobileDrawer && drawerOverlay) {
       mobileDrawer.classList.remove('active');
       drawerOverlay.classList.remove('active');
+      document.body.classList.remove('drawer-open');
       document.body.style.overflow = '';
     }
   }
 
   if (mobileToggle) {
     mobileToggle.addEventListener('click', openDrawer);
+    mobileToggle.addEventListener('touchend', function(e) {
+      openDrawer(e);
+    });
   }
 
   if (drawerCloseBtn) {
@@ -78,6 +84,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (drawerOverlay) {
     drawerOverlay.addEventListener('click', closeDrawer);
+    drawerOverlay.addEventListener('touchend', function(e) {
+      if (e.target === drawerOverlay) {
+        e.preventDefault();
+        closeDrawer();
+      }
+    });
   }
 
   drawerLinks.forEach(function (link) {

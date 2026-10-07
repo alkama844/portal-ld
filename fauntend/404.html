@@ -65,9 +65,48 @@
         <a href="/appointment" class="btn-primary-red nav-appointment-btn">
           <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন
         </a>
+        <button type="button" class="mobile-toggle-btn" id="mobileMenuToggle" aria-label="মেনু খুলুন">
+          <i class="fas fa-bars fa-lg"></i>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo-link">
+        <div class="brand-logo-frame" style="width: 44px; height: 44px;">
+          <img src="/lucky_image/logo_main.jpg" alt="Lucky Dental Care Logo">
+        </div>
+        <div class="brand-name-group">
+          <span class="brand-title" style="font-size: 1.05rem;">LUCKY DENTAL CARE</span>
+          <span class="brand-tagline">SMILE FOR LIFE</span>
+        </div>
+      </div>
+      <button type="button" class="drawer-close-btn" id="drawerCloseBtn" aria-label="মেনু বন্ধ করুন">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <ul class="drawer-menu">
+      <li><a href="/" class="drawer-link"><i class="fas fa-home"></i> হোম</a></li>
+      <li><a href="/about" class="drawer-link"><i class="fas fa-clinic-medical"></i> আমাদের সম্পর্কে</a></li>
+      <li><a href="/service" class="drawer-link"><i class="fas fa-tooth"></i> ডেন্টাল সেবাসমূহ</a></li>
+      <li><a href="/contact" class="drawer-link"><i class="fas fa-map-marked-alt"></i> যোগাযোগ ও লোকেশন</a></li>
+      <li><a href="/appointment" class="drawer-link"><i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন</a></li>
+    </ul>
+
+    <div class="drawer-footer">
+      <a href="tel:01715917834" class="btn-secondary-white" style="width: 100%;">
+        <i class="fas fa-phone-alt"></i> ০১৭১৫-৯১৭৮৩৪
+      </a>
+      <a href="/appointment" class="btn-primary-red" style="width: 100%;">
+        <i class="far fa-calendar-check"></i> অ্যাপয়েন্টমেন্ট নিন
+      </a>
+    </div>
+  </aside>
 
   <!-- Page Hero Banner (header.jpg + 40% dark overlay - Section 1) -->
   <section class="page-hero">
