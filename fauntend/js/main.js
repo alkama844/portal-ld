@@ -44,66 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // --------------------------------------------------------------------------
-  // 2. MOBILE NAVIGATION DRAWER
-  // --------------------------------------------------------------------------
-  const mobileToggle = document.getElementById('mobileMenuToggle');
-  const mobileDrawer = document.getElementById('mobileDrawer');
-  const drawerOverlay = document.getElementById('drawerOverlay');
-  const drawerCloseBtn = document.getElementById('drawerCloseBtn');
-  const drawerLinks = document.querySelectorAll('.drawer-link');
-
-  function openDrawer(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    if (mobileDrawer && drawerOverlay) {
-      mobileDrawer.classList.add('active');
-      drawerOverlay.classList.add('active');
-      document.body.classList.add('drawer-open');
-      document.body.style.overflow = 'hidden';
-    }
-  }
-
-  function closeDrawer(e) {
-    if (mobileDrawer && drawerOverlay) {
-      mobileDrawer.classList.remove('active');
-      drawerOverlay.classList.remove('active');
-      document.body.classList.remove('drawer-open');
-      document.body.style.overflow = '';
-    }
-  }
-
-  if (mobileToggle) {
-    mobileToggle.addEventListener('click', openDrawer);
-    mobileToggle.addEventListener('touchend', function(e) {
-      openDrawer(e);
-    });
-  }
-
-  if (drawerCloseBtn) {
-    drawerCloseBtn.addEventListener('click', closeDrawer);
-  }
-
-  if (drawerOverlay) {
-    drawerOverlay.addEventListener('click', closeDrawer);
-    drawerOverlay.addEventListener('touchend', function(e) {
-      if (e.target === drawerOverlay) {
-        e.preventDefault();
-        closeDrawer();
-      }
-    });
-  }
-
-  drawerLinks.forEach(function (link) {
-    link.addEventListener('click', closeDrawer);
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('active')) {
-      closeDrawer();
-    }
-  });
-
-  // --------------------------------------------------------------------------
-  // 3. STATS NUMBER COUNTER ANIMATION (BENGALI NUMERALS)
+  // 2. STATS NUMBER COUNTER ANIMATION (BENGALI NUMERALS)
   // --------------------------------------------------------------------------
   const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
   function toBn(num) {

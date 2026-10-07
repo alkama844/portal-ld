@@ -237,7 +237,51 @@
 
   initThemeColor();
 
-  // Universal delegated fallback for mobile drawer across all pages
+  // Universal mobile drawer controller shared by every static page.
+  let drawerScrollPosition = 0;
+  let drawerBodyStyles = null;
+
+  function openMobileDrawer(drawer, overlay) {
+    if (drawer.classList.contains('active')) return;
+
+    drawerScrollPosition = window.scrollY;
+    drawerBodyStyles = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow,
+      touchAction: document.body.style.touchAction
+    };
+
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${drawerScrollPosition}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+    document.body.classList.add('drawer-open');
+    drawer.classList.add('active');
+    overlay.classList.add('active');
+  }
+
+  function closeMobileDrawer(drawer, overlay) {
+    if (!drawer.classList.contains('active')) return;
+
+    drawer.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.classList.remove('drawer-open');
+
+    if (drawerBodyStyles) {
+      document.body.style.position = drawerBodyStyles.position;
+      document.body.style.top = drawerBodyStyles.top;
+      document.body.style.width = drawerBodyStyles.width;
+      document.body.style.overflow = drawerBodyStyles.overflow;
+      document.body.style.touchAction = drawerBodyStyles.touchAction;
+    }
+
+    window.scrollTo(0, drawerScrollPosition);
+    drawerBodyStyles = null;
+  }
+
   document.addEventListener('click', function (e) {
     const toggle = e.target && e.target.closest ? e.target.closest('#mobileMenuToggle, .mobile-toggle-btn') : null;
     if (toggle) {
@@ -245,23 +289,27 @@
       const drawer = document.getElementById('mobileDrawer');
       const overlay = document.getElementById('drawerOverlay');
       if (drawer && overlay) {
-        drawer.classList.add('active');
-        overlay.classList.add('active');
-        document.body.classList.add('drawer-open');
-        document.body.style.overflow = 'hidden';
+        openMobileDrawer(drawer, overlay);
       }
     }
 
-    const close = e.target && e.target.closest ? e.target.closest('#drawerCloseBtn, .drawer-close-btn, #drawerOverlay') : null;
+    const close = e.target && e.target.closest ? e.target.closest('#drawerCloseBtn, .drawer-close-btn, #drawerOverlay, .drawer-link') : null;
     if (close) {
       const drawer = document.getElementById('mobileDrawer');
       const overlay = document.getElementById('drawerOverlay');
       if (drawer && overlay) {
-        drawer.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.classList.remove('drawer-open');
-        document.body.style.overflow = '';
+        closeMobileDrawer(drawer, overlay);
       }
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+
+    const drawer = document.getElementById('mobileDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    if (drawer && overlay && drawer.classList.contains('active')) {
+      closeMobileDrawer(drawer, overlay);
     }
   });
 })();
