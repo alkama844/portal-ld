@@ -1,0 +1,40 @@
+{
+  "name": "maintaindoc",
+  "version": "2.2.0",
+  "description": "Central Website Maintenance Manager & Universal Maintenance Mode SDK by Nafij. Remote kill-switch, multi-media rendering (photos, video, YouTube, Lottie, audio), zero layout shift (anti-FOUC), and owner bypass gateway.",
+  "main": "maintain.js",
+  "bin": {
+    "maintaindoc": "./install.js"
+  },
+  "scripts": {
+    "start": "node install.js",
+    "install-sdk": "node install.js",
+    "test": "node -e \"console.log('maintaindoc test passed')\""
+  },
+  "keywords": [
+    "maintaindoc",
+    "nafij",
+    "maintaindoc nafij",
+    "nafij maintaindoc",
+    "central maintenance manager",
+    "developer api hub",
+    "maintenance-mode",
+    "remote-kill-switch",
+    "anti-fouc",
+    "status-page",
+    "zero-downtime",
+    "maintenance-sdk",
+    "universal-maintenance-sdk",
+    "website-maintenance"
+  ],
+  "author": "Nafij <https://maintain-doc.vercel.app/>",
+  "license": "MIT",
+  "homepage": "https://maintain-doc.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nafijrahaman/maintain-doc.git"
+  },
+  "bugs": {
+    "url": "https://maintain-doc.vercel.app/docs"
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Central Website Maintenance Manager API",
+    "description": "API for centralized dashboard managing website status records synced with GitHub contents.",
+    "version": "1.2.0"
+  },
+  "servers": [
+    {
+      "url": "https://maintain-doc.vercel.app/api",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate admin session and sign JWT token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "example": "admin" },
+                  "password": { "type": "string", "example": "nafijpro++" }
+                },
+                "required": ["username", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsIn..." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "summary": "Retrieve complete maintenance state registry profile",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "global": { "type": "boolean" },
+                    "sites": { "type": "object" },
+                    "messages": { "type": "object" },
+                    "activity": { "type": "array" },
+                    "updatedAt": { "type": "string" },
+                    "isLocal": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status/{site}": {
+      "get": {
+        "summary": "Check status of a single sub-website",
+        "parameters": [
+          {
+            "name": "site",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "testing"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "site": { "type": "string", "example": "testing" },
+                    "active": { "type": "boolean", "description": "true = online, false = under maintenance", "example": true },
+                    "message": { "type": "string", "nullable": true },
+                    "maintenanceTitle": { "type": "string", "nullable": true },
+                    "maintenanceDescription": { "type": "string", "nullable": true },
+                    "extraDescription": { "type": "string", "nullable": true },
+                    "uploadDestination": { "type": "string", "nullable": true },
+                    "mediaType": { "type": "string", "enum": ["photo", "video", "lottie", "audio", "none"], "nullable": true },
+                    "mediaUrl": { "type": "string", "nullable": true },
+                    "btnText": { "type": "string", "nullable": true },
+                    "btnUrl": { "type": "string", "nullable": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/site/toggle": {
+      "post": {
+        "summary": "Toggle site active status (Protected)",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "site": { "type": "string", "example": "testing" }
+                },
+                "required": ["site"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/site/message": {
+      "post": {
+        "summary": "Update maintenance description message (Protected)",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "site": { "type": "string", "example": "testing" },
+                  "message": { "type": "string", "example": "Upgrading clusters" }
+                },
+                "required": ["site"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

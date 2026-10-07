@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance SDK - Interactive Testbed & Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #09090b;
+            --surface: #121216;
+            --surface-hover: #18181f;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --accent: #10b981;
+            --danger: #ef4444;
+            --text: #fafafa;
+            --text-muted: #a1a1aa;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge-v {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .header-title p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-hover);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #09090b;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: #7dd3fc;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        pre {
+            background: #09090c;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #e4e4e7;
+            overflow-x: auto;
+            max-height: 380px;
+            margin: 0;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .status-pill.online {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .status-pill.maintenance {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            margin-top: 12px;
+        }
+
+        .field-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }
+
+        .field-name {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            font-weight: 600;
+            width: 30%;
+        }
+
+        .field-val {
+            color: #d4d4d8;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <h1>Universal Maintenance SDK <span class="badge-v">v2.2.0</span></h1>
+                <p>Interactive Testbed & Decryption Showcase for Developer API Hub Central Maintenance Manager</p>
+            </div>
+            <div>
+                <span id="live-status-pill" class="status-pill online">● Site Normal (Active)</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Left: Controls & Decryption Viewer -->
+            <div>
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-title">
+                        <span>Simulate Live States</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-danger" onclick="simulateMaintenanceOn()">🚨 Enforce Maintenance</button>
+                        <button class="btn btn-primary" onclick="simulateMaintenanceOff()">🟢 Normal Site Mode</button>
+                        <button class="btn" onclick="MaintainSDK.showAdmin()">🔑 Passcode Gateway</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="testMedia('photo')">🖼 Photo (ImgBB)</button>
+                        <button class="btn" onclick="testMedia('video')">🎥 Direct Video</button>
+                        <button class="btn" onclick="testMedia('youtube')">▶ YouTube</button>
+                        <button class="btn" onclick="testMedia('lottie')">✨ Lottie</button>
+                        <button class="btn" onclick="testMedia('audio')">🔊 Audio</button>
+                        <button class="btn" onclick="resetDefaults()">🔄 Reset</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span>Decrypted Testing Payload</span>
+                        <span style="font-size: 11px; color: var(--text-muted); font-family: monospace;">Key: ARYIDBhGXg== / AAAAAAAAAAAAAAA=</span>
+                    </div>
+                    <table class="field-table">
+                        <tr>
+                            <td class="field-name">site</td>
+                            <td class="field-val" id="disp-site">testing</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">active</td>
+                            <td class="field-val" id="disp-active">true</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">title</td>
+                            <td class="field-val" id="disp-title">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">description</td>
+                            <td class="field-val" id="disp-desc">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">message</td>
+                            <td class="field-val" id="disp-msg">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">extraDesc</td>
+                            <td class="field-val" id="disp-extra">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">mediaType</td>
+                            <td class="field-val" id="disp-media-type">photo</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">mediaUrl</td>
+                            <td class="field-val" id="disp-media-url">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">btnText</td>
+                            <td class="field-val" id="disp-btn-text">-</td>
+                        </tr>
+                        <tr>
+                            <td class="field-name">btnUrl</td>
+                            <td class="field-val" id="disp-btn-url">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Raw Payload and Architecture Info -->
+            <div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>Raw API Payload from Hub</span>
+                        <button class="btn" style="padding: 4px 10px; font-size: 11px;" onclick="copyRawPayload()">Copy JSON</button>
+                    </div>
+                    <pre id="raw-payload-pre"></pre>
+                    <div style="margin-top: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                        <strong style="color: #ffffff;">Developer API Hub Endpoints:</strong><br>
+                        • Status: <code style="color: var(--primary);">GET https://maintain-doc.vercel.app/api/status/testing</code><br>
+                        • Admin Bypass: Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl</kbd> + <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Shift</kbd> + <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">M</kbd> (Passcode: <code>ARYIDBhGXg==</code>)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configure Maintenance SDK -->
+    <script src="maintain.config.js"></script>
+    <script src="maintain.js"></script>
+
+    <script>
+        // Exact user payload
+        const rawPayload = {
+            "site": "testing",
+            "active": true,
+            "message": "OQRGCBgRSBUVAAkBEwsABBNIAREGDgwAFQxKFwcXFVIAHhUPBAMOCREZHQFAQTUMGAIBBhUBTx0JCRwGEEgXFQEbARMDSQgNSFRESF9eQSEkPlo=",
+            "maintenanceTitle": "IwAPBx4RBgQeEQpOLAkNDw==",
+            "maintenanceDescription": "IRQUSRkNGxEVHxxOABQMSgEGARUACAEICA5KBwsNFRYaAgQCSQcVAQsEFwEPDwUMSgAHRRkfHxwOEAxKDQcQAlIKFhEDGwMRBgYVXE85BEYeAxgERRIXTwwABQJKGwYJGRwKThIOBhgABBxeUjsGAAgCSg0HEFAUABxBHwYfBkgVEQYGCw8FDEQ=",
+            "extraDescription": "Pg0DCBkRSBURC08PFRIMBAABCh5SGwFBEgEPVAELAwYdGwISAAUaG0UfHE8aCQ8aSgcLFxUXAUBBIgZKGgcRUBMbGgQLGR5UHApQAAodFAQEAwBIBhgXDAUOEx1KBg0UBRccGhJI",
+            "uploadDestination": "github",
+            "mediaType": "photo",
+            "mediaUrl": "BhUSGRlOR0oZEA1AAglHCRsFShIgOB0MIQMa",
+            "btnText": "DQkDDAEbHRE=",
+            "btnUrl": "BhUSGRlOR0oGFx0NBApHCRsFSh4TCQcLCAAEHgkWXQIdAQsDCh4H"
+        };
+
+        document.getElementById('raw-payload-pre').innerText = JSON.stringify(rawPayload, null, 2);
+
+        // Decryption helper
+        function decodeXOR(b64, key) {
+            key = key || (window.MAINTAIN_CONFIG && window.MAINTAIN_CONFIG.encryptionKey) || 'AAAAAAAAAAAAAAA=';
+            if (key === 'AAAAAAAAAAAAAAA=') {
+                key = atob('bmFmaWp0aGVwcm8=');
+            }
+            try {
+                const raw = atob(b64);
+                let res = '';
+                for (let i = 0; i < raw.length; i++) {
+                    res += String.fromCharCode(raw.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+                }
+                return res;
+            } catch (e) {
+                return b64;
+            }
+        }
+
+        const decoded = {
+            site: rawPayload.site,
+            active: rawPayload.active,
+            title: decodeXOR(rawPayload.maintenanceTitle),
+            desc: decodeXOR(rawPayload.maintenanceDescription),
+            msg: decodeXOR(rawPayload.message),
+            extra: decodeXOR(rawPayload.extraDescription),
+            mediaType: rawPayload.mediaType,
+            mediaUrl: decodeXOR(rawPayload.mediaUrl),
+            btnText: decodeXOR(rawPayload.btnText),
+            btnUrl: decodeXOR(rawPayload.btnUrl)
+        };
+
+        document.getElementById('disp-title').innerText = decoded.title;
+        document.getElementById('disp-desc').innerText = decoded.desc;
+        document.getElementById('disp-msg').innerText = decoded.msg;
+        document.getElementById('disp-extra').innerText = decoded.extra;
+        document.getElementById('disp-media-type').innerText = decoded.mediaType;
+        document.getElementById('disp-media-url').innerText = decoded.mediaUrl;
+        document.getElementById('disp-btn-text').innerText = decoded.btnText;
+        document.getElementById('disp-btn-url').innerText = decoded.btnUrl;
+
+        function updatePill() {
+            const isDown = MaintainSDK.isMaintenanceActive();
+            const isBypassed = MaintainSDK.isBypassed();
+            const pill = document.getElementById('live-status-pill');
+            if (isDown) {
+                pill.className = 'status-pill maintenance';
+                pill.innerText = isBypassed ? '● Maintenance Enforced (Bypassed by Owner)' : '● Under Maintenance';
+            } else {
+                pill.className = 'status-pill online';
+                pill.innerText = '● Site Normal (Active)';
+            }
+        }
+        updatePill();
+
+        function simulateMaintenanceOn() {
+            MaintainSDK.simulateMaintenance(true, {
+                title: decoded.title,
+                desc: decoded.desc,
+                msg: decoded.msg,
+                extra: decoded.extra,
+                mediaType: decoded.mediaType,
+                mediaUrl: decoded.mediaUrl,
+                btnText: decoded.btnText,
+                btnUrl: decoded.btnUrl
+            });
+        }
+
+        function simulateMaintenanceOff() {
+            MaintainSDK.simulateMaintenance(false);
+        }
+
+        function testMedia(type) {
+            let mediaUrl = decoded.mediaUrl;
+            if (type === 'video') mediaUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+            else if (type === 'youtube') mediaUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            else if (type === 'lottie') mediaUrl = 'https://assets9.lottiefiles.com/packages/lf20_m6cu9nqm.json';
+            else if (type === 'audio') mediaUrl = 'https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg';
+
+            MaintainSDK.simulateMaintenance(true, {
+                title: 'Media Format Test: ' + type.toUpperCase(),
+                desc: 'Demonstrating Universal Media Engine support for ' + type,
+                msg: decoded.msg,
+                extra: decoded.extra,
+                mediaType: type,
+                mediaUrl: mediaUrl,
+                btnText: 'Learn More',
+                btnUrl: 'https://maintain-doc.vercel.app/'
+            });
+        }
+
+        function resetDefaults() {
+            MaintainSDK.reset();
+        }
+
+        function copyRawPayload() {
+            navigator.clipboard.writeText(JSON.stringify(rawPayload, null, 2)).then(() => {
+                alert('Raw payload copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

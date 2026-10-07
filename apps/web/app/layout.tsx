@@ -3,6 +3,7 @@ import './globals.css';
 import { AuthProvider } from '@/lib/auth/auth-context';
 import { ThemeProvider } from '@/lib/theme/theme-context';
 import { ToastProvider } from '@/components/ui/toast';
+import { MaintenanceGuard } from '@/components/maintain/maintenance-guard';
 
 export const metadata: Metadata = {
   title: 'Luckydental — Dental Management System',
@@ -23,7 +24,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ToastProvider>
-              {children}
+              <MaintenanceGuard>
+                {children}
+              </MaintenanceGuard>
             </ToastProvider>
           </AuthProvider>
         </ThemeProvider>

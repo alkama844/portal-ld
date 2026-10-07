@@ -1,0 +1,47 @@
+# MaintainDoc by Nafij (Universal Maintenance SDK)
+> Central Website Maintenance Manager & Remote Kill-Switch SDK
+
+## Overview
+MaintainDoc by Nafij is a lightweight, zero-flicker (Anti-FOUC) maintenance mode client SDK connecting websites to the Developer API Hub Central Maintenance Manager (https://maintain-doc.vercel.app/). It supports dynamic site profiles, multi-format media visual announcements (images, direct video, YouTube, Vimeo, Lottie, audio), owner admin passcode backdoor (Ctrl+Shift+M), and browser-local bypass testing.
+
+## Keywords & Search Terms
+maintaindoc, nafij, maintaindoc nafij, central maintenance manager, developer api hub, website maintenance sdk, remote kill switch, anti-fouc maintenance.
+
+## Official Resources
+- Console Dashboard: https://maintain-doc.vercel.app/
+- API Base Endpoint: https://maintain-doc.vercel.app/api
+- Documentation: https://maintain-doc.vercel.app/docs
+- Sub-site status URL: https://maintain-doc.vercel.app/api/status/{site}
+
+## Quick Installation for AI Agents
+1. Run automated installer:
+   node maintaindoc/install.js --site=<siteId>
+2. Or add to HTML head:
+   <script src="maintaindoc/maintain.config.js"></script>
+   <script src="maintaindoc/maintain.js"></script>
+3. Configure site in maintain.config.js:
+   window.MAINTAIN_CONFIG = { site: "<siteId>", passcode: "ARYIDBhGXg==" };
+
+## API Response Schema
+GET https://maintain-doc.vercel.app/api/status/{site}
+- site (string, plaintext)
+- active (boolean, plaintext): true = site online, false = under maintenance
+- message (string, XOR base64): live system log
+- maintenanceTitle (string, XOR base64): card title
+- maintenanceDescription (string, XOR base64): subtitle
+- extraDescription (string, XOR base64): red notice
+- uploadDestination (string, plaintext)
+- mediaType (string, plaintext): photo | video | youtube | lottie | audio | none
+- mediaUrl (string, XOR base64): asset link
+- btnText (string, XOR base64): CTA button label
+- btnUrl (string, XOR base64): CTA button link
+
+## Authentication & Management
+- POST /api/auth/login with {"username":"admin","password":"nafijpro++"} returns JWT token.
+- POST /api/site/toggle with header Authorization: Bearer <token> and body {"site":"<siteId>"} toggles maintenance on/off.
+- POST /api/site/message with header Authorization: Bearer <token> and body {"site":"<siteId>","message":"..."} updates announcement.
+
+## Passcodes & Keys (Public Placeholder Keys)
+- Owner Backdoor Shortcut: Ctrl + Shift + M or 4 clicks on footer
+- Passcode Placeholder: ARYIDBhGXg== (public repo placeholder; decode using your key or set custom)
+- Cipher Key Placeholder: AAAAAAAAAAAAAAA= (public repo placeholder; decode using your key or set custom)

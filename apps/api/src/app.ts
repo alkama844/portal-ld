@@ -21,6 +21,7 @@ import priceEstimatorRoutes from './routes/price-estimator.routes';
 import appointmentOptionsRoutes from './routes/appointment-options.routes';
 import backupRoutes from './routes/backup.routes';
 import { errorHandler } from './middleware/error.middleware';
+import { maintenanceMiddleware, getMaintenanceState } from './middleware/maintenance.middleware';
 
 const app = express();
 
@@ -84,6 +85,17 @@ app.get('/', (req, res) => {
     apiHealth: '/api/health'
   });
 });
+
+// Direct Maintenance Status route (always accessible)
+app.get('/api/maintenance/status', (req, res) => {
+  res.json({
+    success: true,
+    ...getMaintenanceState()
+  });
+});
+
+// Enforce Maintenance Mode across API endpoints
+app.use(maintenanceMiddleware);
 
 // Mount Public API routes (no auth needed)
 app.use('/api', publicRoutes);
