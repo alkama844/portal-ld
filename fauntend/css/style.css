@@ -92,9 +92,6 @@ html {
   scroll-padding-top: 0;
   font-size: 16px;
   width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  overflow-x: clip;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -104,9 +101,6 @@ body {
   color: var(--brand-charcoal);
   line-height: 1.7;
   width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -658,22 +652,29 @@ button, input, select, textarea {
   top: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  left: auto !important;
   width: 85% !important;
   max-width: 360px !important;
   height: 100vh !important;
   height: 100dvh !important;
+  min-height: 0 !important;
+  margin: 0 !important;
   background: var(--brand-white, #ffffff) !important;
   z-index: 999999 !important;
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.35) !important;
   box-sizing: border-box !important;
   padding: 24px !important;
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
   transform: translateX(100%) !important;
   visibility: hidden !important;
   pointer-events: none !important;
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
+  overscroll-behavior: contain;
   touch-action: pan-y !important;
   -webkit-overflow-scrolling: touch !important;
 }
@@ -697,6 +698,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex: 0 0 auto;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--brand-border);
   margin-bottom: 20px;
@@ -719,6 +721,7 @@ button, input, select, textarea {
 .drawer-menu {
   list-style: none;
   display: block;
+  flex: 0 0 auto;
   margin: 0;
   padding: 0;
 }
@@ -744,6 +747,7 @@ button, input, select, textarea {
 }
 
 .drawer-footer {
+  flex: 0 0 auto;
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid var(--brand-border);
@@ -1746,12 +1750,16 @@ body.drawer-open {
    ========================================================================== */
 .tdc-dental-section-wrapper {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   margin: 0 auto;
 }
 
 .tdc-services-grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px;
 }
 

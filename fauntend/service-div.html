@@ -18,9 +18,19 @@
       .tdc-dental-section-wrapper {
         font-family: 'Poppins', 'Roboto', sans-serif !important;
         width: 100% !important;
-        max-width: 1800px !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
         margin: 0 auto !important;
         background-color: transparent !important;
+      }
+
+      .elementor-element-71f1bbf7,
+      .elementor-element-2b3913f {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
       }
 
       /* =========================================
@@ -28,7 +38,8 @@
        ========================================= */
       .tdc-services-grid-container {
         display: grid !important;
-        grid-template-columns: repeat(6, 1fr) !important;
+        min-width: 0 !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
         gap: 15px !important;
 
       }
