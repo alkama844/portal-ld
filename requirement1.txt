@@ -1,0 +1,49 @@
+Fix ONLY these 2 problems in the entire fauntend folder. Apply the fix to ALL HTML pages (index.html, about.html, services.html, contact.html, appointment.html, detail pages, etc.).
+
+1. MOBILE NAVBAR / HAMBURGER
+The navbar must NOT be sticky or fixed.
+
+Current problem:
+- On some old phones like Samsung J2/J200G the navbar behaves differently.
+- On modern phones like Samsung A20 it may stay sticky.
+- When scrolling down, the navbar stays at the top and opening hamburger can show the drawer at the wrong page position.
+
+Required:
+- Make the navbar/header completely normal document flow.
+- Remove position: fixed and position: sticky from the mobile navbar/header.
+- Do not use JavaScript scroll logic to keep it visible.
+- It should scroll away naturally with the page on EVERY device: old Android phones, modern phones and tablets.
+- Hamburger should work normally when the navbar is visible.
+- Keep the existing navbar/drawer design and menu items.
+- Do not redesign the navbar.
+
+2. HORIZONTAL SWIPE / WHITE SPACE BUG
+On some phones, when swiping horizontally from right to left, the page reveals a large white empty area and the main content moves sideways.
+
+Fix this across ALL fauntend HTML pages.
+
+Required:
+- No horizontal page scrolling.
+- No content should extend outside the viewport.
+- Find and fix the actual element causing overflow instead of hiding the problem only.
+- Check images, hero sections, carousels, cards, buttons, containers, absolute elements, transforms, widths and margins.
+- Make the entire website properly fit viewport width.
+- Use robust responsive CSS that works on very old Android phones, modern phones and tablets.
+- Do not break the existing desktop layout.
+
+After fixing, test:
+- Samsung J2/J200G-size old mobile viewport
+- modern Android mobile viewport
+- tablet viewport
+- portrait and landscape
+- scroll from top to bottom
+- swipe left/right repeatedly
+
+Expected result:
+1. Navbar scrolls normally and is NOT sticky/fixed.
+2. No hamburger/drawer positioning issue caused by sticky navbar.
+3. No horizontal swipe revealing white space.
+4. No horizontal scrollbar.
+5. All existing content/design remains unchanged.
+
+ONLY fix these two problems. Do not make unrelated changes.

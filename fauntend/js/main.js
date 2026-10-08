@@ -9,21 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   // --------------------------------------------------------------------------
-  // 1. STICKY NAVBAR & BACK TO TOP
+  // 1. NAVBAR STATE & BACK TO TOP
   // --------------------------------------------------------------------------
-  const navbar = document.querySelector('.navbar-wrapper');
   const backToTopBtn = document.getElementById('backToTopBtn');
 
   function handleScroll() {
     const scrollPos = window.scrollY;
-
-    if (navbar) {
-      if (scrollPos > 50) {
-        navbar.classList.add('navbar-scrolled');
-      } else {
-        navbar.classList.remove('navbar-scrolled');
-      }
-    }
 
     if (backToTopBtn) {
       if (scrollPos > 400) {
@@ -685,4 +676,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-

@@ -238,24 +238,16 @@
   initThemeColor();
 
   // Universal mobile drawer controller shared by every static page.
-  let drawerScrollPosition = 0;
   let drawerBodyStyles = null;
 
   function openMobileDrawer(drawer, overlay) {
     if (drawer.classList.contains('active')) return;
 
-    drawerScrollPosition = window.scrollY;
     drawerBodyStyles = {
-      position: document.body.style.position,
-      top: document.body.style.top,
-      width: document.body.style.width,
       overflow: document.body.style.overflow,
       touchAction: document.body.style.touchAction
     };
 
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${drawerScrollPosition}px`;
-    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
     document.body.style.touchAction = 'none';
     document.body.classList.add('drawer-open');
@@ -271,14 +263,10 @@
     document.body.classList.remove('drawer-open');
 
     if (drawerBodyStyles) {
-      document.body.style.position = drawerBodyStyles.position;
-      document.body.style.top = drawerBodyStyles.top;
-      document.body.style.width = drawerBodyStyles.width;
       document.body.style.overflow = drawerBodyStyles.overflow;
       document.body.style.touchAction = drawerBodyStyles.touchAction;
     }
 
-    window.scrollTo(0, drawerScrollPosition);
     drawerBodyStyles = null;
   }
 
@@ -313,4 +301,3 @@
     }
   });
 })();
-
