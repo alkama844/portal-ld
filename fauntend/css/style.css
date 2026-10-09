@@ -668,10 +668,11 @@ button, input, select, textarea {
   flex-direction: column !important;
   justify-content: flex-start !important;
   align-items: stretch !important;
-  transform: translateX(100%) !important;
+  transform: none !important;
+  clip-path: inset(0 0 0 100%) !important;
   visibility: hidden !important;
   pointer-events: none !important;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease !important;
+  transition: clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   overscroll-behavior: contain;
@@ -680,7 +681,7 @@ button, input, select, textarea {
 }
 
 .mobile-drawer.active {
-  transform: translateX(0) !important;
+  clip-path: inset(0) !important;
   visibility: visible !important;
   pointer-events: auto !important;
 }
@@ -797,6 +798,18 @@ body.drawer-open {
     display: flex !important;
     align-items: center;
     justify-content: center;
+  }
+}
+
+/*
+ * Horizontal reveal transforms extend the document's scrollable width while
+ * content below the fold is still waiting to be revealed. Keep the mobile
+ * animation vertical so every page remains within the viewport.
+ */
+@media (max-width: 1024px) {
+  [data-reveal="fade-left"],
+  [data-reveal="fade-right"] {
+    transform: translateY(28px);
   }
 }
 

@@ -1,0 +1,162 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run frontend server",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"fauntend/server.js"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check available browser",
+			"type": "shell",
+			"command": "sh",
+			"args": [
+				"-lc",
+				"command -v chromium || command -v chromium-browser || command -v google-chrome || command -v firefox || true"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install Playwright Chromium",
+			"type": "shell",
+			"command": "sh",
+			"args": [
+				"-lc",
+				"npx --yes playwright@1.55.0 install chromium"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify mobile layout",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"playwright@1.55.0",
+				"test",
+				"fauntend/scratch/verify_mobile_layout.spec.js",
+				"--reporter=line"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "List Playwright tests",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"playwright@1.55.0",
+				"test",
+				"--list",
+				"--test-dir",
+				"fauntend/scratch",
+				"--reporter=line"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run layout test",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"playwright@1.55.0",
+				"test",
+				"/workspaces/portal-ld/fauntend/scratch/verify_mobile_layout.spec.js",
+				"--reporter=line"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run layout test with runner",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"-p",
+				"@playwright/test@1.55.0",
+				"playwright",
+				"test",
+				"fauntend/scratch/verify_mobile_layout.spec.js",
+				"--reporter=line"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Playwright runner",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"-p",
+				"@playwright/test@1.55.0",
+				"node",
+				"-e",
+				"console.log(require.resolve('@playwright/test'))"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install browser for debugger",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"playwright@1.56.0",
+				"install",
+				"chromium"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install debugger browser",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"playwright@1.57.0",
+				"install",
+				"chromium"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install browser dependencies",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"playwright@1.57.0",
+				"install-deps",
+				"chromium"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check Playwright module",
+			"type": "shell",
+			"command": "sh",
+			"args": [
+				"-lc",
+				"npx --yes -p playwright@1.57.0 -c 'node -e \"console.log(require.resolve(\\\"playwright\\\"))\"'"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
