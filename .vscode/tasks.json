@@ -232,6 +232,17 @@
 			],
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Inspect deployment config",
+			"type": "shell",
+			"command": "sh",
+			"args": [
+				"-lc",
+				"git status --short; printf '\\n--- roots ---\\n'; find . -maxdepth 2 -type f \\( -name 'vercel.json' -o -name '.vercelignore' -o -name 'package.json' -o -name 'vite.config.*' \\) -print; printf '\\n--- overflow candidates ---\\n'; grep -RInE '100vw|translateX|width:[[:space:]]*[^;]*(px|vw)|margin-(left|right)|left:[[:space:]]*-|right:[[:space:]]*-|overflow|position:[[:space:]]*(fixed|sticky)' fauntend/css fauntend/js fauntend/*.html | head -500"
+			],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

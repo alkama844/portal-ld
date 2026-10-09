@@ -6083,3 +6083,28 @@ body.page-fading-out {
   flex-wrap: wrap;
   margin-top: 28px;
 }
+
+/*
+ * Horizontal reveal transforms increase the document's scrollable width while
+ * the element is waiting to be revealed. Keep the mobile reveal motion inside
+ * the viewport; desktop reveal directions remain unchanged.
+ */
+@media (max-width: 768px) {
+  [data-reveal="fade-left"],
+  [data-reveal="fade-right"] {
+    transform: translateY(28px);
+  }
+
+  [data-reveal="fade-left"].is-revealed,
+  [data-reveal="fade-right"].is-revealed {
+    transform: translateY(0);
+  }
+
+  .row,
+  [class*="col-"],
+  .d-flex,
+  .grid,
+  [class*="-grid"] {
+    min-width: 0;
+  }
+}
