@@ -20,6 +20,15 @@ const MIME_TYPES = {
   '.webmanifest': 'application/manifest+json'
 };
 
+function writeNoCacheHeaders(res, statusCode, contentType) {
+  res.writeHead(statusCode, {
+    'Content-Type': contentType,
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0',
+    Pragma: 'no-cache',
+    Expires: '0'
+  });
+}
+
 const server = http.createServer((req, res) => {
   let reqUrl = decodeURI(req.url.split('?')[0]);
   if (reqUrl === '/') reqUrl = '/index.html';
@@ -36,10 +45,10 @@ const server = http.createServer((req, res) => {
       const notFoundPath = path.join(__dirname, '404.html');
       fs.readFile(notFoundPath, (err404, data404) => {
         if (!err404) {
-          res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+          writeNoCacheHeaders(res, 404, 'text/html; charset=utf-8');
           res.end(data404);
         } else {
-          res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+          writeNoCacheHeaders(res, 404, 'text/html; charset=utf-8');
           res.end('<h1>404 Not Found - Lucky Dental Care</h1>');
         }
       });
@@ -49,7 +58,7 @@ const server = http.createServer((req, res) => {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
-    res.writeHead(200, { 'Content-Type': contentType });
+    writeNoCacheHeaders(res, 200, contentType);
     fs.createReadStream(filePath).pipe(res);
   });
 });

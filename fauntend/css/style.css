@@ -4208,6 +4208,14 @@ body.drawer-open {
   }
 }
 
+/* Keep reveal animations from creating a horizontal layout seam on mobile. */
+@media (max-width: 1024px) {
+  [data-reveal="fade-left"],
+  [data-reveal="fade-right"] {
+    transform: translateY(28px);
+  }
+}
+
 /* ==========================================================================
    NATIVE 2-COLUMN TREATMENT PRICE ESTIMATOR & COMPARISON SLIDER
    ========================================================================== */
@@ -5721,8 +5729,8 @@ body.page-fading-out {
 }
 
 @keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ==========================================================================

@@ -157,6 +157,81 @@
 			],
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Run rendered layout matrix",
+			"type": "shell",
+			"command": "sh",
+			"args": [
+				"-lc",
+				"npx --yes -p playwright@1.57.0 -c 'node fauntend/scratch/check_mobile_layout.js'"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run rendered matrix direct",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"--package",
+				"playwright@1.57.0",
+				"node",
+				"fauntend/scratch/check_mobile_layout.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install temporary test runner",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install",
+				"--prefix",
+				"/tmp/portal-ld-playwright",
+				"playwright@1.57.0",
+				"--no-package-lock",
+				"--no-save"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Install temp Playwright",
+			"type": "shell",
+			"command": "sh",
+			"args": [
+				"-lc",
+				"npm install --prefix /tmp/portal-ld-playwright playwright@1.57.0 --no-package-lock --no-save"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Check final diff",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"diff",
+				"--check",
+				"--",
+				"fauntend/css/style.css"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Verify no-cache headers",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-sSI",
+				"http://127.0.0.1:5173/index.html"
+			],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }
